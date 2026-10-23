@@ -1,14 +1,44 @@
 <script lang="ts">
   import type { Session } from "../gen/jcodeweb/v1/jcodeweb_pb";
   import { live } from "../lib/live.svelte";
-  import { layout } from "../lib/layout.svelte";
+  import { layout, SESSION_DRAG_TYPE } from "../lib/layout.svelte";
+  import { sessions as api } from "../lib/client";
   import { ago, shortDir, tone } from "../lib/format";
 
   let { onpick }: { onpick: (id: string, e?: MouseEvent) => void } = $props();
 
   let q = $state("");
   let showIdle = $state(false);
+  let creating = $state("");
+  let createError = $state("");
+
+  async function create(dir: string) {
+    if (creating) return;
+    creating = dir; createError = "";
+    try {
+      const session = await api.createSession({ workingDir: dir });
+      collapsed = { ...collapsed, [dir]: false };
+      layout.open(session.sessionId);
+      onpick(session.sessionId);
+    } catch (e) { createError = e instanceof Error ? e.message : String(e); }
+    finally { creating = ""; }
+  }
   let collapsed = $state<Record<string, boolean>>(JSON.parse(localStorage.getItem("jw.collapsed") ?? "{}"));
+
+  function dragSource(node: HTMLButtonElement, id: string) {
+    const media = matchMedia("(min-width: 900px)");
+    const setup = () => { node.draggable = media.matches; };
+    function start(event: DragEvent) {
+      if (!media.matches || !event.dataTransfer) { event.preventDefault(); return; }
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData(SESSION_DRAG_TYPE, id);
+      event.dataTransfer.setData("text/plain", id);
+    }
+    setup();
+    node.addEventListener("dragstart", start);
+    media.addEventListener("change", setup);
+    return { destroy() { media.removeEventListener("change", setup); node.removeEventListener("dragstart", start); } };
+  }
 
   function toggle(dir: string) {
     collapsed = { ...collapsed, [dir]: !collapsed[dir] };
@@ -53,12 +83,12 @@
     {#each groups as g (g.dir)}
       {@const shut = collapsed[g.dir] && !q}
       <section class="group">
-        <button class="ghead" onclick={() => toggle(g.dir)} aria-expanded={!shut} title={g.dir}>
+        <div class="gbar"><button class="ghead" onclick={() => toggle(g.dir)} aria-expanded={!shut} title={g.dir}>
           <span class="caret" class:shut>▾</span>
           <span class="gdir">{shortDir(g.dir)}</span>
           {#if g.busy}<span class="gbusy">{g.busy} working</span>{/if}
           <span class="gcount">{g.sessions.length}</span>
-        </button>
+        </button><button class="create" disabled={!!creating || g.dir === "(no folder)"} onclick={() => create(g.dir)} aria-label={`New session in ${g.dir}`} title={`New session in ${shortDir(g.dir)}`}>{creating === g.dir ? "…" : "+"}</button></div>
         {#if !shut}
           <ul>
             {#each g.sessions as s (s.id)}
@@ -68,6 +98,9 @@
                   class="row"
                   class:open={layout.panes.includes(s.id)}
                   class:focused={layout.focused === s.id}
+                  use:dragSource={s.id}
+                  data-session-id={s.id}
+                  title={[s.shortSummary, s.summary, s.detail].filter(Boolean).join("\n")}
                   data-tone={t}
                   onclick={(e) => onpick(s.id, e)}
                 >
@@ -76,7 +109,9 @@
                     <span class="line1">
                       <span class="name">{s.name}</span>
                       <span class="sub">
-                        {#if s.isProcessing && s.detail}
+                        {#if s.shortSummary}
+                          {s.shortSummary}
+                        {:else if s.isProcessing && s.detail}
                           {s.detail}
                         {:else if s.summary}
                           {s.summary}
@@ -97,6 +132,7 @@
       </section>
     {/each}
   </div>
+  {#if createError}<p class="create-error">{createError}</p>{/if}
   {#if (showIdle || hidden > 0) && !q}
     <button class="more" onclick={() => (showIdle = !showIdle)}>
       {showIdle ? "Hide quiet sessions" : `Show ${hidden} quiet sessions`}
@@ -130,12 +166,18 @@
     display: flex;
     align-items: baseline;
     gap: 0.5rem;
-    width: 100%;
+    flex: 1;
+    min-width: 0;
     padding: 0.5rem 1rem 0.25rem 0.625rem;
     text-align: left;
     color: var(--fg-2);
     font-size: var(--s-1);
   }
+  .gbar { display: flex; align-items: center; }
+  .create { flex: none; color: var(--fg-2); padding: 0.25rem 0.75rem; font-size: var(--s1); }
+  .create:hover { color: var(--fg); background: var(--ink-3); }
+  .create:disabled { opacity: 0.4; }
+  .create-error { margin: 0; padding: 0.5rem 0.75rem; color: var(--failed); font-size: var(--s-1); }
   .ghead:hover {
     color: var(--fg);
   }

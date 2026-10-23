@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { live } from "./lib/live.svelte";
-  import { layout } from "./lib/layout.svelte";
+  import { layout, PROGRESS_WINDOW } from "./lib/layout.svelte";
   import { push } from "./lib/push.svelte";
   import { features } from "./lib/features.svelte";
   import SessionList from "./components/SessionList.svelte";
   import Pane from "./components/Pane.svelte";
   import Feed from "./components/Feed.svelte";
+  import Workspace from "./components/Workspace.svelte";
+  import ProgressFeed from "./components/ProgressFeed.svelte";
 
   let showFeed = $state(false);
   let showList = $state(false);
@@ -28,7 +30,7 @@
   const busyCount = $derived(live.sessions.filter((s) => s.isProcessing).length);
 
   function pick(id: string, e?: MouseEvent) {
-    const add = !wide || e?.metaKey || e?.ctrlKey || e?.shiftKey;
+    const add = !wide || layout.focused === PROGRESS_WINDOW || e?.metaKey || e?.ctrlKey || e?.shiftKey;
     if (add || layout.panes.includes(id)) layout.open(id);
     else layout.swap(layout.focused, id);
     if (!wide) showList = false;
@@ -50,6 +52,7 @@
       {/if}
       <SessionList onpick={pick} />
       <footer class="side-foot">
+        <button onclick={() => { layout.open(PROGRESS_WINDOW); showList = false; }}>Progress feed</button>
         <button onclick={() => (showFeed = !showFeed)}>{showFeed ? "Hide activity" : "Show activity"}</button>
         {#if push.supported}
           {#if push.enabled}
@@ -70,14 +73,16 @@
         <button class="menu" onclick={() => (showList = !showList)} aria-label="Sessions">☰</button>
         {#each layout.panes as id (id)}
           {@const s = live.byId(id)}
-          <button class="tab" class:on={id === layout.focused} onclick={() => (layout.focused = id)}>
-            <span class="dot" data-busy={s?.isProcessing}></span>{s?.name ?? id.slice(8, 11)}
+          <button class="tab" class:on={id === layout.focused} onclick={() => layout.focus(id)}>
+            <span class="dot" data-busy={s?.isProcessing}></span>{id === PROGRESS_WINDOW ? "Progress" : s?.name ?? id.slice(8, 11)}
           </button>
         {/each}
         <button class="menu" onclick={() => (showFeed = !showFeed)} aria-label="Activity">≋</button>
       </nav>
     {/if}
-    {#if visible.length === 0}
+    {#if wide}
+      <Workspace />
+    {:else if visible.length === 0}
       <section class="empty">
         <p>Pick a session to watch it live.</p>
         <p class="hint">
@@ -86,7 +91,7 @@
       </section>
     {:else}
       {#each visible as id (id)}
-        <Pane {id} />
+        {#if id === PROGRESS_WINDOW}<ProgressFeed />{:else}<Pane {id} />{/if}
       {/each}
     {/if}
   </main>

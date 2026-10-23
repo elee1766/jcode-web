@@ -21,7 +21,7 @@
             inherit (finalAttrs) pname version src;
             pnpm = pkgs.pnpm_10;
             fetcherVersion = 4;
-            hash = "sha256-NFOaBvv9J+7qw2LLSID2Jcu/AF5ers21QCMUHVycRHc=";
+            hash = "sha256-D3EO/U9Hnf27FKREsrjUcbZhzTAdCwXX7LYLMoTiIFQ=";
           };
           buildPhase = ''
             runHook preBuild

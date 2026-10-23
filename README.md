@@ -6,11 +6,15 @@ Monitor and control jcode sessions from a desktop or mobile browser.
 
 - Sessions grouped by workspace directory, with running groups first.
 - Live transcripts, tool calls, token counts, and status updates.
-- Click to switch sessions. Ctrl, Shift, or Cmd click opens another pane.
+- Drag sessions into a Dockview tiled workspace with docking previews. Drag tabs to split at an edge or group in the center, and resize with shared dividers.
+- Click to switch sessions. Ctrl, Shift, or Cmd click opens another tile. Tiles fill the available screen, with optional maximize and restore controls. Split sizes and tab groups are saved in the browser.
 - Mobile tabs keep one session visible at a time.
 - Send messages, steer a running turn, cancel, or use **btw** to fork a side question without stopping the parent.
 - Persistent activity feed and reconnect replay from SQLite.
-- Optional AI session summaries and a time-window activity overview.
+- Optional AI task titles, session summaries, a milestone feed tile, and a time-window activity overview.
+- Workspace **+** creates a session in that directory. Load older transcript messages or recall sent prompts with Up/Down and the composer history buttons.
+- Scheduled tasks per session, with due times and live countdowns.
+- Content links open in a new tab.
 - Installable PWA with optional Web Push notifications.
 
 ## Build and run
@@ -46,6 +50,8 @@ touch ~/.jcode/debug_control
 
 The main socket provides session attachments and commands. It does not replace existing TUI attachments. Turns started by the web client continue when the browser or web server disconnects. The debug socket supplies discovery and the server-wide activity bus. Polling repairs session status after missed updates.
 
+The session's **Scheduled tasks** section reads Jcode's pending scheduler through the debug socket (`ambient:queue`) every 10 seconds. It includes tasks resuming that session and tasks spawning from it. This view is read-only and does not create or cancel tasks.
+
 Browser reconnects replay persisted events. Events missed while the backend itself is disconnected from jcode are not currently backfilled. Transcript reconnects recover from main-socket history instead.
 
 ## Configuration
@@ -62,11 +68,11 @@ JCODE_WEB_SUMMARY__MODEL=openai/gpt-oss-20b \
 ./jcode-web serve
 ```
 
-Summaries use an OpenAI-compatible `/chat/completions` endpoint. The example targets LM Studio on madobe with `openai/gpt-oss-20b` and low reasoning effort. They are optional and disabled by default. Completion transitions queue session summaries. The pane refresh button and activity overview request them on demand. Requests are serialized to avoid overloading the local model.
+Summaries use an OpenAI-compatible `/chat/completions` endpoint. The example targets LM Studio on madobe with `openai/gpt-oss-20b` and low reasoning effort. They are optional and disabled by default. Completion, attention, plan updates, and write activity queue summaries after a short debounce. Progress checkpoints are limited to one per session per 45 seconds. The pane refresh button and activity overview request them on demand. Requests are serialized to avoid overloading the local model. The **Progress feed** tile replays persisted AI updates and receives new ones live.
 
 Summaries send transcript excerpts and activity to the configured provider. They are generated descriptions, not authoritative status or command results. API keys stay on the backend.
 
-SQLite stores activity, summaries, push subscriptions, and VAPID keys under the configured data directory. Migrations run automatically. Back up the database, including its WAL if the process is running. Transcript history remains owned by jcode.
+SQLite stores activity, summaries, push subscriptions, and VAPID keys under the configured data directory. Migrations run automatically. Back up the database, including its WAL if the process is running. Transcript history remains owned by jcode. Sent-prompt recall also keeps up to 100 prompts per session in browser local storage. Docking layouts and workspace collapse preferences stay in that browser.
 
 ## Deployment
 
