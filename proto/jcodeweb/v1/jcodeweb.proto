@@ -78,6 +78,10 @@ message Session {
   string short_summary = 16;
   // Pending resume tasks and child tasks scheduled from this session.
   uint32 scheduled_task_count = 17;
+  // Headless swarm worker, including workers without a TUI attachment.
+  bool is_headless = 18;
+  // Owning swarm coordinator when known.
+  string parent_session_id = 19;
 }
 
 // Event is a server-wide event from the jcode debug event bus.

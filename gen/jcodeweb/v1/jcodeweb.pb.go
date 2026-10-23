@@ -168,8 +168,12 @@ type Session struct {
 	ShortSummary string `protobuf:"bytes,16,opt,name=short_summary,json=shortSummary,proto3" json:"short_summary,omitempty"`
 	// Pending resume tasks and child tasks scheduled from this session.
 	ScheduledTaskCount uint32 `protobuf:"varint,17,opt,name=scheduled_task_count,json=scheduledTaskCount,proto3" json:"scheduled_task_count,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Headless swarm worker, including workers without a TUI attachment.
+	IsHeadless bool `protobuf:"varint,18,opt,name=is_headless,json=isHeadless,proto3" json:"is_headless,omitempty"`
+	// Owning swarm coordinator when known.
+	ParentSessionId string `protobuf:"bytes,19,opt,name=parent_session_id,json=parentSessionId,proto3" json:"parent_session_id,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Session) Reset() {
@@ -319,6 +323,20 @@ func (x *Session) GetScheduledTaskCount() uint32 {
 		return x.ScheduledTaskCount
 	}
 	return 0
+}
+
+func (x *Session) GetIsHeadless() bool {
+	if x != nil {
+		return x.IsHeadless
+	}
+	return false
+}
+
+func (x *Session) GetParentSessionId() string {
+	if x != nil {
+		return x.ParentSessionId
+	}
+	return ""
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -3122,7 +3140,7 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\n" +
 	"cache_read\x18\x03 \x01(\x04R\tcacheRead\x12\x1f\n" +
 	"\vcache_write\x18\x04 \x01(\x04R\n" +
-	"cacheWrite\"\xa3\x04\n" +
+	"cacheWrite\"\xf0\x04\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
@@ -3144,7 +3162,10 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\asummary\x18\x0e \x01(\tR\asummary\x12!\n" +
 	"\fsummary_unix\x18\x0f \x01(\x03R\vsummaryUnix\x12#\n" +
 	"\rshort_summary\x18\x10 \x01(\tR\fshortSummary\x120\n" +
-	"\x14scheduled_task_count\x18\x11 \x01(\rR\x12scheduledTaskCount\"\x8d\x02\n" +
+	"\x14scheduled_task_count\x18\x11 \x01(\rR\x12scheduledTaskCount\x12\x1f\n" +
+	"\vis_headless\x18\x12 \x01(\bR\n" +
+	"isHeadless\x12*\n" +
+	"\x11parent_session_id\x18\x13 \x01(\tR\x0fparentSessionId\"\x8d\x02\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vupstream_id\x18\x02 \x01(\x04R\n" +

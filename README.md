@@ -75,6 +75,8 @@ Summaries send transcript excerpts and activity to the configured provider. They
 
 SQLite stores activity, summaries, push subscriptions, and VAPID keys under the configured data directory. Migrations run automatically. Back up the database, including its WAL if the process is running. Transcript history remains owned by jcode. Sent-prompt recall also keeps up to 100 prompts per session in browser local storage. Docking layouts and workspace collapse preferences stay in that browser.
 
+The progress feed shows live relative ages, full timestamps on hover, and dates for updates older than 24 hours. Session discovery includes headless swarm workers. Parent panes list their sub-sessions with status and inspection links, and worker panes link back to their coordinator.
+
 ## Deployment
 
 This application has **no login or authorization layer**. Anyone who can reach it can read session content and run commands through jcode. Keep it on loopback and expose it only through a trusted tailnet or authenticated reverse proxy. Cross-origin browser requests are rejected, but that is not authentication. Do not expose it to the public internet.

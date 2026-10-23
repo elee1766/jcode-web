@@ -188,7 +188,8 @@ func sameSession(a, b jcode.SessionInfo) bool {
 		bd = *b.Detail
 	}
 	return a.Status == b.Status && a.IsProcessing == b.IsProcessing && a.FriendlyName == b.FriendlyName &&
-		a.Model == b.Model && ad == bd && a.TokenUsage.Input == b.TokenUsage.Input && a.TokenUsage.Output == b.TokenUsage.Output
+		a.Model == b.Model && ad == bd && a.TokenUsage.Input == b.TokenUsage.Input && a.TokenUsage.Output == b.TokenUsage.Output &&
+		a.ParentID == b.ParentID && a.IsHeadless == b.IsHeadless && a.WorkingDir == b.WorkingDir && a.SwarmID == b.SwarmID
 }
 
 func (h *Hub) setConnection(ok bool, msg string) {
@@ -214,7 +215,7 @@ func (h *Hub) Sessions() []SessionView {
 	for id, s := range h.sessions {
 		_, att := h.attached[id]
 		sm := h.summaries[id]
-		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt, ScheduledTaskCount: h.scheduledCounts[id]})
+		out = append(out, SessionView{SessionInfo: s, LastEventUnix: max(h.lastEvent[id], s.LastActivityUnix), Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt, ScheduledTaskCount: h.scheduledCounts[id]})
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].IsProcessing != out[j].IsProcessing {

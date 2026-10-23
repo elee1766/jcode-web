@@ -15,6 +15,15 @@
   let error = $state("");
   let older = $state(true);
   let attention = $state(false);
+  let now = $state(Date.now());
+  const relativeTime = new Intl.RelativeTimeFormat(undefined, { numeric: "always" });
+  function age(unix: bigint) {
+    const seconds = Math.max(0, Math.floor(now / 1000 - Number(unix)));
+    if (seconds < 60) return relativeTime.format(-seconds, "second");
+    if (seconds < 3600) return relativeTime.format(-Math.floor(seconds / 60), "minute");
+    if (seconds < 86400) return relativeTime.format(-Math.floor(seconds / 3600), "hour");
+    return relativeTime.format(-Math.floor(seconds / 86400), "day");
+  }
   const shown = $derived(attention ? entries.filter(e => meta(e).reason === "needs_attention") : entries);
 
   function meta(event: Event): { reason?: string; model?: string; working_dir?: string; title?: string } {
@@ -39,7 +48,11 @@
     } catch (e) { if (!controller.signal.aborted) error = e instanceof Error ? e.message : String(e); }
     finally { loading = false; }
   }
-  onMount(() => { void load(); return () => controller.abort(); });
+  onMount(() => {
+    void load();
+    const timer = setInterval(() => { now = Date.now(); }, 1000);
+    return () => { clearInterval(timer); controller.abort(); };
+  });
   $effect(() => {
     const updates = live.events.filter(e => e.type === "session_summary");
     untrack(() => { if (updates.length) merge(updates); });
@@ -63,8 +76,9 @@
   <div class="entries">
     {#each shown as e (e.id)}
       {@const info = meta(e)}
+      {@const date = new Date(Number(e.timestampUnix) * 1000)}
       <article data-event-id={String(e.id)} data-reason={info.reason}>
-        <div class="meta"><button class="session" onclick={() => layout.open(e.sessionId)}>{e.sessionName || live.byId(e.sessionId)?.name || "Session"}</button><span class="dir" title={info.working_dir}>{shortDir(info.working_dir ?? "")}</span><time datetime={new Date(Number(e.timestampUnix) * 1000).toISOString()}>{new Date(Number(e.timestampUnix) * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time></div>
+        <div class="meta"><button class="session" onclick={() => layout.open(e.sessionId)}>{e.sessionName || live.byId(e.sessionId)?.name || "Session"}</button><span class="dir" title={info.working_dir}>{shortDir(info.working_dir ?? "")}</span><time datetime={date.toISOString()} title={date.toLocaleString(undefined, { timeZoneName: "short" })}>{age(e.timestampUnix)}{#if now - date.getTime() > 86400000}<span class="date">{date.toLocaleDateString()}</span>{/if}</time></div>
         <div class="reason">{label(info.reason)}</div>
         {#if info.title}<h3>{info.title}</h3>{/if}
         <div class="summary">{@html md(e.summary)}</div>
@@ -97,7 +111,8 @@
   .session { font-weight: 600; color: var(--fg); }
   .session:hover { text-decoration: underline; }
   .dir { flex: 1; min-width: 0; color: var(--fg-3); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-  time { color: var(--fg-3); flex: none; }
+  time { color: var(--fg-3); flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+  .date { display: block; font-size: var(--s-1); }
   .reason { color: var(--ready); font-size: var(--s-1); margin-top: 0.2rem; }
   h3 { font-size: var(--s0); font-weight: 600; margin: 0.4rem 0 0; }
   [data-reason="needs_attention"] .reason { color: var(--failed); }

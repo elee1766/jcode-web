@@ -26,6 +26,8 @@
 
   const s = $derived(live.byId(id));
   const parent = $derived(layout.forks[id] ? live.byId(layout.forks[id]) : undefined);
+  const coordinator = $derived(s?.parentSessionId ? live.byId(s.parentSessionId) : undefined);
+  const children = $derived(live.sessions.filter(child => child.parentSessionId === id));
   const working = $derived(t.busy || !!s?.isProcessing);
 
   let draft = $state("");
@@ -185,6 +187,23 @@
     </div>
   {/if}
 
+  {#if coordinator}
+    <div class="subsessions">Sub-session of <button onclick={() => layout.open(coordinator.id)}>{coordinator.name}</button></div>
+  {:else if s?.isHeadless}
+    <div class="subsessions">Headless worker</div>
+  {/if}
+  {#if children.length}
+    <details class="subsessions" open>
+      <summary>Sub-sessions · {children.filter(child => child.isProcessing).length} running · {children.length} total</summary>
+      <div class="children">
+        {#each children as child (child.id)}
+          <button data-child-id={child.id} onclick={() => layout.open(child.id)} title={child.detail || child.summary}>
+            <strong>{child.name}</strong><span class:busy={child.isProcessing}>{child.status}</span><span class="child-detail">{child.shortSummary || child.detail || child.model}</span><span>Inspect ↗</span>
+          </button>
+        {/each}
+      </div>
+    </details>
+  {/if}
   <ScheduledTasks {id} />
   <div class="scroll" bind:this={scroller} onscroll={onScroll}>
     {#if t.total > t.shownMessages}
@@ -229,6 +248,13 @@
 </section>
 
 <style>
+  .subsessions { padding: 0.35rem 0.75rem; border-bottom: 1px solid var(--line); color: var(--fg-2); font-size: var(--s-1); }
+  .subsessions > button { text-decoration: underline; }
+  .children { max-height: 8rem; overflow-y: auto; }
+  .children button { display: flex; gap: 0.5rem; align-items: baseline; width: 100%; text-align: left; padding: 0.3rem 0; }
+  .children button:hover { background: var(--ink-3); }
+  .child-detail { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .busy { color: var(--busy); }
   .pane {
     flex: 1 1 0;
     min-width: 0;

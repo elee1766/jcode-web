@@ -15,6 +15,7 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
+	"time"
 )
 
 // maxLine bounds one NDJSON line. History events for long sessions are large.
@@ -157,17 +158,22 @@ func isDebugDisabled(msg string) bool {
 
 // SessionInfo is one entry from the debug "sessions" command.
 type SessionInfo struct {
-	SessionID    string  `json:"session_id"`
-	FriendlyName string  `json:"friendly_name"`
-	Status       string  `json:"status"`
-	IsProcessing bool    `json:"is_processing"`
-	Model        string  `json:"model"`
-	Provider     string  `json:"provider"`
-	WorkingDir   string  `json:"working_dir"`
-	SwarmID      string  `json:"swarm_id"`
-	ServerName   string  `json:"server_name"`
-	Detail       *string `json:"detail"`
-	TokenUsage   struct {
+	SessionID            string  `json:"session_id"`
+	FriendlyName         string  `json:"friendly_name"`
+	Status               string  `json:"status"`
+	IsProcessing         bool    `json:"is_processing"`
+	Model                string  `json:"model"`
+	Provider             string  `json:"provider"`
+	WorkingDir           string  `json:"working_dir"`
+	SwarmID              string  `json:"swarm_id"`
+	ServerName           string  `json:"server_name"`
+	Detail               *string `json:"detail"`
+	IsHeadless           bool    `json:"is_headless"`
+	Role                 string  `json:"role"`
+	ParentID             string  `json:"-"`
+	LastActivityUnix     int64   `json:"-"`
+	StatusChangedSecsAgo int64   `json:"status_changed_secs_ago"`
+	TokenUsage           struct {
 		Input      uint64  `json:"input"`
 		Output     uint64  `json:"output"`
 		CacheRead  *uint64 `json:"cache_read"`
@@ -184,6 +190,45 @@ func (d *Debug) Sessions(ctx context.Context) ([]SessionInfo, error) {
 	var s []SessionInfo
 	if err := json.Unmarshal([]byte(out), &s); err != nil {
 		return nil, fmt.Errorf("decode sessions: %w", err)
+	}
+	// The attached-session list excludes headless swarm workers.
+	membersJSON, err := d.Run(ctx, "swarm:members", "")
+	if err != nil {
+		return nil, err
+	}
+	var members []SessionInfo
+	if err := json.Unmarshal([]byte(membersJSON), &members); err != nil {
+		return nil, fmt.Errorf("decode swarm members: %w", err)
+	}
+	byID := make(map[string]SessionInfo, len(s)+len(members))
+	coordinators := make(map[string]string)
+	for _, member := range members {
+		member.IsProcessing = member.Status == "running"
+		member.LastActivityUnix = time.Now().Unix() - member.StatusChangedSecsAgo
+		byID[member.SessionID] = member
+		if member.Role == "coordinator" && member.SwarmID != "" {
+			coordinators[member.SwarmID] = member.SessionID
+		}
+	}
+	for _, session := range s {
+		member := byID[session.SessionID]
+		session.IsHeadless, session.Role = member.IsHeadless, member.Role
+		session.LastActivityUnix = member.LastActivityUnix
+		byID[session.SessionID] = session
+	}
+	s = s[:0]
+	for _, session := range byID {
+		parent := coordinators[session.SwarmID]
+		if parent == "" {
+			candidate := strings.TrimPrefix(session.SwarmID, "session:")
+			if _, ok := byID[candidate]; ok && strings.HasPrefix(session.SwarmID, "session:") {
+				parent = candidate
+			}
+		}
+		if parent != session.SessionID {
+			session.ParentID = parent
+		}
+		s = append(s, session)
 	}
 	return s, nil
 }

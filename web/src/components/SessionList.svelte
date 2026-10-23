@@ -52,7 +52,7 @@
     const needle = q.trim().toLowerCase();
     return live.sessions.filter((s) => {
       if (needle) {
-        return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary].some((f) => f.toLowerCase().includes(needle));
+        return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary, live.byId(s.parentSessionId)?.name ?? ""].some((f) => f.toLowerCase().includes(needle));
       }
       if (showIdle || s.isProcessing || s.scheduledTaskCount > 0 || layout.panes.includes(s.id)) return true;
       return Number(s.lastEventUnix) > now - DAY;
@@ -93,6 +93,7 @@
           <ul>
             {#each g.sessions as s (s.id)}
               {@const t = tone(s.status, s.isProcessing)}
+              {@const childCount = live.sessions.filter(child => child.parentSessionId === s.id).length}
               <li>
                 <button
                   class="row"
@@ -114,10 +115,11 @@
                           <svg aria-hidden="true" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>{s.scheduledTaskCount}
                         </span>
                       {/if}
+                      {#if childCount}<span class="scheduled-badge" title={`${childCount} sub-sessions. Open to inspect.`} aria-label={`${childCount} sub-sessions`}>⑂ {childCount}</span>{/if}
                       <span class="age">{ago(s.lastEventUnix)}</span>
                     </span>
                     <span class="sub" title={s.summary || s.detail}>{s.summary || s.detail || "No recent activity"}</span>
-                    <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
+                    <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isHeadless || s.parentSessionId ? `Worker${s.parentSessionId ? ` of ${live.byId(s.parentSessionId)?.name ?? s.parentSessionId}` : ""} · ` : ""}{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
                   </span>
                 </button>
               </li>
