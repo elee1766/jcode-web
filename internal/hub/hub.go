@@ -215,7 +215,11 @@ func (h *Hub) Sessions() []SessionView {
 	for id, s := range h.sessions {
 		_, att := h.attached[id]
 		sm := h.summaries[id]
-		out = append(out, SessionView{SessionInfo: s, LastEventUnix: max(h.lastEvent[id], s.LastActivityUnix), Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt, ScheduledTaskCount: h.scheduledCounts[id]})
+		lastActivity := h.lastEvent[id]
+		if s.ParentID != "" || s.IsHeadless {
+			lastActivity = max(lastActivity, s.LastActivityUnix)
+		}
+		out = append(out, SessionView{SessionInfo: s, LastEventUnix: lastActivity, Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt, ScheduledTaskCount: h.scheduledCounts[id]})
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].IsProcessing != out[j].IsProcessing {

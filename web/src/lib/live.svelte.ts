@@ -13,6 +13,10 @@ class Live {
   #lastId = 0n;
   #abort: AbortController | null = null;
 
+  get topLevelSessions(): Session[] {
+    return this.sessions.filter(s => !s.parentSessionId && !s.isHeadless);
+  }
+
   byId(id: string): Session | undefined {
     return this.sessions.find((s) => s.id === id);
   }

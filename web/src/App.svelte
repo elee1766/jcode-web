@@ -27,7 +27,9 @@
 
   // On narrow screens show one pane: the focused one.
   const visible = $derived(wide ? layout.panes : layout.panes.filter((p) => p === layout.focused));
-  const busyCount = $derived(live.sessions.filter((s) => s.isProcessing).length);
+  const roots = $derived(live.topLevelSessions);
+  const busyParents = $derived(new Set(live.sessions.filter(s => s.parentSessionId && s.isProcessing).map(s => s.parentSessionId)));
+  const busyCount = $derived(roots.filter(s => s.isProcessing || busyParents.has(s.id)).length);
 
   function pick(id: string, e?: MouseEvent) {
     const add = !wide || layout.focused === PROGRESS_WINDOW || e?.metaKey || e?.ctrlKey || e?.shiftKey;
@@ -44,7 +46,7 @@
         <span class="title">jcode</span>
         {#if !wide}<button onclick={() => (showList = false)} aria-label="Close sessions">Close</button>{/if}
         <span class="conn" class:ok={live.connected} title={live.upstreamError || "Connected to jcode"}>
-          {live.connected ? `${live.sessions.length} sessions, ${busyCount} working` : "jcode unreachable"}
+          {live.connected ? `${roots.length} sessions, ${busyCount} working` : "jcode unreachable"}
         </span>
       </header>
       {#if !live.connected && live.upstreamError}

@@ -47,18 +47,21 @@
 
   // Hide sessions with no recorded activity for a day unless asked.
   const DAY = 86400;
+  const roots = $derived(live.topLevelSessions);
+  const busyParents = $derived(new Set(live.sessions.filter(s => s.parentSessionId && s.isProcessing).map(s => s.parentSessionId)));
+  const waitingParents = $derived(new Set(live.sessions.filter(s => s.parentSessionId && s.scheduledTaskCount > 0).map(s => s.parentSessionId)));
   const filtered = $derived.by(() => {
     const now = Date.now() / 1000;
     const needle = q.trim().toLowerCase();
-    return live.sessions.filter((s) => {
+    return roots.filter((s) => {
       if (needle) {
-        return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary, live.byId(s.parentSessionId)?.name ?? ""].some((f) => f.toLowerCase().includes(needle));
+        return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary].some((f) => f.toLowerCase().includes(needle));
       }
-      if (showIdle || s.isProcessing || s.scheduledTaskCount > 0 || layout.panes.includes(s.id)) return true;
+      if (showIdle || s.isProcessing || busyParents.has(s.id) || waitingParents.has(s.id) || s.scheduledTaskCount > 0 || layout.panes.includes(s.id)) return true;
       return Number(s.lastEventUnix) > now - DAY;
     });
   });
-  const hidden = $derived(live.sessions.length - filtered.length);
+  const hidden = $derived(roots.length - filtered.length);
 
   type Group = { dir: string; sessions: Session[]; busy: number; last: number };
 
@@ -70,7 +73,7 @@
       let g = m.get(dir);
       if (!g) m.set(dir, (g = { dir, sessions: [], busy: 0, last: 0 }));
       g.sessions.push(s);
-      if (s.isProcessing) g.busy++;
+      if (s.isProcessing || busyParents.has(s.id)) g.busy++;
       g.last = Math.max(g.last, Number(s.lastEventUnix));
     }
     return [...m.values()].sort((a, b) => (b.busy > 0 ? 1 : 0) - (a.busy > 0 ? 1 : 0) || b.last - a.last || a.dir.localeCompare(b.dir));
@@ -119,7 +122,7 @@
                       <span class="age">{ago(s.lastEventUnix)}</span>
                     </span>
                     <span class="sub" title={s.summary || s.detail}>{s.summary || s.detail || "No recent activity"}</span>
-                    <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isHeadless || s.parentSessionId ? `Worker${s.parentSessionId ? ` of ${live.byId(s.parentSessionId)?.name ?? s.parentSessionId}` : ""} · ` : ""}{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
+                    <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
                   </span>
                 </button>
               </li>
