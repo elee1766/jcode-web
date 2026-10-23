@@ -99,6 +99,10 @@ func (s *Store) EventsAfter(ctx context.Context, after int64, limit int) ([]Even
 // EventsBefore returns up to limit events with id < before (0 = latest),
 // newest first. sessionID filters when set.
 func (s *Store) EventsBefore(ctx context.Context, sessionID string, before int64, limit int) ([]Event, error) {
+	return s.EventsBeforeType(ctx, sessionID, "", before, limit)
+}
+
+func (s *Store) EventsBeforeType(ctx context.Context, sessionID, eventType string, before int64, limit int) ([]Event, error) {
 	q := `SELECT ` + eventCols + ` FROM events WHERE 1=1`
 	var args []any
 	if sessionID != "" {
@@ -108,6 +112,10 @@ func (s *Store) EventsBefore(ctx context.Context, sessionID string, before int64
 	if before > 0 {
 		q += ` AND id < ?`
 		args = append(args, before)
+	}
+	if eventType != "" {
+		q += ` AND type = ?`
+		args = append(args, eventType)
 	}
 	q += ` ORDER BY id DESC LIMIT ?`
 	args = append(args, limit)
@@ -120,7 +128,7 @@ func (s *Store) EventsBefore(ctx context.Context, sessionID string, before int64
 
 // LastEventTimes returns the newest event timestamp per session.
 func (s *Store) LastEventTimes(ctx context.Context) (map[string]int64, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT session_id, MAX(timestamp_unix) FROM events GROUP BY session_id`)
+	rows, err := s.db.QueryContext(ctx, `SELECT session_id, MAX(timestamp_unix) FROM events WHERE type <> 'session_summary' GROUP BY session_id`)
 	if err != nil {
 		return nil, err
 	}
@@ -185,6 +193,7 @@ func (s *Store) ListPush(ctx context.Context) ([]PushSubscription, error) {
 
 type Summary struct {
 	SessionID string
+	Title     string
 	Text      string
 	Model     string
 	UpdatedAt int64
@@ -192,14 +201,14 @@ type Summary struct {
 
 func (s *Store) PutSummary(ctx context.Context, m Summary) error {
 	_, err := s.db.ExecContext(ctx,
-		`INSERT INTO summaries (session_id, text, model, updated_at) VALUES (?, ?, ?, ?)
-		 ON CONFLICT(session_id) DO UPDATE SET text = excluded.text, model = excluded.model, updated_at = excluded.updated_at`,
-		m.SessionID, m.Text, m.Model, m.UpdatedAt)
+		`INSERT INTO summaries (session_id, title, text, model, updated_at) VALUES (?, ?, ?, ?, ?)
+		 ON CONFLICT(session_id) DO UPDATE SET title = excluded.title, text = excluded.text, model = excluded.model, updated_at = excluded.updated_at`,
+		m.SessionID, m.Title, m.Text, m.Model, m.UpdatedAt)
 	return err
 }
 
 func (s *Store) Summaries(ctx context.Context) (map[string]Summary, error) {
-	rows, err := s.db.QueryContext(ctx, `SELECT session_id, text, model, updated_at FROM summaries`)
+	rows, err := s.db.QueryContext(ctx, `SELECT session_id, title, text, model, updated_at FROM summaries`)
 	if err != nil {
 		return nil, err
 	}
@@ -207,7 +216,7 @@ func (s *Store) Summaries(ctx context.Context) (map[string]Summary, error) {
 	out := map[string]Summary{}
 	for rows.Next() {
 		var m Summary
-		if err := rows.Scan(&m.SessionID, &m.Text, &m.Model, &m.UpdatedAt); err != nil {
+		if err := rows.Scan(&m.SessionID, &m.Title, &m.Text, &m.Model, &m.UpdatedAt); err != nil {
 			return nil, err
 		}
 		out[m.SessionID] = m

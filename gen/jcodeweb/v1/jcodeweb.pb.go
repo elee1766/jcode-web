@@ -162,8 +162,10 @@ type Session struct {
 	// A jcode-web upstream connection is attached.
 	Attached bool `protobuf:"varint,13,opt,name=attached,proto3" json:"attached,omitempty"`
 	// AI summary, empty when none.
-	Summary       string `protobuf:"bytes,14,opt,name=summary,proto3" json:"summary,omitempty"`
-	SummaryUnix   int64  `protobuf:"varint,15,opt,name=summary_unix,json=summaryUnix,proto3" json:"summary_unix,omitempty"`
+	Summary     string `protobuf:"bytes,14,opt,name=summary,proto3" json:"summary,omitempty"`
+	SummaryUnix int64  `protobuf:"varint,15,opt,name=summary_unix,json=summaryUnix,proto3" json:"summary_unix,omitempty"`
+	// Few-word AI title for compact session rows and headers.
+	ShortSummary  string `protobuf:"bytes,16,opt,name=short_summary,json=shortSummary,proto3" json:"short_summary,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -301,6 +303,13 @@ func (x *Session) GetSummaryUnix() int64 {
 		return x.SummaryUnix
 	}
 	return 0
+}
+
+func (x *Session) GetShortSummary() string {
+	if x != nil {
+		return x.ShortSummary
+	}
+	return ""
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -454,6 +463,170 @@ func (*ListSessionsRequest) Descriptor() ([]byte, []int) {
 	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{3}
 }
 
+type ListScheduledTasksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListScheduledTasksRequest) Reset() {
+	*x = ListScheduledTasksRequest{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListScheduledTasksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListScheduledTasksRequest) ProtoMessage() {}
+
+func (x *ListScheduledTasksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListScheduledTasksRequest.ProtoReflect.Descriptor instead.
+func (*ListScheduledTasksRequest) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListScheduledTasksRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type ScheduledTask struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Task          string                 `protobuf:"bytes,2,opt,name=task,proto3" json:"task,omitempty"`
+	ScheduledFor  string                 `protobuf:"bytes,3,opt,name=scheduled_for,json=scheduledFor,proto3" json:"scheduled_for,omitempty"`
+	Target        string                 `protobuf:"bytes,4,opt,name=target,proto3" json:"target,omitempty"`
+	Priority      string                 `protobuf:"bytes,5,opt,name=priority,proto3" json:"priority,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ScheduledTask) Reset() {
+	*x = ScheduledTask{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ScheduledTask) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ScheduledTask) ProtoMessage() {}
+
+func (x *ScheduledTask) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ScheduledTask.ProtoReflect.Descriptor instead.
+func (*ScheduledTask) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ScheduledTask) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ScheduledTask) GetTask() string {
+	if x != nil {
+		return x.Task
+	}
+	return ""
+}
+
+func (x *ScheduledTask) GetScheduledFor() string {
+	if x != nil {
+		return x.ScheduledFor
+	}
+	return ""
+}
+
+func (x *ScheduledTask) GetTarget() string {
+	if x != nil {
+		return x.Target
+	}
+	return ""
+}
+
+func (x *ScheduledTask) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+type ListScheduledTasksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tasks         []*ScheduledTask       `protobuf:"bytes,1,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListScheduledTasksResponse) Reset() {
+	*x = ListScheduledTasksResponse{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListScheduledTasksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListScheduledTasksResponse) ProtoMessage() {}
+
+func (x *ListScheduledTasksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListScheduledTasksResponse.ProtoReflect.Descriptor instead.
+func (*ListScheduledTasksResponse) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListScheduledTasksResponse) GetTasks() []*ScheduledTask {
+	if x != nil {
+		return x.Tasks
+	}
+	return nil
+}
+
 type ListSessionsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Sessions      []*Session             `protobuf:"bytes,1,rep,name=sessions,proto3" json:"sessions,omitempty"`
@@ -463,7 +636,7 @@ type ListSessionsResponse struct {
 
 func (x *ListSessionsResponse) Reset() {
 	*x = ListSessionsResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[4]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -475,7 +648,7 @@ func (x *ListSessionsResponse) String() string {
 func (*ListSessionsResponse) ProtoMessage() {}
 
 func (x *ListSessionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[4]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -488,7 +661,7 @@ func (x *ListSessionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListSessionsResponse.ProtoReflect.Descriptor instead.
 func (*ListSessionsResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{4}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ListSessionsResponse) GetSessions() []*Session {
@@ -503,15 +676,17 @@ type ListEventsRequest struct {
 	// Empty means all sessions.
 	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	// Events with id < before_id. 0 means latest.
-	BeforeId      int64  `protobuf:"varint,2,opt,name=before_id,json=beforeId,proto3" json:"before_id,omitempty"`
-	Limit         uint32 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	BeforeId int64  `protobuf:"varint,2,opt,name=before_id,json=beforeId,proto3" json:"before_id,omitempty"`
+	Limit    uint32 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	// Empty means all event types.
+	EventType     string `protobuf:"bytes,4,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListEventsRequest) Reset() {
 	*x = ListEventsRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[5]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -523,7 +698,7 @@ func (x *ListEventsRequest) String() string {
 func (*ListEventsRequest) ProtoMessage() {}
 
 func (x *ListEventsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[5]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -536,7 +711,7 @@ func (x *ListEventsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListEventsRequest.ProtoReflect.Descriptor instead.
 func (*ListEventsRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{5}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ListEventsRequest) GetSessionId() string {
@@ -560,6 +735,13 @@ func (x *ListEventsRequest) GetLimit() uint32 {
 	return 0
 }
 
+func (x *ListEventsRequest) GetEventType() string {
+	if x != nil {
+		return x.EventType
+	}
+	return ""
+}
+
 type ListEventsResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Events        []*Event               `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
@@ -569,7 +751,7 @@ type ListEventsResponse struct {
 
 func (x *ListEventsResponse) Reset() {
 	*x = ListEventsResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[6]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -581,7 +763,7 @@ func (x *ListEventsResponse) String() string {
 func (*ListEventsResponse) ProtoMessage() {}
 
 func (x *ListEventsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[6]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -594,7 +776,7 @@ func (x *ListEventsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListEventsResponse.ProtoReflect.Descriptor instead.
 func (*ListEventsResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{6}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListEventsResponse) GetEvents() []*Event {
@@ -602,6 +784,102 @@ func (x *ListEventsResponse) GetEvents() []*Event {
 		return x.Events
 	}
 	return nil
+}
+
+type CreateSessionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	WorkingDir    string                 `protobuf:"bytes,1,opt,name=working_dir,json=workingDir,proto3" json:"working_dir,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSessionRequest) Reset() {
+	*x = CreateSessionRequest{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSessionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSessionRequest) ProtoMessage() {}
+
+func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSessionRequest.ProtoReflect.Descriptor instead.
+func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *CreateSessionRequest) GetWorkingDir() string {
+	if x != nil {
+		return x.WorkingDir
+	}
+	return ""
+}
+
+type CreateSessionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	SessionName   string                 `protobuf:"bytes,2,opt,name=session_name,json=sessionName,proto3" json:"session_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSessionResponse) Reset() {
+	*x = CreateSessionResponse{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSessionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSessionResponse) ProtoMessage() {}
+
+func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSessionResponse.ProtoReflect.Descriptor instead.
+func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *CreateSessionResponse) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+func (x *CreateSessionResponse) GetSessionName() string {
+	if x != nil {
+		return x.SessionName
+	}
+	return ""
 }
 
 type WatchRequest struct {
@@ -613,7 +891,7 @@ type WatchRequest struct {
 
 func (x *WatchRequest) Reset() {
 	*x = WatchRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[7]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -625,7 +903,7 @@ func (x *WatchRequest) String() string {
 func (*WatchRequest) ProtoMessage() {}
 
 func (x *WatchRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[7]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +916,7 @@ func (x *WatchRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchRequest.ProtoReflect.Descriptor instead.
 func (*WatchRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{7}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *WatchRequest) GetAfterId() int64 {
@@ -662,7 +940,7 @@ type WatchResponse struct {
 
 func (x *WatchResponse) Reset() {
 	*x = WatchResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[8]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -674,7 +952,7 @@ func (x *WatchResponse) String() string {
 func (*WatchResponse) ProtoMessage() {}
 
 func (x *WatchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[8]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -687,7 +965,7 @@ func (x *WatchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use WatchResponse.ProtoReflect.Descriptor instead.
 func (*WatchResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{8}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *WatchResponse) GetUpdate() isWatchResponse_Update {
@@ -755,7 +1033,7 @@ type SessionsSnapshot struct {
 
 func (x *SessionsSnapshot) Reset() {
 	*x = SessionsSnapshot{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[9]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -767,7 +1045,7 @@ func (x *SessionsSnapshot) String() string {
 func (*SessionsSnapshot) ProtoMessage() {}
 
 func (x *SessionsSnapshot) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[9]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -780,7 +1058,7 @@ func (x *SessionsSnapshot) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SessionsSnapshot.ProtoReflect.Descriptor instead.
 func (*SessionsSnapshot) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{9}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *SessionsSnapshot) GetSessions() []*Session {
@@ -800,7 +1078,7 @@ type Connection struct {
 
 func (x *Connection) Reset() {
 	*x = Connection{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[10]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -812,7 +1090,7 @@ func (x *Connection) String() string {
 func (*Connection) ProtoMessage() {}
 
 func (x *Connection) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[10]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -825,7 +1103,7 @@ func (x *Connection) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Connection.ProtoReflect.Descriptor instead.
 func (*Connection) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{10}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *Connection) GetConnected() bool {
@@ -854,7 +1132,7 @@ type ToolData struct {
 
 func (x *ToolData) Reset() {
 	*x = ToolData{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[11]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -866,7 +1144,7 @@ func (x *ToolData) String() string {
 func (*ToolData) ProtoMessage() {}
 
 func (x *ToolData) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[11]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -879,7 +1157,7 @@ func (x *ToolData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ToolData.ProtoReflect.Descriptor instead.
 func (*ToolData) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{11}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *ToolData) GetId() string {
@@ -921,7 +1199,7 @@ type HistoryMessage struct {
 
 func (x *HistoryMessage) Reset() {
 	*x = HistoryMessage{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[12]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -933,7 +1211,7 @@ func (x *HistoryMessage) String() string {
 func (*HistoryMessage) ProtoMessage() {}
 
 func (x *HistoryMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[12]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -946,7 +1224,7 @@ func (x *HistoryMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HistoryMessage.ProtoReflect.Descriptor instead.
 func (*HistoryMessage) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{12}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *HistoryMessage) GetRole() string {
@@ -981,7 +1259,7 @@ type AttachRequest struct {
 
 func (x *AttachRequest) Reset() {
 	*x = AttachRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[13]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -993,7 +1271,7 @@ func (x *AttachRequest) String() string {
 func (*AttachRequest) ProtoMessage() {}
 
 func (x *AttachRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[13]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1006,7 +1284,7 @@ func (x *AttachRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttachRequest.ProtoReflect.Descriptor instead.
 func (*AttachRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{13}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *AttachRequest) GetSessionId() string {
@@ -1050,7 +1328,7 @@ type AttachResponse struct {
 
 func (x *AttachResponse) Reset() {
 	*x = AttachResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[14]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1062,7 +1340,7 @@ func (x *AttachResponse) String() string {
 func (*AttachResponse) ProtoMessage() {}
 
 func (x *AttachResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[14]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1075,7 +1353,7 @@ func (x *AttachResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AttachResponse.ProtoReflect.Descriptor instead.
 func (*AttachResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{14}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *AttachResponse) GetUpdate() isAttachResponse_Update {
@@ -1341,7 +1619,7 @@ type History struct {
 
 func (x *History) Reset() {
 	*x = History{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[15]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1353,7 +1631,7 @@ func (x *History) String() string {
 func (*History) ProtoMessage() {}
 
 func (x *History) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[15]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1366,7 +1644,7 @@ func (x *History) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use History.ProtoReflect.Descriptor instead.
 func (*History) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{15}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *History) GetMessages() []*HistoryMessage {
@@ -1392,7 +1670,7 @@ type TextDelta struct {
 
 func (x *TextDelta) Reset() {
 	*x = TextDelta{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[16]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1404,7 +1682,7 @@ func (x *TextDelta) String() string {
 func (*TextDelta) ProtoMessage() {}
 
 func (x *TextDelta) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[16]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1417,7 +1695,7 @@ func (x *TextDelta) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TextDelta.ProtoReflect.Descriptor instead.
 func (*TextDelta) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{16}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *TextDelta) GetText() string {
@@ -1437,7 +1715,7 @@ type ToolStart struct {
 
 func (x *ToolStart) Reset() {
 	*x = ToolStart{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[17]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1449,7 +1727,7 @@ func (x *ToolStart) String() string {
 func (*ToolStart) ProtoMessage() {}
 
 func (x *ToolStart) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[17]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1462,7 +1740,7 @@ func (x *ToolStart) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ToolStart.ProtoReflect.Descriptor instead.
 func (*ToolStart) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{17}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ToolStart) GetId() string {
@@ -1489,7 +1767,7 @@ type ToolInput struct {
 
 func (x *ToolInput) Reset() {
 	*x = ToolInput{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[18]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1501,7 +1779,7 @@ func (x *ToolInput) String() string {
 func (*ToolInput) ProtoMessage() {}
 
 func (x *ToolInput) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[18]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1514,7 +1792,7 @@ func (x *ToolInput) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ToolInput.ProtoReflect.Descriptor instead.
 func (*ToolInput) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{18}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *ToolInput) GetId() string {
@@ -1543,7 +1821,7 @@ type ToolDone struct {
 
 func (x *ToolDone) Reset() {
 	*x = ToolDone{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[19]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1555,7 +1833,7 @@ func (x *ToolDone) String() string {
 func (*ToolDone) ProtoMessage() {}
 
 func (x *ToolDone) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[19]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1568,7 +1846,7 @@ func (x *ToolDone) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ToolDone.ProtoReflect.Descriptor instead.
 func (*ToolDone) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{19}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *ToolDone) GetId() string {
@@ -1608,7 +1886,7 @@ type TurnDone struct {
 
 func (x *TurnDone) Reset() {
 	*x = TurnDone{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[20]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1620,7 +1898,7 @@ func (x *TurnDone) String() string {
 func (*TurnDone) ProtoMessage() {}
 
 func (x *TurnDone) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[20]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1633,7 +1911,7 @@ func (x *TurnDone) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TurnDone.ProtoReflect.Descriptor instead.
 func (*TurnDone) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{20}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *TurnDone) GetStopReason() string {
@@ -1651,7 +1929,7 @@ type Interrupted struct {
 
 func (x *Interrupted) Reset() {
 	*x = Interrupted{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[21]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1663,7 +1941,7 @@ func (x *Interrupted) String() string {
 func (*Interrupted) ProtoMessage() {}
 
 func (x *Interrupted) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[21]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1676,7 +1954,7 @@ func (x *Interrupted) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Interrupted.ProtoReflect.Descriptor instead.
 func (*Interrupted) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{21}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{26}
 }
 
 type UpstreamError struct {
@@ -1688,7 +1966,7 @@ type UpstreamError struct {
 
 func (x *UpstreamError) Reset() {
 	*x = UpstreamError{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[22]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1700,7 +1978,7 @@ func (x *UpstreamError) String() string {
 func (*UpstreamError) ProtoMessage() {}
 
 func (x *UpstreamError) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[22]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1713,7 +1991,7 @@ func (x *UpstreamError) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpstreamError.ProtoReflect.Descriptor instead.
 func (*UpstreamError) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{22}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *UpstreamError) GetMessage() string {
@@ -1732,7 +2010,7 @@ type StatusDetail struct {
 
 func (x *StatusDetail) Reset() {
 	*x = StatusDetail{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[23]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1744,7 +2022,7 @@ func (x *StatusDetail) String() string {
 func (*StatusDetail) ProtoMessage() {}
 
 func (x *StatusDetail) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[23]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1757,7 +2035,7 @@ func (x *StatusDetail) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StatusDetail.ProtoReflect.Descriptor instead.
 func (*StatusDetail) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{23}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *StatusDetail) GetDetail() string {
@@ -1779,7 +2057,7 @@ type UserMessage struct {
 
 func (x *UserMessage) Reset() {
 	*x = UserMessage{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[24]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1791,7 +2069,7 @@ func (x *UserMessage) String() string {
 func (*UserMessage) ProtoMessage() {}
 
 func (x *UserMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[24]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1804,7 +2082,7 @@ func (x *UserMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserMessage.ProtoReflect.Descriptor instead.
 func (*UserMessage) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{24}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *UserMessage) GetContent() string {
@@ -1831,7 +2109,7 @@ type RawEvent struct {
 
 func (x *RawEvent) Reset() {
 	*x = RawEvent{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[25]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1843,7 +2121,7 @@ func (x *RawEvent) String() string {
 func (*RawEvent) ProtoMessage() {}
 
 func (x *RawEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[25]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1856,7 +2134,7 @@ func (x *RawEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RawEvent.ProtoReflect.Descriptor instead.
 func (*RawEvent) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{25}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *RawEvent) GetType() string {
@@ -1882,7 +2160,7 @@ type Detached struct {
 
 func (x *Detached) Reset() {
 	*x = Detached{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[26]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1894,7 +2172,7 @@ func (x *Detached) String() string {
 func (*Detached) ProtoMessage() {}
 
 func (x *Detached) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[26]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1907,7 +2185,7 @@ func (x *Detached) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Detached.ProtoReflect.Descriptor instead.
 func (*Detached) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{26}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *Detached) GetReason() string {
@@ -1929,7 +2207,7 @@ type SendMessageRequest struct {
 
 func (x *SendMessageRequest) Reset() {
 	*x = SendMessageRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[27]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1941,7 +2219,7 @@ func (x *SendMessageRequest) String() string {
 func (*SendMessageRequest) ProtoMessage() {}
 
 func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[27]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1954,7 +2232,7 @@ func (x *SendMessageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageRequest.ProtoReflect.Descriptor instead.
 func (*SendMessageRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{27}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *SendMessageRequest) GetSessionId() string {
@@ -1987,7 +2265,7 @@ type SendMessageResponse struct {
 
 func (x *SendMessageResponse) Reset() {
 	*x = SendMessageResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[28]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1999,7 +2277,7 @@ func (x *SendMessageResponse) String() string {
 func (*SendMessageResponse) ProtoMessage() {}
 
 func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[28]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2012,7 +2290,7 @@ func (x *SendMessageResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendMessageResponse.ProtoReflect.Descriptor instead.
 func (*SendMessageResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{28}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *SendMessageResponse) GetMode() SendMode {
@@ -2031,7 +2309,7 @@ type CancelRequest struct {
 
 func (x *CancelRequest) Reset() {
 	*x = CancelRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[29]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2043,7 +2321,7 @@ func (x *CancelRequest) String() string {
 func (*CancelRequest) ProtoMessage() {}
 
 func (x *CancelRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[29]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2056,7 +2334,7 @@ func (x *CancelRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelRequest.ProtoReflect.Descriptor instead.
 func (*CancelRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{29}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *CancelRequest) GetSessionId() string {
@@ -2074,7 +2352,7 @@ type CancelResponse struct {
 
 func (x *CancelResponse) Reset() {
 	*x = CancelResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[30]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2086,7 +2364,7 @@ func (x *CancelResponse) String() string {
 func (*CancelResponse) ProtoMessage() {}
 
 func (x *CancelResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[30]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2099,7 +2377,7 @@ func (x *CancelResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CancelResponse.ProtoReflect.Descriptor instead.
 func (*CancelResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{30}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{35}
 }
 
 type BtwRequest struct {
@@ -2112,7 +2390,7 @@ type BtwRequest struct {
 
 func (x *BtwRequest) Reset() {
 	*x = BtwRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[31]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2124,7 +2402,7 @@ func (x *BtwRequest) String() string {
 func (*BtwRequest) ProtoMessage() {}
 
 func (x *BtwRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[31]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2137,7 +2415,7 @@ func (x *BtwRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BtwRequest.ProtoReflect.Descriptor instead.
 func (*BtwRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{31}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *BtwRequest) GetSessionId() string {
@@ -2164,7 +2442,7 @@ type BtwResponse struct {
 
 func (x *BtwResponse) Reset() {
 	*x = BtwResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[32]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2176,7 +2454,7 @@ func (x *BtwResponse) String() string {
 func (*BtwResponse) ProtoMessage() {}
 
 func (x *BtwResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[32]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2189,7 +2467,7 @@ func (x *BtwResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use BtwResponse.ProtoReflect.Descriptor instead.
 func (*BtwResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{32}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *BtwResponse) GetSessionId() string {
@@ -2215,7 +2493,7 @@ type SummarizeRequest struct {
 
 func (x *SummarizeRequest) Reset() {
 	*x = SummarizeRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2227,7 +2505,7 @@ func (x *SummarizeRequest) String() string {
 func (*SummarizeRequest) ProtoMessage() {}
 
 func (x *SummarizeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2240,7 +2518,7 @@ func (x *SummarizeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SummarizeRequest.ProtoReflect.Descriptor instead.
 func (*SummarizeRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{33}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *SummarizeRequest) GetSessionId() string {
@@ -2259,7 +2537,7 @@ type SummarizeResponse struct {
 
 func (x *SummarizeResponse) Reset() {
 	*x = SummarizeResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2271,7 +2549,7 @@ func (x *SummarizeResponse) String() string {
 func (*SummarizeResponse) ProtoMessage() {}
 
 func (x *SummarizeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2284,7 +2562,7 @@ func (x *SummarizeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SummarizeResponse.ProtoReflect.Descriptor instead.
 func (*SummarizeResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{34}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *SummarizeResponse) GetSummary() string {
@@ -2304,7 +2582,7 @@ type OverviewRequest struct {
 
 func (x *OverviewRequest) Reset() {
 	*x = OverviewRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2316,7 +2594,7 @@ func (x *OverviewRequest) String() string {
 func (*OverviewRequest) ProtoMessage() {}
 
 func (x *OverviewRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2329,7 +2607,7 @@ func (x *OverviewRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OverviewRequest.ProtoReflect.Descriptor instead.
 func (*OverviewRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{35}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *OverviewRequest) GetWindowMinutes() uint32 {
@@ -2349,7 +2627,7 @@ type OverviewResponse struct {
 
 func (x *OverviewResponse) Reset() {
 	*x = OverviewResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2361,7 +2639,7 @@ func (x *OverviewResponse) String() string {
 func (*OverviewResponse) ProtoMessage() {}
 
 func (x *OverviewResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2374,7 +2652,7 @@ func (x *OverviewResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OverviewResponse.ProtoReflect.Descriptor instead.
 func (*OverviewResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{36}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *OverviewResponse) GetText() string {
@@ -2399,7 +2677,7 @@ type GetFeaturesRequest struct {
 
 func (x *GetFeaturesRequest) Reset() {
 	*x = GetFeaturesRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2411,7 +2689,7 @@ func (x *GetFeaturesRequest) String() string {
 func (*GetFeaturesRequest) ProtoMessage() {}
 
 func (x *GetFeaturesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2424,7 +2702,7 @@ func (x *GetFeaturesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFeaturesRequest.ProtoReflect.Descriptor instead.
 func (*GetFeaturesRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{37}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{42}
 }
 
 type GetFeaturesResponse struct {
@@ -2437,7 +2715,7 @@ type GetFeaturesResponse struct {
 
 func (x *GetFeaturesResponse) Reset() {
 	*x = GetFeaturesResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2449,7 +2727,7 @@ func (x *GetFeaturesResponse) String() string {
 func (*GetFeaturesResponse) ProtoMessage() {}
 
 func (x *GetFeaturesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2462,7 +2740,7 @@ func (x *GetFeaturesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFeaturesResponse.ProtoReflect.Descriptor instead.
 func (*GetFeaturesResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{38}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *GetFeaturesResponse) GetSummaries() bool {
@@ -2487,7 +2765,7 @@ type GetVapidKeyRequest struct {
 
 func (x *GetVapidKeyRequest) Reset() {
 	*x = GetVapidKeyRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2499,7 +2777,7 @@ func (x *GetVapidKeyRequest) String() string {
 func (*GetVapidKeyRequest) ProtoMessage() {}
 
 func (x *GetVapidKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2512,7 +2790,7 @@ func (x *GetVapidKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVapidKeyRequest.ProtoReflect.Descriptor instead.
 func (*GetVapidKeyRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{39}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{44}
 }
 
 type GetVapidKeyResponse struct {
@@ -2524,7 +2802,7 @@ type GetVapidKeyResponse struct {
 
 func (x *GetVapidKeyResponse) Reset() {
 	*x = GetVapidKeyResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2536,7 +2814,7 @@ func (x *GetVapidKeyResponse) String() string {
 func (*GetVapidKeyResponse) ProtoMessage() {}
 
 func (x *GetVapidKeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2549,7 +2827,7 @@ func (x *GetVapidKeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVapidKeyResponse.ProtoReflect.Descriptor instead.
 func (*GetVapidKeyResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{40}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *GetVapidKeyResponse) GetPublicKey() string {
@@ -2571,7 +2849,7 @@ type SubscribeRequest struct {
 
 func (x *SubscribeRequest) Reset() {
 	*x = SubscribeRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2583,7 +2861,7 @@ func (x *SubscribeRequest) String() string {
 func (*SubscribeRequest) ProtoMessage() {}
 
 func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2596,7 +2874,7 @@ func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubscribeRequest.ProtoReflect.Descriptor instead.
 func (*SubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{41}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *SubscribeRequest) GetEndpoint() string {
@@ -2635,7 +2913,7 @@ type SubscribeResponse struct {
 
 func (x *SubscribeResponse) Reset() {
 	*x = SubscribeResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2647,7 +2925,7 @@ func (x *SubscribeResponse) String() string {
 func (*SubscribeResponse) ProtoMessage() {}
 
 func (x *SubscribeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2660,7 +2938,7 @@ func (x *SubscribeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubscribeResponse.ProtoReflect.Descriptor instead.
 func (*SubscribeResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{42}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{47}
 }
 
 type UnsubscribeRequest struct {
@@ -2672,7 +2950,7 @@ type UnsubscribeRequest struct {
 
 func (x *UnsubscribeRequest) Reset() {
 	*x = UnsubscribeRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2684,7 +2962,7 @@ func (x *UnsubscribeRequest) String() string {
 func (*UnsubscribeRequest) ProtoMessage() {}
 
 func (x *UnsubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2697,7 +2975,7 @@ func (x *UnsubscribeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnsubscribeRequest.ProtoReflect.Descriptor instead.
 func (*UnsubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{43}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *UnsubscribeRequest) GetEndpoint() string {
@@ -2715,7 +2993,7 @@ type UnsubscribeResponse struct {
 
 func (x *UnsubscribeResponse) Reset() {
 	*x = UnsubscribeResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2727,7 +3005,7 @@ func (x *UnsubscribeResponse) String() string {
 func (*UnsubscribeResponse) ProtoMessage() {}
 
 func (x *UnsubscribeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2740,7 +3018,7 @@ func (x *UnsubscribeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnsubscribeResponse.ProtoReflect.Descriptor instead.
 func (*UnsubscribeResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{44}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{49}
 }
 
 type TestRequest struct {
@@ -2751,7 +3029,7 @@ type TestRequest struct {
 
 func (x *TestRequest) Reset() {
 	*x = TestRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2763,7 +3041,7 @@ func (x *TestRequest) String() string {
 func (*TestRequest) ProtoMessage() {}
 
 func (x *TestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2776,7 +3054,7 @@ func (x *TestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestRequest.ProtoReflect.Descriptor instead.
 func (*TestRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{45}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{50}
 }
 
 type TestResponse struct {
@@ -2788,7 +3066,7 @@ type TestResponse struct {
 
 func (x *TestResponse) Reset() {
 	*x = TestResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2800,7 +3078,7 @@ func (x *TestResponse) String() string {
 func (*TestResponse) ProtoMessage() {}
 
 func (x *TestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2813,7 +3091,7 @@ func (x *TestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestResponse.ProtoReflect.Descriptor instead.
 func (*TestResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{46}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *TestResponse) GetSent() uint32 {
@@ -2835,7 +3113,7 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\n" +
 	"cache_read\x18\x03 \x01(\x04R\tcacheRead\x12\x1f\n" +
 	"\vcache_write\x18\x04 \x01(\x04R\n" +
-	"cacheWrite\"\xcc\x03\n" +
+	"cacheWrite\"\xf1\x03\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
@@ -2855,7 +3133,8 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\x0flast_event_unix\x18\f \x01(\x03R\rlastEventUnix\x12\x1a\n" +
 	"\battached\x18\r \x01(\bR\battached\x12\x18\n" +
 	"\asummary\x18\x0e \x01(\tR\asummary\x12!\n" +
-	"\fsummary_unix\x18\x0f \x01(\x03R\vsummaryUnix\"\x8d\x02\n" +
+	"\fsummary_unix\x18\x0f \x01(\x03R\vsummaryUnix\x12#\n" +
+	"\rshort_summary\x18\x10 \x01(\tR\fshortSummary\"\x8d\x02\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vupstream_id\x18\x02 \x01(\x04R\n" +
@@ -2868,16 +3147,36 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\x04type\x18\a \x01(\tR\x04type\x12!\n" +
 	"\fpayload_json\x18\b \x01(\tR\vpayloadJson\x12\x18\n" +
 	"\asummary\x18\t \x01(\tR\asummary\"\x15\n" +
-	"\x13ListSessionsRequest\"H\n" +
+	"\x13ListSessionsRequest\":\n" +
+	"\x19ListScheduledTasksRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"\x8c\x01\n" +
+	"\rScheduledTask\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04task\x18\x02 \x01(\tR\x04task\x12#\n" +
+	"\rscheduled_for\x18\x03 \x01(\tR\fscheduledFor\x12\x16\n" +
+	"\x06target\x18\x04 \x01(\tR\x06target\x12\x1a\n" +
+	"\bpriority\x18\x05 \x01(\tR\bpriority\"N\n" +
+	"\x1aListScheduledTasksResponse\x120\n" +
+	"\x05tasks\x18\x01 \x03(\v2\x1a.jcodeweb.v1.ScheduledTaskR\x05tasks\"H\n" +
 	"\x14ListSessionsResponse\x120\n" +
-	"\bsessions\x18\x01 \x03(\v2\x14.jcodeweb.v1.SessionR\bsessions\"e\n" +
+	"\bsessions\x18\x01 \x03(\v2\x14.jcodeweb.v1.SessionR\bsessions\"\x84\x01\n" +
 	"\x11ListEventsRequest\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\x12\x1b\n" +
 	"\tbefore_id\x18\x02 \x01(\x03R\bbeforeId\x12\x14\n" +
-	"\x05limit\x18\x03 \x01(\rR\x05limit\"@\n" +
+	"\x05limit\x18\x03 \x01(\rR\x05limit\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x04 \x01(\tR\teventType\"@\n" +
 	"\x12ListEventsResponse\x12*\n" +
-	"\x06events\x18\x01 \x03(\v2\x12.jcodeweb.v1.EventR\x06events\")\n" +
+	"\x06events\x18\x01 \x03(\v2\x12.jcodeweb.v1.EventR\x06events\"7\n" +
+	"\x14CreateSessionRequest\x12\x1f\n" +
+	"\vworking_dir\x18\x01 \x01(\tR\n" +
+	"workingDir\"Y\n" +
+	"\x15CreateSessionResponse\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\x12!\n" +
+	"\fsession_name\x18\x02 \x01(\tR\vsessionName\")\n" +
 	"\fWatchRequest\x12\x19\n" +
 	"\bafter_id\x18\x01 \x01(\x03R\aafterId\"\xbd\x01\n" +
 	"\rWatchResponse\x12*\n" +
@@ -3016,14 +3315,16 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\x15SEND_MODE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11SEND_MODE_MESSAGE\x10\x01\x12\x17\n" +
 	"\x13SEND_MODE_INTERRUPT\x10\x02\x12\x1e\n" +
-	"\x1aSEND_MODE_INTERRUPT_URGENT\x10\x032\x80\x06\n" +
-	"\x0eSessionService\x12X\n" +
+	"\x1aSEND_MODE_INTERRUPT_URGENT\x10\x032\xc4\a\n" +
+	"\x0eSessionService\x12j\n" +
+	"\x12ListScheduledTasks\x12&.jcodeweb.v1.ListScheduledTasksRequest\x1a'.jcodeweb.v1.ListScheduledTasksResponse\"\x03\x90\x02\x01\x12X\n" +
 	"\fListSessions\x12 .jcodeweb.v1.ListSessionsRequest\x1a!.jcodeweb.v1.ListSessionsResponse\"\x03\x90\x02\x01\x12R\n" +
 	"\n" +
 	"ListEvents\x12\x1e.jcodeweb.v1.ListEventsRequest\x1a\x1f.jcodeweb.v1.ListEventsResponse\"\x03\x90\x02\x01\x12@\n" +
 	"\x05Watch\x12\x19.jcodeweb.v1.WatchRequest\x1a\x1a.jcodeweb.v1.WatchResponse0\x01\x12C\n" +
 	"\x06Attach\x12\x1a.jcodeweb.v1.AttachRequest\x1a\x1b.jcodeweb.v1.AttachResponse0\x01\x12P\n" +
-	"\vSendMessage\x12\x1f.jcodeweb.v1.SendMessageRequest\x1a .jcodeweb.v1.SendMessageResponse\x12A\n" +
+	"\vSendMessage\x12\x1f.jcodeweb.v1.SendMessageRequest\x1a .jcodeweb.v1.SendMessageResponse\x12V\n" +
+	"\rCreateSession\x12!.jcodeweb.v1.CreateSessionRequest\x1a\".jcodeweb.v1.CreateSessionResponse\x12A\n" +
 	"\x06Cancel\x12\x1a.jcodeweb.v1.CancelRequest\x1a\x1b.jcodeweb.v1.CancelResponse\x128\n" +
 	"\x03Btw\x12\x17.jcodeweb.v1.BtwRequest\x1a\x18.jcodeweb.v1.BtwResponse\x12J\n" +
 	"\tSummarize\x12\x1d.jcodeweb.v1.SummarizeRequest\x1a\x1e.jcodeweb.v1.SummarizeResponse\x12G\n" +
@@ -3048,118 +3349,128 @@ func file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP() []byte {
 }
 
 var file_jcodeweb_v1_jcodeweb_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_jcodeweb_v1_jcodeweb_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
+var file_jcodeweb_v1_jcodeweb_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
 var file_jcodeweb_v1_jcodeweb_proto_goTypes = []any{
-	(SendMode)(0),                // 0: jcodeweb.v1.SendMode
-	(*TokenUsage)(nil),           // 1: jcodeweb.v1.TokenUsage
-	(*Session)(nil),              // 2: jcodeweb.v1.Session
-	(*Event)(nil),                // 3: jcodeweb.v1.Event
-	(*ListSessionsRequest)(nil),  // 4: jcodeweb.v1.ListSessionsRequest
-	(*ListSessionsResponse)(nil), // 5: jcodeweb.v1.ListSessionsResponse
-	(*ListEventsRequest)(nil),    // 6: jcodeweb.v1.ListEventsRequest
-	(*ListEventsResponse)(nil),   // 7: jcodeweb.v1.ListEventsResponse
-	(*WatchRequest)(nil),         // 8: jcodeweb.v1.WatchRequest
-	(*WatchResponse)(nil),        // 9: jcodeweb.v1.WatchResponse
-	(*SessionsSnapshot)(nil),     // 10: jcodeweb.v1.SessionsSnapshot
-	(*Connection)(nil),           // 11: jcodeweb.v1.Connection
-	(*ToolData)(nil),             // 12: jcodeweb.v1.ToolData
-	(*HistoryMessage)(nil),       // 13: jcodeweb.v1.HistoryMessage
-	(*AttachRequest)(nil),        // 14: jcodeweb.v1.AttachRequest
-	(*AttachResponse)(nil),       // 15: jcodeweb.v1.AttachResponse
-	(*History)(nil),              // 16: jcodeweb.v1.History
-	(*TextDelta)(nil),            // 17: jcodeweb.v1.TextDelta
-	(*ToolStart)(nil),            // 18: jcodeweb.v1.ToolStart
-	(*ToolInput)(nil),            // 19: jcodeweb.v1.ToolInput
-	(*ToolDone)(nil),             // 20: jcodeweb.v1.ToolDone
-	(*TurnDone)(nil),             // 21: jcodeweb.v1.TurnDone
-	(*Interrupted)(nil),          // 22: jcodeweb.v1.Interrupted
-	(*UpstreamError)(nil),        // 23: jcodeweb.v1.UpstreamError
-	(*StatusDetail)(nil),         // 24: jcodeweb.v1.StatusDetail
-	(*UserMessage)(nil),          // 25: jcodeweb.v1.UserMessage
-	(*RawEvent)(nil),             // 26: jcodeweb.v1.RawEvent
-	(*Detached)(nil),             // 27: jcodeweb.v1.Detached
-	(*SendMessageRequest)(nil),   // 28: jcodeweb.v1.SendMessageRequest
-	(*SendMessageResponse)(nil),  // 29: jcodeweb.v1.SendMessageResponse
-	(*CancelRequest)(nil),        // 30: jcodeweb.v1.CancelRequest
-	(*CancelResponse)(nil),       // 31: jcodeweb.v1.CancelResponse
-	(*BtwRequest)(nil),           // 32: jcodeweb.v1.BtwRequest
-	(*BtwResponse)(nil),          // 33: jcodeweb.v1.BtwResponse
-	(*SummarizeRequest)(nil),     // 34: jcodeweb.v1.SummarizeRequest
-	(*SummarizeResponse)(nil),    // 35: jcodeweb.v1.SummarizeResponse
-	(*OverviewRequest)(nil),      // 36: jcodeweb.v1.OverviewRequest
-	(*OverviewResponse)(nil),     // 37: jcodeweb.v1.OverviewResponse
-	(*GetFeaturesRequest)(nil),   // 38: jcodeweb.v1.GetFeaturesRequest
-	(*GetFeaturesResponse)(nil),  // 39: jcodeweb.v1.GetFeaturesResponse
-	(*GetVapidKeyRequest)(nil),   // 40: jcodeweb.v1.GetVapidKeyRequest
-	(*GetVapidKeyResponse)(nil),  // 41: jcodeweb.v1.GetVapidKeyResponse
-	(*SubscribeRequest)(nil),     // 42: jcodeweb.v1.SubscribeRequest
-	(*SubscribeResponse)(nil),    // 43: jcodeweb.v1.SubscribeResponse
-	(*UnsubscribeRequest)(nil),   // 44: jcodeweb.v1.UnsubscribeRequest
-	(*UnsubscribeResponse)(nil),  // 45: jcodeweb.v1.UnsubscribeResponse
-	(*TestRequest)(nil),          // 46: jcodeweb.v1.TestRequest
-	(*TestResponse)(nil),         // 47: jcodeweb.v1.TestResponse
+	(SendMode)(0),                      // 0: jcodeweb.v1.SendMode
+	(*TokenUsage)(nil),                 // 1: jcodeweb.v1.TokenUsage
+	(*Session)(nil),                    // 2: jcodeweb.v1.Session
+	(*Event)(nil),                      // 3: jcodeweb.v1.Event
+	(*ListSessionsRequest)(nil),        // 4: jcodeweb.v1.ListSessionsRequest
+	(*ListScheduledTasksRequest)(nil),  // 5: jcodeweb.v1.ListScheduledTasksRequest
+	(*ScheduledTask)(nil),              // 6: jcodeweb.v1.ScheduledTask
+	(*ListScheduledTasksResponse)(nil), // 7: jcodeweb.v1.ListScheduledTasksResponse
+	(*ListSessionsResponse)(nil),       // 8: jcodeweb.v1.ListSessionsResponse
+	(*ListEventsRequest)(nil),          // 9: jcodeweb.v1.ListEventsRequest
+	(*ListEventsResponse)(nil),         // 10: jcodeweb.v1.ListEventsResponse
+	(*CreateSessionRequest)(nil),       // 11: jcodeweb.v1.CreateSessionRequest
+	(*CreateSessionResponse)(nil),      // 12: jcodeweb.v1.CreateSessionResponse
+	(*WatchRequest)(nil),               // 13: jcodeweb.v1.WatchRequest
+	(*WatchResponse)(nil),              // 14: jcodeweb.v1.WatchResponse
+	(*SessionsSnapshot)(nil),           // 15: jcodeweb.v1.SessionsSnapshot
+	(*Connection)(nil),                 // 16: jcodeweb.v1.Connection
+	(*ToolData)(nil),                   // 17: jcodeweb.v1.ToolData
+	(*HistoryMessage)(nil),             // 18: jcodeweb.v1.HistoryMessage
+	(*AttachRequest)(nil),              // 19: jcodeweb.v1.AttachRequest
+	(*AttachResponse)(nil),             // 20: jcodeweb.v1.AttachResponse
+	(*History)(nil),                    // 21: jcodeweb.v1.History
+	(*TextDelta)(nil),                  // 22: jcodeweb.v1.TextDelta
+	(*ToolStart)(nil),                  // 23: jcodeweb.v1.ToolStart
+	(*ToolInput)(nil),                  // 24: jcodeweb.v1.ToolInput
+	(*ToolDone)(nil),                   // 25: jcodeweb.v1.ToolDone
+	(*TurnDone)(nil),                   // 26: jcodeweb.v1.TurnDone
+	(*Interrupted)(nil),                // 27: jcodeweb.v1.Interrupted
+	(*UpstreamError)(nil),              // 28: jcodeweb.v1.UpstreamError
+	(*StatusDetail)(nil),               // 29: jcodeweb.v1.StatusDetail
+	(*UserMessage)(nil),                // 30: jcodeweb.v1.UserMessage
+	(*RawEvent)(nil),                   // 31: jcodeweb.v1.RawEvent
+	(*Detached)(nil),                   // 32: jcodeweb.v1.Detached
+	(*SendMessageRequest)(nil),         // 33: jcodeweb.v1.SendMessageRequest
+	(*SendMessageResponse)(nil),        // 34: jcodeweb.v1.SendMessageResponse
+	(*CancelRequest)(nil),              // 35: jcodeweb.v1.CancelRequest
+	(*CancelResponse)(nil),             // 36: jcodeweb.v1.CancelResponse
+	(*BtwRequest)(nil),                 // 37: jcodeweb.v1.BtwRequest
+	(*BtwResponse)(nil),                // 38: jcodeweb.v1.BtwResponse
+	(*SummarizeRequest)(nil),           // 39: jcodeweb.v1.SummarizeRequest
+	(*SummarizeResponse)(nil),          // 40: jcodeweb.v1.SummarizeResponse
+	(*OverviewRequest)(nil),            // 41: jcodeweb.v1.OverviewRequest
+	(*OverviewResponse)(nil),           // 42: jcodeweb.v1.OverviewResponse
+	(*GetFeaturesRequest)(nil),         // 43: jcodeweb.v1.GetFeaturesRequest
+	(*GetFeaturesResponse)(nil),        // 44: jcodeweb.v1.GetFeaturesResponse
+	(*GetVapidKeyRequest)(nil),         // 45: jcodeweb.v1.GetVapidKeyRequest
+	(*GetVapidKeyResponse)(nil),        // 46: jcodeweb.v1.GetVapidKeyResponse
+	(*SubscribeRequest)(nil),           // 47: jcodeweb.v1.SubscribeRequest
+	(*SubscribeResponse)(nil),          // 48: jcodeweb.v1.SubscribeResponse
+	(*UnsubscribeRequest)(nil),         // 49: jcodeweb.v1.UnsubscribeRequest
+	(*UnsubscribeResponse)(nil),        // 50: jcodeweb.v1.UnsubscribeResponse
+	(*TestRequest)(nil),                // 51: jcodeweb.v1.TestRequest
+	(*TestResponse)(nil),               // 52: jcodeweb.v1.TestResponse
 }
 var file_jcodeweb_v1_jcodeweb_proto_depIdxs = []int32{
 	1,  // 0: jcodeweb.v1.Session.token_usage:type_name -> jcodeweb.v1.TokenUsage
-	2,  // 1: jcodeweb.v1.ListSessionsResponse.sessions:type_name -> jcodeweb.v1.Session
-	3,  // 2: jcodeweb.v1.ListEventsResponse.events:type_name -> jcodeweb.v1.Event
-	3,  // 3: jcodeweb.v1.WatchResponse.event:type_name -> jcodeweb.v1.Event
-	10, // 4: jcodeweb.v1.WatchResponse.sessions:type_name -> jcodeweb.v1.SessionsSnapshot
-	11, // 5: jcodeweb.v1.WatchResponse.connection:type_name -> jcodeweb.v1.Connection
-	2,  // 6: jcodeweb.v1.SessionsSnapshot.sessions:type_name -> jcodeweb.v1.Session
-	12, // 7: jcodeweb.v1.HistoryMessage.tool:type_name -> jcodeweb.v1.ToolData
-	16, // 8: jcodeweb.v1.AttachResponse.history:type_name -> jcodeweb.v1.History
-	17, // 9: jcodeweb.v1.AttachResponse.text_delta:type_name -> jcodeweb.v1.TextDelta
-	17, // 10: jcodeweb.v1.AttachResponse.reasoning_delta:type_name -> jcodeweb.v1.TextDelta
-	18, // 11: jcodeweb.v1.AttachResponse.tool_start:type_name -> jcodeweb.v1.ToolStart
-	19, // 12: jcodeweb.v1.AttachResponse.tool_input:type_name -> jcodeweb.v1.ToolInput
-	18, // 13: jcodeweb.v1.AttachResponse.tool_exec:type_name -> jcodeweb.v1.ToolStart
-	20, // 14: jcodeweb.v1.AttachResponse.tool_done:type_name -> jcodeweb.v1.ToolDone
-	21, // 15: jcodeweb.v1.AttachResponse.turn_done:type_name -> jcodeweb.v1.TurnDone
-	22, // 16: jcodeweb.v1.AttachResponse.interrupted:type_name -> jcodeweb.v1.Interrupted
-	23, // 17: jcodeweb.v1.AttachResponse.error:type_name -> jcodeweb.v1.UpstreamError
-	24, // 18: jcodeweb.v1.AttachResponse.status_detail:type_name -> jcodeweb.v1.StatusDetail
-	1,  // 19: jcodeweb.v1.AttachResponse.tokens:type_name -> jcodeweb.v1.TokenUsage
-	25, // 20: jcodeweb.v1.AttachResponse.user_message:type_name -> jcodeweb.v1.UserMessage
-	17, // 21: jcodeweb.v1.AttachResponse.text_replace:type_name -> jcodeweb.v1.TextDelta
-	26, // 22: jcodeweb.v1.AttachResponse.raw:type_name -> jcodeweb.v1.RawEvent
-	27, // 23: jcodeweb.v1.AttachResponse.detached:type_name -> jcodeweb.v1.Detached
-	13, // 24: jcodeweb.v1.History.messages:type_name -> jcodeweb.v1.HistoryMessage
-	0,  // 25: jcodeweb.v1.SendMessageRequest.mode:type_name -> jcodeweb.v1.SendMode
-	0,  // 26: jcodeweb.v1.SendMessageResponse.mode:type_name -> jcodeweb.v1.SendMode
-	4,  // 27: jcodeweb.v1.SessionService.ListSessions:input_type -> jcodeweb.v1.ListSessionsRequest
-	6,  // 28: jcodeweb.v1.SessionService.ListEvents:input_type -> jcodeweb.v1.ListEventsRequest
-	8,  // 29: jcodeweb.v1.SessionService.Watch:input_type -> jcodeweb.v1.WatchRequest
-	14, // 30: jcodeweb.v1.SessionService.Attach:input_type -> jcodeweb.v1.AttachRequest
-	28, // 31: jcodeweb.v1.SessionService.SendMessage:input_type -> jcodeweb.v1.SendMessageRequest
-	30, // 32: jcodeweb.v1.SessionService.Cancel:input_type -> jcodeweb.v1.CancelRequest
-	32, // 33: jcodeweb.v1.SessionService.Btw:input_type -> jcodeweb.v1.BtwRequest
-	34, // 34: jcodeweb.v1.SessionService.Summarize:input_type -> jcodeweb.v1.SummarizeRequest
-	36, // 35: jcodeweb.v1.SessionService.Overview:input_type -> jcodeweb.v1.OverviewRequest
-	38, // 36: jcodeweb.v1.SessionService.GetFeatures:input_type -> jcodeweb.v1.GetFeaturesRequest
-	40, // 37: jcodeweb.v1.PushService.GetVapidKey:input_type -> jcodeweb.v1.GetVapidKeyRequest
-	42, // 38: jcodeweb.v1.PushService.Subscribe:input_type -> jcodeweb.v1.SubscribeRequest
-	44, // 39: jcodeweb.v1.PushService.Unsubscribe:input_type -> jcodeweb.v1.UnsubscribeRequest
-	46, // 40: jcodeweb.v1.PushService.Test:input_type -> jcodeweb.v1.TestRequest
-	5,  // 41: jcodeweb.v1.SessionService.ListSessions:output_type -> jcodeweb.v1.ListSessionsResponse
-	7,  // 42: jcodeweb.v1.SessionService.ListEvents:output_type -> jcodeweb.v1.ListEventsResponse
-	9,  // 43: jcodeweb.v1.SessionService.Watch:output_type -> jcodeweb.v1.WatchResponse
-	15, // 44: jcodeweb.v1.SessionService.Attach:output_type -> jcodeweb.v1.AttachResponse
-	29, // 45: jcodeweb.v1.SessionService.SendMessage:output_type -> jcodeweb.v1.SendMessageResponse
-	31, // 46: jcodeweb.v1.SessionService.Cancel:output_type -> jcodeweb.v1.CancelResponse
-	33, // 47: jcodeweb.v1.SessionService.Btw:output_type -> jcodeweb.v1.BtwResponse
-	35, // 48: jcodeweb.v1.SessionService.Summarize:output_type -> jcodeweb.v1.SummarizeResponse
-	37, // 49: jcodeweb.v1.SessionService.Overview:output_type -> jcodeweb.v1.OverviewResponse
-	39, // 50: jcodeweb.v1.SessionService.GetFeatures:output_type -> jcodeweb.v1.GetFeaturesResponse
-	41, // 51: jcodeweb.v1.PushService.GetVapidKey:output_type -> jcodeweb.v1.GetVapidKeyResponse
-	43, // 52: jcodeweb.v1.PushService.Subscribe:output_type -> jcodeweb.v1.SubscribeResponse
-	45, // 53: jcodeweb.v1.PushService.Unsubscribe:output_type -> jcodeweb.v1.UnsubscribeResponse
-	47, // 54: jcodeweb.v1.PushService.Test:output_type -> jcodeweb.v1.TestResponse
-	41, // [41:55] is the sub-list for method output_type
-	27, // [27:41] is the sub-list for method input_type
-	27, // [27:27] is the sub-list for extension type_name
-	27, // [27:27] is the sub-list for extension extendee
-	0,  // [0:27] is the sub-list for field type_name
+	6,  // 1: jcodeweb.v1.ListScheduledTasksResponse.tasks:type_name -> jcodeweb.v1.ScheduledTask
+	2,  // 2: jcodeweb.v1.ListSessionsResponse.sessions:type_name -> jcodeweb.v1.Session
+	3,  // 3: jcodeweb.v1.ListEventsResponse.events:type_name -> jcodeweb.v1.Event
+	3,  // 4: jcodeweb.v1.WatchResponse.event:type_name -> jcodeweb.v1.Event
+	15, // 5: jcodeweb.v1.WatchResponse.sessions:type_name -> jcodeweb.v1.SessionsSnapshot
+	16, // 6: jcodeweb.v1.WatchResponse.connection:type_name -> jcodeweb.v1.Connection
+	2,  // 7: jcodeweb.v1.SessionsSnapshot.sessions:type_name -> jcodeweb.v1.Session
+	17, // 8: jcodeweb.v1.HistoryMessage.tool:type_name -> jcodeweb.v1.ToolData
+	21, // 9: jcodeweb.v1.AttachResponse.history:type_name -> jcodeweb.v1.History
+	22, // 10: jcodeweb.v1.AttachResponse.text_delta:type_name -> jcodeweb.v1.TextDelta
+	22, // 11: jcodeweb.v1.AttachResponse.reasoning_delta:type_name -> jcodeweb.v1.TextDelta
+	23, // 12: jcodeweb.v1.AttachResponse.tool_start:type_name -> jcodeweb.v1.ToolStart
+	24, // 13: jcodeweb.v1.AttachResponse.tool_input:type_name -> jcodeweb.v1.ToolInput
+	23, // 14: jcodeweb.v1.AttachResponse.tool_exec:type_name -> jcodeweb.v1.ToolStart
+	25, // 15: jcodeweb.v1.AttachResponse.tool_done:type_name -> jcodeweb.v1.ToolDone
+	26, // 16: jcodeweb.v1.AttachResponse.turn_done:type_name -> jcodeweb.v1.TurnDone
+	27, // 17: jcodeweb.v1.AttachResponse.interrupted:type_name -> jcodeweb.v1.Interrupted
+	28, // 18: jcodeweb.v1.AttachResponse.error:type_name -> jcodeweb.v1.UpstreamError
+	29, // 19: jcodeweb.v1.AttachResponse.status_detail:type_name -> jcodeweb.v1.StatusDetail
+	1,  // 20: jcodeweb.v1.AttachResponse.tokens:type_name -> jcodeweb.v1.TokenUsage
+	30, // 21: jcodeweb.v1.AttachResponse.user_message:type_name -> jcodeweb.v1.UserMessage
+	22, // 22: jcodeweb.v1.AttachResponse.text_replace:type_name -> jcodeweb.v1.TextDelta
+	31, // 23: jcodeweb.v1.AttachResponse.raw:type_name -> jcodeweb.v1.RawEvent
+	32, // 24: jcodeweb.v1.AttachResponse.detached:type_name -> jcodeweb.v1.Detached
+	18, // 25: jcodeweb.v1.History.messages:type_name -> jcodeweb.v1.HistoryMessage
+	0,  // 26: jcodeweb.v1.SendMessageRequest.mode:type_name -> jcodeweb.v1.SendMode
+	0,  // 27: jcodeweb.v1.SendMessageResponse.mode:type_name -> jcodeweb.v1.SendMode
+	5,  // 28: jcodeweb.v1.SessionService.ListScheduledTasks:input_type -> jcodeweb.v1.ListScheduledTasksRequest
+	4,  // 29: jcodeweb.v1.SessionService.ListSessions:input_type -> jcodeweb.v1.ListSessionsRequest
+	9,  // 30: jcodeweb.v1.SessionService.ListEvents:input_type -> jcodeweb.v1.ListEventsRequest
+	13, // 31: jcodeweb.v1.SessionService.Watch:input_type -> jcodeweb.v1.WatchRequest
+	19, // 32: jcodeweb.v1.SessionService.Attach:input_type -> jcodeweb.v1.AttachRequest
+	33, // 33: jcodeweb.v1.SessionService.SendMessage:input_type -> jcodeweb.v1.SendMessageRequest
+	11, // 34: jcodeweb.v1.SessionService.CreateSession:input_type -> jcodeweb.v1.CreateSessionRequest
+	35, // 35: jcodeweb.v1.SessionService.Cancel:input_type -> jcodeweb.v1.CancelRequest
+	37, // 36: jcodeweb.v1.SessionService.Btw:input_type -> jcodeweb.v1.BtwRequest
+	39, // 37: jcodeweb.v1.SessionService.Summarize:input_type -> jcodeweb.v1.SummarizeRequest
+	41, // 38: jcodeweb.v1.SessionService.Overview:input_type -> jcodeweb.v1.OverviewRequest
+	43, // 39: jcodeweb.v1.SessionService.GetFeatures:input_type -> jcodeweb.v1.GetFeaturesRequest
+	45, // 40: jcodeweb.v1.PushService.GetVapidKey:input_type -> jcodeweb.v1.GetVapidKeyRequest
+	47, // 41: jcodeweb.v1.PushService.Subscribe:input_type -> jcodeweb.v1.SubscribeRequest
+	49, // 42: jcodeweb.v1.PushService.Unsubscribe:input_type -> jcodeweb.v1.UnsubscribeRequest
+	51, // 43: jcodeweb.v1.PushService.Test:input_type -> jcodeweb.v1.TestRequest
+	7,  // 44: jcodeweb.v1.SessionService.ListScheduledTasks:output_type -> jcodeweb.v1.ListScheduledTasksResponse
+	8,  // 45: jcodeweb.v1.SessionService.ListSessions:output_type -> jcodeweb.v1.ListSessionsResponse
+	10, // 46: jcodeweb.v1.SessionService.ListEvents:output_type -> jcodeweb.v1.ListEventsResponse
+	14, // 47: jcodeweb.v1.SessionService.Watch:output_type -> jcodeweb.v1.WatchResponse
+	20, // 48: jcodeweb.v1.SessionService.Attach:output_type -> jcodeweb.v1.AttachResponse
+	34, // 49: jcodeweb.v1.SessionService.SendMessage:output_type -> jcodeweb.v1.SendMessageResponse
+	12, // 50: jcodeweb.v1.SessionService.CreateSession:output_type -> jcodeweb.v1.CreateSessionResponse
+	36, // 51: jcodeweb.v1.SessionService.Cancel:output_type -> jcodeweb.v1.CancelResponse
+	38, // 52: jcodeweb.v1.SessionService.Btw:output_type -> jcodeweb.v1.BtwResponse
+	40, // 53: jcodeweb.v1.SessionService.Summarize:output_type -> jcodeweb.v1.SummarizeResponse
+	42, // 54: jcodeweb.v1.SessionService.Overview:output_type -> jcodeweb.v1.OverviewResponse
+	44, // 55: jcodeweb.v1.SessionService.GetFeatures:output_type -> jcodeweb.v1.GetFeaturesResponse
+	46, // 56: jcodeweb.v1.PushService.GetVapidKey:output_type -> jcodeweb.v1.GetVapidKeyResponse
+	48, // 57: jcodeweb.v1.PushService.Subscribe:output_type -> jcodeweb.v1.SubscribeResponse
+	50, // 58: jcodeweb.v1.PushService.Unsubscribe:output_type -> jcodeweb.v1.UnsubscribeResponse
+	52, // 59: jcodeweb.v1.PushService.Test:output_type -> jcodeweb.v1.TestResponse
+	44, // [44:60] is the sub-list for method output_type
+	28, // [28:44] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_jcodeweb_v1_jcodeweb_proto_init() }
@@ -3167,12 +3478,12 @@ func file_jcodeweb_v1_jcodeweb_proto_init() {
 	if File_jcodeweb_v1_jcodeweb_proto != nil {
 		return
 	}
-	file_jcodeweb_v1_jcodeweb_proto_msgTypes[8].OneofWrappers = []any{
+	file_jcodeweb_v1_jcodeweb_proto_msgTypes[13].OneofWrappers = []any{
 		(*WatchResponse_Event)(nil),
 		(*WatchResponse_Sessions)(nil),
 		(*WatchResponse_Connection)(nil),
 	}
-	file_jcodeweb_v1_jcodeweb_proto_msgTypes[14].OneofWrappers = []any{
+	file_jcodeweb_v1_jcodeweb_proto_msgTypes[19].OneofWrappers = []any{
 		(*AttachResponse_History)(nil),
 		(*AttachResponse_TextDelta)(nil),
 		(*AttachResponse_ReasoningDelta)(nil),
@@ -3196,7 +3507,7 @@ func file_jcodeweb_v1_jcodeweb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_jcodeweb_v1_jcodeweb_proto_rawDesc), len(file_jcodeweb_v1_jcodeweb_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   47,
+			NumMessages:   52,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

@@ -4,7 +4,13 @@ import DOMPurify from "dompurify";
 marked.setOptions({ gfm: true, breaks: false });
 
 export function md(text: string): string {
-  return DOMPurify.sanitize(marked.parse(text, { async: false }) as string);
+  const html = document.createElement("div");
+  html.append(DOMPurify.sanitize(marked.parse(text, { async: false }) as string, { RETURN_DOM_FRAGMENT: true }));
+  for (const link of html.querySelectorAll("a")) {
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+  }
+  return html.innerHTML;
 }
 
 export function shortDir(dir: string): string {

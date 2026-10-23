@@ -3,8 +3,42 @@ package hub
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
+
+	"github.com/elee1766/jcode-web/internal/jcode"
 )
+
+func (h *Hub) CreateSession(ctx context.Context, dir string) (string, string, error) {
+	if !filepath.IsAbs(dir) {
+		return "", "", fmt.Errorf("workspace must be an absolute directory")
+	}
+	dir = filepath.Clean(dir)
+	known := false
+	for _, s := range h.Sessions() {
+		if filepath.Clean(s.WorkingDir) == dir {
+			known = true
+			break
+		}
+	}
+	if !known {
+		return "", "", fmt.Errorf("choose an existing session workspace")
+	}
+	stat, err := os.Stat(dir)
+	if err != nil || !stat.IsDir() {
+		return "", "", fmt.Errorf("workspace is not an accessible directory")
+	}
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	id, err := jcode.Create(ctx, h.cfg.MainSocket, dir)
+	if err != nil {
+		return "", "", err
+	}
+	h.refresh(ctx)
+	info, _ := h.session(id)
+	return id, info.FriendlyName, nil
+}
 
 type SendMode int
 

@@ -39,6 +39,7 @@ type Hub struct {
 	notify Notifier
 
 	mu        sync.Mutex
+	eventMu   sync.Mutex
 	sessions  map[string]jcode.SessionInfo
 	lastEvent map[string]int64
 	connected bool
@@ -47,7 +48,9 @@ type Hub struct {
 	attached  map[string]*attachment
 
 	sum       *summarize.Client
-	sumQueue  chan string
+	sumQueue  chan summaryRequest
+	sumQueued map[string]time.Time
+	sumGate   chan struct{}
 	summaries map[string]store.Summary
 }
 
@@ -68,6 +71,7 @@ type SessionView struct {
 	LastEventUnix int64
 	Attached      bool
 	Summary       string
+	ShortSummary  string
 	SummaryAt     int64
 }
 
@@ -187,7 +191,7 @@ func (h *Hub) Sessions() []SessionView {
 	for id, s := range h.sessions {
 		_, att := h.attached[id]
 		sm := h.summaries[id]
-		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, SummaryAt: sm.UpdatedAt})
+		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt})
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].IsProcessing != out[j].IsProcessing {
@@ -257,14 +261,10 @@ func (h *Hub) ingest(ctx context.Context, ev jcode.BusEvent) {
 	if e.TimestampUnix == 0 {
 		e.TimestampUnix = time.Now().Unix()
 	}
-	if err := h.store.InsertEvent(ctx, e); err != nil {
+	if err := h.publishEvent(ctx, e); err != nil {
 		h.log.Error("store event", "error", err)
 		return
 	}
-	h.mu.Lock()
-	h.lastEvent[e.SessionID] = e.TimestampUnix
-	h.mu.Unlock()
-	h.broadcast(WatchUpdate{Event: e})
 
 	if typ == "status_change" || typ == "member_change" {
 		go h.refresh(ctx)
@@ -272,13 +272,44 @@ func (h *Hub) ingest(ctx context.Context, ev jcode.BusEvent) {
 	if typ == "status_change" {
 		var p struct {
 			Old string `json:"old_status"`
+			New string `json:"new_status"`
 		}
 		if json.Unmarshal(ev.Event, &p) == nil && p.Old == "running" {
 			h.resync(e.SessionID)
-			h.queueSummary(e.SessionID)
+			reason := "turn_complete"
+			if p.New == "failed" || p.New == "blocked" {
+				reason = "needs_attention"
+			}
+			if p.New == "ready" || p.New == "completed" || p.New == "failed" || p.New == "blocked" {
+				h.queueSummary(e.SessionID, reason)
+			}
+		}
+	} else if typ == "plan_update" {
+		h.queueSummary(e.SessionID, "plan_updated")
+	} else if typ == "file_touch" {
+		var p struct {
+			Op string `json:"op"`
+		}
+		if json.Unmarshal(ev.Event, &p) == nil && p.Op != "read" && p.Op != "" {
+			h.queueSummary(e.SessionID, "progress")
 		}
 	}
 	h.maybeNotify(ctx, e)
+}
+
+func (h *Hub) publishEvent(ctx context.Context, e *store.Event) error {
+	h.eventMu.Lock()
+	defer h.eventMu.Unlock()
+	if err := h.store.InsertEvent(ctx, e); err != nil {
+		return err
+	}
+	if e.Type != "session_summary" {
+		h.mu.Lock()
+		h.lastEvent[e.SessionID] = e.TimestampUnix
+		h.mu.Unlock()
+	}
+	h.broadcast(WatchUpdate{Event: e})
+	return nil
 }
 
 func (h *Hub) maybeNotify(ctx context.Context, e *store.Event) {
@@ -311,15 +342,7 @@ func (h *Hub) maybeNotify(ctx context.Context, e *store.Event) {
 		return
 	}
 	if h.sum.Enabled() && p.Old == "running" {
-		// Wait for the summary so the notification says what happened.
-		go func() {
-			sctx, cancel := context.WithTimeout(ctx, 45*time.Second)
-			defer cancel()
-			if s, err := h.SummarizeSession(sctx, e.SessionID); err == nil && s.Text != "" {
-				body = body + ": " + s.Text
-			}
-			h.notify.Notify(ctx, name, body, e.SessionID, "/#/s/"+e.SessionID)
-		}()
+		// The summary worker sends the notification with the milestone text.
 		return
 	}
 	h.notify.Notify(ctx, name, body, e.SessionID, "/#/s/"+e.SessionID)

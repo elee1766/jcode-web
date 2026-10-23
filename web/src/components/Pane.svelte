@@ -8,8 +8,16 @@
   import { shortDir, tokens, tone, ago } from "../lib/format";
   import { features } from "../lib/features.svelte";
   import Block from "./Block.svelte";
+  import ScheduledTasks from "./ScheduledTasks.svelte";
+  import { promptHistory, rememberPrompt } from "../lib/prompt-history";
 
-  let { id }: { id: string } = $props();
+  let { id, windowed = false, onwindowkey, onmaximize, maximized = false }: {
+    id: string;
+    windowed?: boolean;
+    onwindowkey?: (e: KeyboardEvent) => void;
+    onmaximize?: () => void;
+    maximized?: boolean;
+  } = $props();
 
   // svelte-ignore state_referenced_locally
   const t = new Transcript(id);
@@ -26,6 +34,39 @@
   let notice = $state("");
   let scroller: HTMLElement;
   let pinned = $state(true);
+  let composer: HTMLTextAreaElement;
+  let historyIndex = $state(-1);
+  let recalled: string[] = [];
+  let savedDraft = "";
+  let anchor: { height: number; top: number } | null = null;
+
+  function recall(older: boolean) {
+    if (historyIndex < 0) {
+      if (!older) return;
+      recalled = promptHistory(id, t.userMessages);
+      savedDraft = draft;
+    }
+    const next = older ? Math.min(historyIndex + 1, recalled.length - 1) : historyIndex - 1;
+    if (next < -1 || !recalled.length) return;
+    historyIndex = next;
+    draft = next < 0 ? savedDraft : recalled[next];
+    void tick().then(() => { composer?.focus(); composer?.setSelectionRange(draft.length, draft.length); });
+  }
+
+  function loadOlder() {
+    pinned = false;
+    anchor = { height: scroller.scrollHeight, top: scroller.scrollTop };
+    t.loadOlder();
+  }
+
+  $effect(() => {
+    if (!t.loadingOlder) void tick().then(() => {
+      if (anchor && scroller) {
+        scroller.scrollTop = anchor.top + scroller.scrollHeight - anchor.height;
+        anchor = null;
+      }
+    });
+  });
 
   function onScroll() {
     pinned = scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight < 80;
@@ -55,6 +96,8 @@
         const r = await api.sendMessage({ sessionId: id, content: text, mode });
         if (r.mode === SendMode.INTERRUPT || r.mode === SendMode.INTERRUPT_URGENT) notice = "Queued for the running turn";
       }
+      rememberPrompt(id, text);
+      historyIndex = -1;
       draft = "";
       pinned = true;
     } catch (e) {
@@ -86,7 +129,13 @@
   }
 
   function onKey(e: KeyboardEvent) {
-    if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+    if (e.isComposing) return;
+    const input = e.currentTarget as HTMLTextAreaElement;
+    if (e.key === "ArrowUp" && !e.shiftKey && input.selectionStart === input.selectionEnd && !draft.slice(0, input.selectionStart).includes("\n")) {
+      e.preventDefault(); recall(true);
+    } else if (e.key === "ArrowDown" && !e.shiftKey && historyIndex >= 0 && !draft.slice(input.selectionEnd).includes("\n")) {
+      e.preventDefault(); recall(false);
+    } else if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       void submit(e.altKey ? SendMode.INTERRUPT_URGENT : SendMode.UNSPECIFIED);
     } else if (e.key === "Escape" && working) {
@@ -102,14 +151,17 @@
   aria-label={s?.name ?? id}
   class:focused={layout.focused === id}
   data-tone={s ? tone(s.status, working) : "idle"}
-  onfocusin={() => (layout.focused = id)}
-  onpointerdown={() => (layout.focused = id)}
+  onfocusin={() => layout.focus(id)}
+  onpointerdown={() => layout.focus(id)}
 >
   <header class="head">
     <span class="bar"></span>
-    <div class="who">
+    <button class="who" class:movable={windowed} onkeydown={onwindowkey} ondblclick={onmaximize}
+      title={windowed ? "Drag to move. Arrow keys move, Shift + arrows resize. Double-click to maximize." : undefined}
+      aria-label={windowed ? `Move ${s?.name ?? id} window` : `Session ${s?.name ?? id}`}>
       <div class="l1">
         <span class="name">{s?.name ?? id}</span>
+        {#if s?.shortSummary}<span class="task" title={s.summary}>{s.shortSummary}</span>{/if}
         <span class="dir" title={s?.workingDir}>{s ? shortDir(s.workingDir) : ""}</span>
       </div>
       <div class="l2">
@@ -120,7 +172,8 @@
         {/if}
         {#if !t.attached}<span class="warn">{t.error ? "Reconnecting" : "Connecting"}</span>{/if}
       </div>
-    </div>
+    </button>
+    {#if onmaximize}<button class="x" onclick={onmaximize} aria-label={maximized ? "Restore window" : "Maximize window"}>{maximized ? "▣" : "□"}</button>{/if}
     <button class="x" onclick={() => layout.close(id)} aria-label="Close pane">✕</button>
   </header>
   {#if features.summaries}
@@ -132,9 +185,10 @@
     </div>
   {/if}
 
+  <ScheduledTasks {id} />
   <div class="scroll" bind:this={scroller} onscroll={onScroll}>
-    {#if t.total > t.blocks.length && t.blocks.length > 0}
-      <p class="older">{t.total - t.blocks.length} earlier messages not shown</p>
+    {#if t.total > t.shownMessages}
+      <button class="older" disabled={t.loadingOlder} onclick={loadOlder}>{t.loadingOlder ? "Loading history…" : `Load older messages (${t.total - t.shownMessages} earlier)`}</button>
     {/if}
     {#each t.blocks as b, i (i)}
       <Block block={b} />
@@ -151,12 +205,17 @@
     <textarea
       rows="2"
       bind:value={draft}
+      bind:this={composer}
+      aria-label="Message"
+      oninput={() => (historyIndex = -1)}
       onkeydown={onKey}
       placeholder={btw ? "Ask in a fork" : working ? "Steer the running turn" : "Message"}
       enterkeyhint="send"
     ></textarea>
     <div class="actions">
       <button type="button" class="toggle" class:on={btw} onclick={() => (btw = !btw)} aria-pressed={btw}>btw</button>
+      <button type="button" class="history" onclick={() => recall(true)} aria-label="Previous sent message" title="Previous sent message (Up arrow)">↑</button>
+      <button type="button" class="history" onclick={() => recall(false)} disabled={historyIndex < 0} aria-label="Next sent message" title="Next sent message (Down arrow)">↓</button>
       {#if notice}<span class="notice">{notice}</span>{/if}
       <span class="grow"></span>
       {#if working}
@@ -177,6 +236,8 @@
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--line);
+    overflow: hidden;
+    border-radius: inherit;
   }
   .pane:last-child {
     border-right: 0;
@@ -209,7 +270,10 @@
   .who {
     flex: 1;
     min-width: 0;
+    text-align: left;
   }
+  .who.movable { cursor: grab; touch-action: none; user-select: none; }
+  .who.movable:active { cursor: grabbing; }
   .l1 {
     display: flex;
     gap: 0.5rem;
@@ -218,6 +282,7 @@
   .name {
     font-weight: 600;
   }
+  .task { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--s-1); color: var(--fg-2); }
   .dir {
     color: var(--fg-2);
     font-size: var(--s-1);
@@ -275,7 +340,12 @@
     color: var(--fg-3);
     font-size: var(--s-1);
     margin: 0 0 0.75rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: 4px;
   }
+  .history { color: var(--fg-2); padding: 0.25rem 0.4rem; }
+  .history:disabled { opacity: 0.35; }
   .status {
     display: flex;
     align-items: center;

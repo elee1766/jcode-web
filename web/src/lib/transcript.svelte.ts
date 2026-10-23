@@ -13,6 +13,9 @@ export type Block =
 export class Transcript {
   blocks = $state<Block[]>([]);
   total = $state(0);
+  shownMessages = $state(0);
+  userMessages = $state<string[]>([]);
+  loadingOlder = $state(false);
   status = $state("");
   attached = $state(false);
   error = $state("");
@@ -34,6 +37,13 @@ export class Transcript {
     this.#abort = null;
   }
 
+  loadOlder() {
+    if (this.loadingOlder || this.total <= this.shownMessages) return;
+    this.loadingOlder = true;
+    this.historyLimit += 200;
+    this.open();
+  }
+
   async #run(signal: AbortSignal) {
     let backoff = 500;
     while (!signal.aborted) {
@@ -47,6 +57,7 @@ export class Transcript {
       } catch (e) {
         if (signal.aborted) return;
         this.error = e instanceof Error ? e.message : String(e);
+        this.loadingOlder = false;
       }
       this.attached = false;
       await new Promise((r) => setTimeout(r, backoff));
@@ -76,6 +87,9 @@ export class Transcript {
     switch (u.case) {
       case "history":
         this.total = u.value.total;
+        this.shownMessages = u.value.messages.length;
+        this.userMessages = u.value.messages.filter(m => m.role === "user").map(m => m.content);
+        this.loadingOlder = false;
         this.blocks = fromHistory(u.value.messages);
         break;
       case "textDelta": {
@@ -137,6 +151,7 @@ export class Transcript {
         break;
       case "userMessage":
         this.#settle();
+        this.userMessages.push(u.value.content);
         this.blocks.push({ kind: "user", text: u.value.content, source: u.value.source });
         break;
       case "error":

@@ -26,6 +26,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// SessionServiceListScheduledTasksProcedure is the procedure name of the SessionService's
+	// ListScheduledTasks RPC.
+	SessionServiceListScheduledTasksProcedure = "/jcodeweb.v1.SessionService/ListScheduledTasks"
 	// SessionServiceListSessionsProcedure is the procedure name of the SessionService's ListSessions
 	// RPC.
 	SessionServiceListSessionsProcedure = "/jcodeweb.v1.SessionService/ListSessions"
@@ -37,6 +40,9 @@ const (
 	SessionServiceAttachProcedure = "/jcodeweb.v1.SessionService/Attach"
 	// SessionServiceSendMessageProcedure is the procedure name of the SessionService's SendMessage RPC.
 	SessionServiceSendMessageProcedure = "/jcodeweb.v1.SessionService/SendMessage"
+	// SessionServiceCreateSessionProcedure is the procedure name of the SessionService's CreateSession
+	// RPC.
+	SessionServiceCreateSessionProcedure = "/jcodeweb.v1.SessionService/CreateSession"
 	// SessionServiceCancelProcedure is the procedure name of the SessionService's Cancel RPC.
 	SessionServiceCancelProcedure = "/jcodeweb.v1.SessionService/Cancel"
 	// SessionServiceBtwProcedure is the procedure name of the SessionService's Btw RPC.
@@ -58,6 +64,14 @@ const (
 )
 
 var (
+	sessionServiceListScheduledTasksSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType:       connect.StreamTypeUnary,
+			Schema:           v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("ListScheduledTasks"),
+			Procedure:        SessionServiceListScheduledTasksProcedure,
+			IdempotencyLevel: connect.IdempotencyNoSideEffects,
+		}
+	})
 	sessionServiceListSessionsSpec = sync.OnceValue(func() connect.Spec {
 		return connect.Spec{
 			StreamType:       connect.StreamTypeUnary,
@@ -93,6 +107,13 @@ var (
 			StreamType: connect.StreamTypeUnary,
 			Schema:     v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("SendMessage"),
 			Procedure:  SessionServiceSendMessageProcedure,
+		}
+	})
+	sessionServiceCreateSessionSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("CreateSession"),
+			Procedure:  SessionServiceCreateSessionProcedure,
 		}
 	})
 	sessionServiceCancelSpec = sync.OnceValue(func() connect.Spec {
@@ -135,6 +156,7 @@ var (
 
 // SessionServiceClient is a client for the jcodeweb.v1.SessionService service.
 type SessionServiceClient interface {
+	ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error)
 	ListSessions(context.Context, *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error)
 	ListEvents(context.Context, *v1.ListEventsRequest) (*v1.ListEventsResponse, error)
 	// Watch streams session list snapshots and server-wide events. Replays
@@ -143,6 +165,7 @@ type SessionServiceClient interface {
 	// Attach streams one session: a history snapshot, then live output.
 	Attach(context.Context, *v1.AttachRequest) (SessionServiceAttachClientStream, error)
 	SendMessage(context.Context, *v1.SendMessageRequest) (*v1.SendMessageResponse, error)
+	CreateSession(context.Context, *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error)
 	Cancel(context.Context, *v1.CancelRequest) (*v1.CancelResponse, error)
 	// Btw forks a session with its full history and asks question in the fork.
 	// The parent keeps working.
@@ -202,6 +225,7 @@ func (s SessionServiceAttachClientStream) Close() error {
 
 // SessionServiceHandler is an implementation of the jcodeweb.v1.SessionService service.
 type SessionServiceHandler interface {
+	ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error)
 	ListSessions(context.Context, *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error)
 	ListEvents(context.Context, *v1.ListEventsRequest) (*v1.ListEventsResponse, error)
 	// Watch streams session list snapshots and server-wide events. Replays
@@ -210,6 +234,7 @@ type SessionServiceHandler interface {
 	// Attach streams one session: a history snapshot, then live output.
 	Attach(context.Context, *v1.AttachRequest, SessionServiceAttachServerStream) error
 	SendMessage(context.Context, *v1.SendMessageRequest) (*v1.SendMessageResponse, error)
+	CreateSession(context.Context, *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error)
 	Cancel(context.Context, *v1.CancelRequest) (*v1.CancelResponse, error)
 	// Btw forks a session with its full history and asks question in the fork.
 	// The parent keeps working.
@@ -226,11 +251,13 @@ type SessionServiceHandler interface {
 func RegisterSessionServiceHandler(server *connect.Server, svc SessionServiceHandler) {
 	adapter := sessionServiceHandler{svc: svc}
 	server.Register(
+		connect.Method{Spec: sessionServiceListScheduledTasksSpec(), Handler: adapter.listScheduledTasks},
 		connect.Method{Spec: sessionServiceListSessionsSpec(), Handler: adapter.listSessions},
 		connect.Method{Spec: sessionServiceListEventsSpec(), Handler: adapter.listEvents},
 		connect.Method{Spec: sessionServiceWatchSpec(), Handler: adapter.watch},
 		connect.Method{Spec: sessionServiceAttachSpec(), Handler: adapter.attach},
 		connect.Method{Spec: sessionServiceSendMessageSpec(), Handler: adapter.sendMessage},
+		connect.Method{Spec: sessionServiceCreateSessionSpec(), Handler: adapter.createSession},
 		connect.Method{Spec: sessionServiceCancelSpec(), Handler: adapter.cancel},
 		connect.Method{Spec: sessionServiceBtwSpec(), Handler: adapter.btw},
 		connect.Method{Spec: sessionServiceSummarizeSpec(), Handler: adapter.summarize},
@@ -272,6 +299,10 @@ func (s SessionServiceAttachServerStream) Send(res *v1.AttachResponse) error {
 // UnimplementedSessionServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedSessionServiceHandler struct{}
 
+func (UnimplementedSessionServiceHandler) ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.ListScheduledTasks is not implemented")
+}
+
 func (UnimplementedSessionServiceHandler) ListSessions(context.Context, *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.ListSessions is not implemented")
 }
@@ -290,6 +321,10 @@ func (UnimplementedSessionServiceHandler) Attach(context.Context, *v1.AttachRequ
 
 func (UnimplementedSessionServiceHandler) SendMessage(context.Context, *v1.SendMessageRequest) (*v1.SendMessageResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.SendMessage is not implemented")
+}
+
+func (UnimplementedSessionServiceHandler) CreateSession(context.Context, *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.CreateSession is not implemented")
 }
 
 func (UnimplementedSessionServiceHandler) Cancel(context.Context, *v1.CancelRequest) (*v1.CancelResponse, error) {
@@ -314,6 +349,14 @@ func (UnimplementedSessionServiceHandler) GetFeatures(context.Context, *v1.GetFe
 
 type sessionServiceClient struct {
 	client *connect.Client
+}
+
+func (c *sessionServiceClient) ListScheduledTasks(ctx context.Context, req *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error) {
+	var res v1.ListScheduledTasksResponse
+	if err := c.client.CallUnary(ctx, sessionServiceListScheduledTasksSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 func (c *sessionServiceClient) ListSessions(ctx context.Context, req *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error) {
@@ -351,6 +394,14 @@ func (c *sessionServiceClient) Attach(ctx context.Context, req *v1.AttachRequest
 func (c *sessionServiceClient) SendMessage(ctx context.Context, req *v1.SendMessageRequest) (*v1.SendMessageResponse, error) {
 	var res v1.SendMessageResponse
 	if err := c.client.CallUnary(ctx, sessionServiceSendMessageSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *sessionServiceClient) CreateSession(ctx context.Context, req *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error) {
+	var res v1.CreateSessionResponse
+	if err := c.client.CallUnary(ctx, sessionServiceCreateSessionSpec(), req, &res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -398,6 +449,18 @@ func (c *sessionServiceClient) GetFeatures(ctx context.Context, req *v1.GetFeatu
 
 type sessionServiceHandler struct{ svc SessionServiceHandler }
 
+func (h sessionServiceHandler) listScheduledTasks(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.ListScheduledTasksRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.ListScheduledTasks(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
 func (h sessionServiceHandler) listSessions(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
 	var req v1.ListSessionsRequest
 	if err := stream.Receive(&req); err != nil {
@@ -444,6 +507,18 @@ func (h sessionServiceHandler) sendMessage(ctx context.Context, _ connect.Spec, 
 		return err
 	}
 	res, err := h.svc.SendMessage(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h sessionServiceHandler) createSession(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.CreateSessionRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.CreateSession(ctx, &req)
 	if err != nil {
 		return err
 	}

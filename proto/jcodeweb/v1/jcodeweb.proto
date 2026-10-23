@@ -7,6 +7,9 @@ option go_package = "github.com/elee1766/jcode-web/gen/jcodeweb/v1;jcodewebv1";
 // SessionService exposes jcode sessions, a merged server event feed, and
 // per-session live streams.
 service SessionService {
+  rpc ListScheduledTasks(ListScheduledTasksRequest) returns (ListScheduledTasksResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
   rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   }
@@ -20,6 +23,7 @@ service SessionService {
   rpc Attach(AttachRequest) returns (stream AttachResponse);
 
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
   rpc Cancel(CancelRequest) returns (CancelResponse);
   // Btw forks a session with its full history and asks question in the fork.
   // The parent keeps working.
@@ -70,6 +74,8 @@ message Session {
   // AI summary, empty when none.
   string summary = 14;
   int64 summary_unix = 15;
+  // Few-word AI title for compact session rows and headers.
+  string short_summary = 16;
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -92,6 +98,19 @@ message Event {
 }
 
 message ListSessionsRequest {}
+message ListScheduledTasksRequest {
+  string session_id = 1;
+}
+message ScheduledTask {
+  string id = 1;
+  string task = 2;
+  string scheduled_for = 3;
+  string target = 4;
+  string priority = 5;
+}
+message ListScheduledTasksResponse {
+  repeated ScheduledTask tasks = 1;
+}
 message ListSessionsResponse {
   repeated Session sessions = 1;
 }
@@ -102,9 +121,19 @@ message ListEventsRequest {
   // Events with id < before_id. 0 means latest.
   int64 before_id = 2;
   uint32 limit = 3;
+  // Empty means all event types.
+  string event_type = 4;
 }
 message ListEventsResponse {
   repeated Event events = 1;
+}
+
+message CreateSessionRequest {
+  string working_dir = 1;
+}
+message CreateSessionResponse {
+  string session_id = 1;
+  string session_name = 2;
 }
 
 message WatchRequest {

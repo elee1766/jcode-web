@@ -24,6 +24,17 @@ type Sessions struct {
 	Store *store.Store
 }
 
+func (s *Sessions) CreateSession(ctx context.Context, req *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error) {
+	if req.WorkingDir == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, "working_dir required")
+	}
+	id, name, err := s.Hub.CreateSession(ctx, req.WorkingDir)
+	if err != nil {
+		return nil, upstreamErr(err)
+	}
+	return &v1.CreateSessionResponse{SessionId: id, SessionName: name}, nil
+}
+
 func (s *Sessions) ListSessions(ctx context.Context, _ *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error) {
 	return &v1.ListSessionsResponse{Sessions: sessionsPB(s.Hub.Sessions())}, nil
 }
@@ -33,7 +44,7 @@ func (s *Sessions) ListEvents(ctx context.Context, req *v1.ListEventsRequest) (*
 	if limit <= 0 || limit > 1000 {
 		limit = 200
 	}
-	evs, err := s.Store.EventsBefore(ctx, req.SessionId, req.BeforeId, limit)
+	evs, err := s.Store.EventsBeforeType(ctx, req.SessionId, req.EventType, req.BeforeId, limit)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, "list events").WithCause(err)
 	}
@@ -273,7 +284,7 @@ func sessionsPB(in []hub.SessionView) []*v1.Session {
 			Id: s.SessionID, Name: s.FriendlyName, Status: s.Status, IsProcessing: s.IsProcessing,
 			Model: s.Model, Provider: s.Provider, WorkingDir: s.WorkingDir, SwarmId: s.SwarmID,
 			ServerName: s.ServerName, Detail: detail, TokenUsage: tu, LastEventUnix: s.LastEventUnix,
-			Attached: s.Attached, Summary: s.Summary, SummaryUnix: s.SummaryAt,
+			Attached: s.Attached, Summary: s.Summary, SummaryUnix: s.SummaryAt, ShortSummary: s.ShortSummary,
 		}
 	}
 	return out
