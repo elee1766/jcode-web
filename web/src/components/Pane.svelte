@@ -165,14 +165,8 @@
         <span class="name">{s?.name ?? id}</span>
         {#if s?.shortSummary}<span class="task" title={s.summary}>{s.shortSummary}</span>{/if}
         <span class="dir" title={s?.workingDir}>{s ? shortDir(s.workingDir) : ""}</span>
-      </div>
-      <div class="l2">
-        {#if parent}<span>btw fork of {parent.name}</span>{/if}
-        <span>{s?.model}</span>
-        {#if s?.tokenUsage && (s.tokenUsage.input || s.tokenUsage.output)}
-          <span>{tokens(s.tokenUsage.input)} in, {tokens(s.tokenUsage.output)} out</span>
-        {/if}
-        {#if !t.attached}<span class="warn">{t.error ? "Reconnecting" : "Connecting"}</span>{/if}
+        {#if parent}<span class="context">btw fork of {parent.name}</span>{/if}
+        {#if !t.attached}<span class="context warn">{t.error ? "Reconnecting" : "Connecting"}</span>{/if}
       </div>
     </button>
     {#if onmaximize}<button class="x" onclick={onmaximize} aria-label={maximized ? "Restore window" : "Maximize window"}>{maximized ? "▣" : "□"}</button>{/if}
@@ -235,6 +229,12 @@
       <button type="button" class="toggle" class:on={btw} onclick={() => (btw = !btw)} aria-pressed={btw}>btw</button>
       <button type="button" class="history" onclick={() => recall(true)} aria-label="Previous sent message" title="Previous sent message (Up arrow)">↑</button>
       <button type="button" class="history" onclick={() => recall(false)} disabled={historyIndex < 0} aria-label="Next sent message" title="Next sent message (Down arrow)">↓</button>
+      <span class="metadata" title={`${s?.model ?? ""}${s?.tokenUsage ? ` · ${tokens(s.tokenUsage.input)} in, ${tokens(s.tokenUsage.output)} out` : ""}`}>
+        <span class="model">{s?.model}</span>
+        {#if s?.tokenUsage && (s.tokenUsage.input || s.tokenUsage.output)}
+          <span class="usage">{tokens(s.tokenUsage.input)} in, {tokens(s.tokenUsage.output)} out</span>
+        {/if}
+      </span>
       {#if notice}<span class="notice">{notice}</span>{/if}
       <span class="grow"></span>
       {#if working}
@@ -316,12 +316,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .l2 {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 0.75rem;
+  .context {
     color: var(--fg-3);
     font-size: var(--s-1);
+    white-space: nowrap;
   }
   .warn {
     color: var(--busy);
@@ -423,6 +421,19 @@
     gap: 0.5rem;
     margin-top: 0.375rem;
   }
+  .actions > button { flex: none; }
+  .metadata {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    min-width: 0;
+    color: var(--fg-3);
+    font-size: var(--s-1);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .model { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .usage { flex: none; }
   .grow {
     flex: 1;
   }
