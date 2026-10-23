@@ -284,7 +284,7 @@ func sessionsPB(in []hub.SessionView) []*v1.Session {
 			Id: s.SessionID, Name: s.FriendlyName, Status: s.Status, IsProcessing: s.IsProcessing,
 			Model: s.Model, Provider: s.Provider, WorkingDir: s.WorkingDir, SwarmId: s.SwarmID,
 			ServerName: s.ServerName, Detail: detail, TokenUsage: tu, LastEventUnix: s.LastEventUnix,
-			Attached: s.Attached, Summary: s.Summary, SummaryUnix: s.SummaryAt, ShortSummary: s.ShortSummary,
+			Attached: s.Attached, Summary: s.Summary, SummaryUnix: s.SummaryAt, ShortSummary: s.ShortSummary, ScheduledTaskCount: s.ScheduledTaskCount,
 		}
 	}
 	return out

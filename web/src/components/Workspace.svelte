@@ -14,6 +14,14 @@
   let maximized = $state(false);
   let syncing = false;
   let disposed = false;
+  let saveTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function scheduleSave(api: DockviewApi) {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      if (!disposed) layout.saveDock(api.toJSON());
+    }, 150);
+  }
 
   function title(id: string) {
     return id === PROGRESS_WINDOW ? "Progress feed" : live.byId(id)?.name ?? id;
@@ -52,7 +60,7 @@
         if (maximized && !active.api.isMaximized()) api.exitMaximizedGroup();
         active.api.setActive();
       }
-      layout.saveDock(api.toJSON());
+      if (removed.length || added.length) scheduleSave(api);
     } finally { syncing = false; }
   }
 
@@ -122,7 +130,7 @@
           if (!disposed && !api.getPanel(panel.id) && layout.panes.includes(panel.id)) layout.close(panel.id);
         });
       }),
-      api.onDidLayoutChange(() => { if (!disposed && !syncing) layout.saveDock(api.toJSON()); }),
+      api.onDidLayoutChange(() => { if (!disposed && !syncing) scheduleSave(api); }),
       api.onDidMaximizedGroupChange(event => { maximized = event.isMaximized; }),
       api.onUnhandledDragOver(event => {
         if (event.nativeEvent instanceof DragEvent && event.nativeEvent.dataTransfer?.types.includes(SESSION_DRAG_TYPE)) event.accept();
@@ -151,11 +159,15 @@
         } finally { syncing = false; }
       }),
     ];
+    const persistOnExit = () => { clearTimeout(saveTimer); layout.saveDock(api.toJSON()); };
+    window.addEventListener("pagehide", persistOnExit);
     syncing = true;
     untrack(() => { restore(api); sync(api, [...layout.panes], layout.focused); });
     dock = api;
     return { destroy() {
       disposed = true;
+      clearTimeout(saveTimer);
+      window.removeEventListener("pagehide", persistOnExit);
       layout.saveDock(api.toJSON());
       subscriptions.forEach(s => s.dispose());
       dock = undefined;
@@ -195,7 +207,9 @@
   .tools button { flex: none; padding: 0.2rem 0.5rem; border: 1px solid var(--line); border-radius: 4px; }
   .tools button:disabled { opacity: 0.4; }
   .dock { flex: 1; min-height: 0; min-width: 0; overflow: hidden; }
-  .dock :global(.workspace-panel) { display: flex; height: 100%; width: 100%; min-width: 0; min-height: 0; overflow: hidden; }
+  .dock :global(.dv-drop-target-container), .dock :global(.dv-drop-target), .dock :global(.dv-tab) { --dv-transition-duration: 0ms !important; }
+  .dock :global(.dv-drop-target-anchor), .dock :global(.dv-drop-target-selection), .dock :global(.dv-tab--shifting) { transition: none !important; }
+  .dock :global(.workspace-panel) { display: flex; height: 100%; width: 100%; min-width: 0; min-height: 0; overflow: hidden; contain: layout style; }
   .dock :global(.workspace-empty) { max-width: 30rem; padding: 2rem; margin: auto; color: var(--fg-3); font-size: var(--s0); }
   .dock :global(.dockview-theme-dark) {
     --dv-background-color: var(--line);

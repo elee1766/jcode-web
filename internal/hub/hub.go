@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"maps"
 	"sort"
 	"strings"
 	"sync"
@@ -38,14 +39,15 @@ type Hub struct {
 	debug  *jcode.Debug
 	notify Notifier
 
-	mu        sync.Mutex
-	eventMu   sync.Mutex
-	sessions  map[string]jcode.SessionInfo
-	lastEvent map[string]int64
-	connected bool
-	connErr   string
-	watchers  map[chan WatchUpdate]struct{}
-	attached  map[string]*attachment
+	mu              sync.Mutex
+	eventMu         sync.Mutex
+	sessions        map[string]jcode.SessionInfo
+	lastEvent       map[string]int64
+	scheduledCounts map[string]uint32
+	connected       bool
+	connErr         string
+	watchers        map[chan WatchUpdate]struct{}
+	attached        map[string]*attachment
 
 	sum       *summarize.Client
 	sumQueue  chan summaryRequest
@@ -68,11 +70,12 @@ type ConnectionState struct {
 
 type SessionView struct {
 	jcode.SessionInfo
-	LastEventUnix int64
-	Attached      bool
-	Summary       string
-	ShortSummary  string
-	SummaryAt     int64
+	LastEventUnix      int64
+	Attached           bool
+	Summary            string
+	ShortSummary       string
+	SummaryAt          int64
+	ScheduledTaskCount uint32
 }
 
 func New(cfg Config, log *slog.Logger, st *store.Store, notify Notifier) *Hub {
@@ -135,6 +138,22 @@ func (h *Hub) refresh(ctx context.Context) {
 	}
 	h.setConnection(true, "")
 
+	counts := map[string]uint32{}
+	queue, queueErr := h.debug.ScheduledQueue(ctx)
+	if queueErr == nil {
+		for _, task := range queue {
+			id := task.TargetSessionID
+			if task.TargetKind == "spawn" {
+				id = task.TargetParentSessionID
+			} else if task.TargetKind != "session" {
+				continue
+			}
+			if id != "" {
+				counts[id]++
+			}
+		}
+	}
+
 	next := make(map[string]jcode.SessionInfo, len(list))
 	for _, s := range list {
 		next[s.SessionID] = s
@@ -143,6 +162,10 @@ func (h *Hub) refresh(ctx context.Context) {
 	prev := h.sessions
 	h.sessions = next
 	changed := len(prev) != len(next)
+	if queueErr == nil {
+		changed = changed || !maps.Equal(h.scheduledCounts, counts)
+		h.scheduledCounts = counts
+	}
 	for id, s := range next {
 		p, ok := prev[id]
 		if !ok || !sameSession(p, s) {
@@ -191,7 +214,7 @@ func (h *Hub) Sessions() []SessionView {
 	for id, s := range h.sessions {
 		_, att := h.attached[id]
 		sm := h.summaries[id]
-		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt})
+		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, ShortSummary: sm.Title, SummaryAt: sm.UpdatedAt, ScheduledTaskCount: h.scheduledCounts[id]})
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].IsProcessing != out[j].IsProcessing {

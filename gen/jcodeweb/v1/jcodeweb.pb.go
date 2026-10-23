@@ -165,9 +165,11 @@ type Session struct {
 	Summary     string `protobuf:"bytes,14,opt,name=summary,proto3" json:"summary,omitempty"`
 	SummaryUnix int64  `protobuf:"varint,15,opt,name=summary_unix,json=summaryUnix,proto3" json:"summary_unix,omitempty"`
 	// Few-word AI title for compact session rows and headers.
-	ShortSummary  string `protobuf:"bytes,16,opt,name=short_summary,json=shortSummary,proto3" json:"short_summary,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	ShortSummary string `protobuf:"bytes,16,opt,name=short_summary,json=shortSummary,proto3" json:"short_summary,omitempty"`
+	// Pending resume tasks and child tasks scheduled from this session.
+	ScheduledTaskCount uint32 `protobuf:"varint,17,opt,name=scheduled_task_count,json=scheduledTaskCount,proto3" json:"scheduled_task_count,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *Session) Reset() {
@@ -310,6 +312,13 @@ func (x *Session) GetShortSummary() string {
 		return x.ShortSummary
 	}
 	return ""
+}
+
+func (x *Session) GetScheduledTaskCount() uint32 {
+	if x != nil {
+		return x.ScheduledTaskCount
+	}
+	return 0
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -3113,7 +3122,7 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\n" +
 	"cache_read\x18\x03 \x01(\x04R\tcacheRead\x12\x1f\n" +
 	"\vcache_write\x18\x04 \x01(\x04R\n" +
-	"cacheWrite\"\xf1\x03\n" +
+	"cacheWrite\"\xa3\x04\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
@@ -3134,7 +3143,8 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\battached\x18\r \x01(\bR\battached\x12\x18\n" +
 	"\asummary\x18\x0e \x01(\tR\asummary\x12!\n" +
 	"\fsummary_unix\x18\x0f \x01(\x03R\vsummaryUnix\x12#\n" +
-	"\rshort_summary\x18\x10 \x01(\tR\fshortSummary\"\x8d\x02\n" +
+	"\rshort_summary\x18\x10 \x01(\tR\fshortSummary\x120\n" +
+	"\x14scheduled_task_count\x18\x11 \x01(\rR\x12scheduledTaskCount\"\x8d\x02\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vupstream_id\x18\x02 \x01(\x04R\n" +

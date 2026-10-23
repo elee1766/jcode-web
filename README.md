@@ -4,7 +4,8 @@ Monitor and control jcode sessions from a desktop or mobile browser.
 
 ## Interface
 
-- Sessions grouped by workspace directory, with running groups first.
+- Sessions grouped by workspace directory, with running groups first. Compact three-line rows show the task title, AI progress summary, and current status or activity.
+- Clock badges show pending scheduled-task counts. Waiting sessions remain visible even when quiet sessions are hidden.
 - Live transcripts, tool calls, token counts, and status updates.
 - Drag sessions into a Dockview tiled workspace with docking previews. Drag tabs to split at an edge or group in the center, and resize with shared dividers.
 - Click to switch sessions. Ctrl, Shift, or Cmd click opens another tile. Tiles fill the available screen, with optional maximize and restore controls. Split sizes and tab groups are saved in the browser.
@@ -50,7 +51,7 @@ touch ~/.jcode/debug_control
 
 The main socket provides session attachments and commands. It does not replace existing TUI attachments. Turns started by the web client continue when the browser or web server disconnects. The debug socket supplies discovery and the server-wide activity bus. Polling repairs session status after missed updates.
 
-The session's **Scheduled tasks** section reads Jcode's pending scheduler through the debug socket (`ambient:queue`) every 10 seconds. It includes tasks resuming that session and tasks spawning from it. This view is read-only and does not create or cancel tasks.
+The session's **Scheduled tasks** section reads Jcode's pending scheduler through the debug socket (`ambient:queue`) every 10 seconds. It includes tasks resuming that session and tasks spawning from it. The sidebar receives counts through the session stream from one shared queue read per discovery poll. This view is read-only and does not create or cancel tasks.
 
 Browser reconnects replay persisted events. Events missed while the backend itself is disconnected from jcode are not currently backfilled. Transcript reconnects recover from main-socket history instead.
 

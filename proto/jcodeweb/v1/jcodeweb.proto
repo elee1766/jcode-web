@@ -76,6 +76,8 @@ message Session {
   int64 summary_unix = 15;
   // Few-word AI title for compact session rows and headers.
   string short_summary = 16;
+  // Pending resume tasks and child tasks scheduled from this session.
+  uint32 scheduled_task_count = 17;
 }
 
 // Event is a server-wide event from the jcode debug event bus.

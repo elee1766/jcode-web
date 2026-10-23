@@ -52,9 +52,9 @@
     const needle = q.trim().toLowerCase();
     return live.sessions.filter((s) => {
       if (needle) {
-        return [s.name, s.workingDir, s.model, s.detail].some((f) => f.toLowerCase().includes(needle));
+        return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary].some((f) => f.toLowerCase().includes(needle));
       }
-      if (showIdle || s.isProcessing || layout.panes.includes(s.id)) return true;
+      if (showIdle || s.isProcessing || s.scheduledTaskCount > 0 || layout.panes.includes(s.id)) return true;
       return Number(s.lastEventUnix) > now - DAY;
     });
   });
@@ -108,21 +108,16 @@
                   <span class="main">
                     <span class="line1">
                       <span class="name">{s.name}</span>
-                      <span class="sub">
-                        {#if s.shortSummary}
-                          {s.shortSummary}
-                        {:else if s.isProcessing && s.detail}
-                          {s.detail}
-                        {:else if s.summary}
-                          {s.summary}
-                        {:else if layout.forks[s.id]}
-                          btw fork of {live.byId(layout.forks[s.id])?.name ?? "session"}
-                        {:else}
-                          {s.status}{s.model ? `, ${s.model}` : ""}
-                        {/if}
-                      </span>
+                      <span class="task-title">{s.shortSummary || (layout.forks[s.id] ? `btw fork of ${live.byId(layout.forks[s.id])?.name ?? "session"}` : s.status)}</span>
+                      {#if s.scheduledTaskCount > 0}
+                        <span class="scheduled-badge" aria-label={`${s.scheduledTaskCount} pending scheduled tasks`} title={`${s.scheduledTaskCount} pending scheduled tasks. Open the session to see due times.`}>
+                          <svg aria-hidden="true" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>{s.scheduledTaskCount}
+                        </span>
+                      {/if}
                       <span class="age">{ago(s.lastEventUnix)}</span>
                     </span>
+                    <span class="sub" title={s.summary || s.detail}>{s.summary || s.detail || "No recent activity"}</span>
+                    <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
                   </span>
                 </button>
               </li>
@@ -213,8 +208,9 @@
     display: flex;
     width: 100%;
     text-align: left;
-    padding: 0.3rem 0.75rem 0.3rem 0;
-    gap: 0.625rem;
+    padding: 3px 10px 3px 0;
+    gap: 7px;
+    line-height: 1.25;
   }
   .row:hover {
     background: var(--ink-3);
@@ -259,24 +255,32 @@
   .name {
     flex: none;
     font-weight: 600;
-    font-size: var(--s0);
-    min-width: 1.75rem;
+    font-size: 12px;
+    min-width: 1.5rem;
   }
+  .task-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--fg-2); }
+  .scheduled-badge { display: inline-flex; align-items: center; gap: 3px; flex: none; color: var(--busy); font-size: 10px; font-variant-numeric: tabular-nums; }
+  .scheduled-badge svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .meta { display: flex; gap: 6px; margin-top: 1px; color: var(--fg-3); font-size: 10px; }
+  .model { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .waiting { color: var(--busy); flex: none; }
   .sub {
-    flex: 1;
+    display: block;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: var(--fg-3);
-    font-size: var(--s-1);
+    font-size: 11px;
+    margin-top: 1px;
   }
   [data-tone="busy"] .sub {
     color: var(--fg-2);
   }
   .age {
     color: var(--fg-3);
-    font-size: var(--s-1);
+    font-size: 10px;
+    flex: none;
     font-variant-numeric: tabular-nums;
   }
   .more {

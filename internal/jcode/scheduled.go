@@ -19,8 +19,8 @@ type ScheduledTask struct {
 	TargetParentSessionID string    `json:"target_parent_session_id"`
 }
 
-// ScheduledTasks reads the server's actual pending queue without changing it.
-func (d *Debug) ScheduledTasks(ctx context.Context, sessionID string) ([]ScheduledTask, error) {
+// ScheduledQueue reads the server's actual pending queue without changing it.
+func (d *Debug) ScheduledQueue(ctx context.Context) ([]ScheduledTask, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	out, err := d.Run(ctx, "ambient:queue", "")
@@ -31,11 +31,21 @@ func (d *Debug) ScheduledTasks(ctx context.Context, sessionID string) ([]Schedul
 	if err := json.Unmarshal([]byte(out), &items); err != nil {
 		return nil, fmt.Errorf("decode scheduled queue: %w", err)
 	}
-	tasks := make([]ScheduledTask, 0)
 	for _, item := range items {
 		if item.ScheduledFor.IsZero() {
 			return nil, fmt.Errorf("scheduled task %q has no due time", item.ID)
 		}
+	}
+	return items, nil
+}
+
+func (d *Debug) ScheduledTasks(ctx context.Context, sessionID string) ([]ScheduledTask, error) {
+	items, err := d.ScheduledQueue(ctx)
+	if err != nil {
+		return nil, err
+	}
+	tasks := make([]ScheduledTask, 0)
+	for _, item := range items {
 		if (item.TargetKind == "session" && item.TargetSessionID == sessionID) || (item.TargetKind == "spawn" && item.TargetParentSessionID == sessionID) {
 			tasks = append(tasks, item)
 		}
