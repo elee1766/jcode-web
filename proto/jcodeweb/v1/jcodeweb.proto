@@ -1,0 +1,259 @@
+syntax = "proto3";
+
+package jcodeweb.v1;
+
+option go_package = "github.com/elee1766/jcode-web/gen/jcodeweb/v1;jcodewebv1";
+
+// SessionService exposes jcode sessions, a merged server event feed, and
+// per-session live streams.
+service SessionService {
+  rpc ListSessions(ListSessionsRequest) returns (ListSessionsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+  // Watch streams session list snapshots and server-wide events. Replays
+  // stored events with id > after_id first.
+  rpc Watch(WatchRequest) returns (stream WatchResponse);
+  // Attach streams one session: a history snapshot, then live output.
+  rpc Attach(AttachRequest) returns (stream AttachResponse);
+
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+  rpc Cancel(CancelRequest) returns (CancelResponse);
+  // Btw forks a session with its full history and asks question in the fork.
+  // The parent keeps working.
+  rpc Btw(BtwRequest) returns (BtwResponse);
+}
+
+// PushService manages Web Push subscriptions.
+service PushService {
+  rpc GetVapidKey(GetVapidKeyRequest) returns (GetVapidKeyResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+  rpc Subscribe(SubscribeRequest) returns (SubscribeResponse);
+  rpc Unsubscribe(UnsubscribeRequest) returns (UnsubscribeResponse);
+  rpc Test(TestRequest) returns (TestResponse);
+}
+
+message TokenUsage {
+  uint64 input = 1;
+  uint64 output = 2;
+  uint64 cache_read = 3;
+  uint64 cache_write = 4;
+}
+
+message Session {
+  string id = 1;
+  string name = 2;
+  // ready, running, completed, failed, stopped, ...
+  string status = 3;
+  bool is_processing = 4;
+  string model = 5;
+  string provider = 6;
+  string working_dir = 7;
+  string swarm_id = 8;
+  string server_name = 9;
+  string detail = 10;
+  TokenUsage token_usage = 11;
+  int64 last_event_unix = 12;
+  // A jcode-web upstream connection is attached.
+  bool attached = 13;
+}
+
+// Event is a server-wide event from the jcode debug event bus.
+message Event {
+  // Local monotonic id assigned by jcode-web.
+  int64 id = 1;
+  // Event id from the jcode server. Resets when jcode restarts.
+  uint64 upstream_id = 2;
+  string session_id = 3;
+  string session_name = 4;
+  string swarm_id = 5;
+  int64 timestamp_unix = 6;
+  // file_touch, notification, plan_update, plan_proposal, context_update,
+  // status_change, member_change.
+  string type = 7;
+  // Upstream event payload as JSON.
+  string payload_json = 8;
+  // One-line summary.
+  string summary = 9;
+}
+
+message ListSessionsRequest {}
+message ListSessionsResponse {
+  repeated Session sessions = 1;
+}
+
+message ListEventsRequest {
+  // Empty means all sessions.
+  string session_id = 1;
+  // Events with id < before_id. 0 means latest.
+  int64 before_id = 2;
+  uint32 limit = 3;
+}
+message ListEventsResponse {
+  repeated Event events = 1;
+}
+
+message WatchRequest {
+  int64 after_id = 1;
+}
+message WatchResponse {
+  oneof update {
+    Event event = 1;
+    SessionsSnapshot sessions = 2;
+    Connection connection = 3;
+  }
+}
+message SessionsSnapshot {
+  repeated Session sessions = 1;
+}
+message Connection {
+  bool connected = 1;
+  string error = 2;
+}
+
+message ToolData {
+  string id = 1;
+  string name = 2;
+  string input_json = 3;
+  string intent = 4;
+}
+
+message HistoryMessage {
+  string role = 1;
+  string content = 2;
+  ToolData tool = 3;
+}
+
+message AttachRequest {
+  string session_id = 1;
+  // Trailing history messages to send. 0 means all.
+  uint32 history_limit = 2;
+}
+
+message AttachResponse {
+  oneof update {
+    History history = 1;
+    TextDelta text_delta = 2;
+    TextDelta reasoning_delta = 3;
+    ToolStart tool_start = 4;
+    ToolInput tool_input = 5;
+    ToolStart tool_exec = 6;
+    ToolDone tool_done = 7;
+    TurnDone turn_done = 8;
+    Interrupted interrupted = 9;
+    UpstreamError error = 10;
+    StatusDetail status_detail = 11;
+    TokenUsage tokens = 12;
+    UserMessage user_message = 13;
+    TextDelta text_replace = 14;
+    // Any other upstream event, passed through.
+    RawEvent raw = 15;
+    Detached detached = 16;
+  }
+}
+
+message History {
+  repeated HistoryMessage messages = 1;
+  // Count before history_limit truncation.
+  uint32 total = 2;
+}
+message TextDelta {
+  string text = 1;
+}
+message ToolStart {
+  string id = 1;
+  string name = 2;
+}
+message ToolInput {
+  string id = 1;
+  string delta = 2;
+}
+message ToolDone {
+  string id = 1;
+  string name = 2;
+  string output = 3;
+  string error = 4;
+}
+message TurnDone {
+  string stop_reason = 1;
+}
+message Interrupted {}
+message UpstreamError {
+  string message = 1;
+}
+message StatusDetail {
+  string detail = 1;
+}
+// A user turn started, from any client including the TUI.
+message UserMessage {
+  string content = 1;
+  // peer, interrupt, web.
+  string source = 2;
+}
+message RawEvent {
+  string type = 1;
+  string json = 2;
+}
+message Detached {
+  string reason = 1;
+}
+
+enum SendMode {
+  SEND_MODE_UNSPECIFIED = 0;
+  // Start a turn. Fails if the session is busy.
+  SEND_MODE_MESSAGE = 1;
+  // Soft interrupt delivered at the next safe point.
+  SEND_MODE_INTERRUPT = 2;
+  // Urgent soft interrupt. May skip remaining tools.
+  SEND_MODE_INTERRUPT_URGENT = 3;
+}
+
+message SendMessageRequest {
+  string session_id = 1;
+  string content = 2;
+  // UNSPECIFIED picks MESSAGE when idle and INTERRUPT when busy.
+  SendMode mode = 3;
+}
+message SendMessageResponse {
+  SendMode mode = 1;
+}
+
+message CancelRequest {
+  string session_id = 1;
+}
+message CancelResponse {}
+
+message BtwRequest {
+  string session_id = 1;
+  string question = 2;
+}
+message BtwResponse {
+  string session_id = 1;
+  string session_name = 2;
+}
+
+message GetVapidKeyRequest {}
+message GetVapidKeyResponse {
+  string public_key = 1;
+}
+
+message SubscribeRequest {
+  string endpoint = 1;
+  string p256dh = 2;
+  string auth = 3;
+  string user_agent = 4;
+}
+message SubscribeResponse {}
+
+message UnsubscribeRequest {
+  string endpoint = 1;
+}
+message UnsubscribeResponse {}
+
+message TestRequest {}
+message TestResponse {
+  uint32 sent = 1;
+}
