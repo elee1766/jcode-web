@@ -90,6 +90,8 @@ func (h *Hub) echo(sessionID, content string) {
 }
 
 func (h *Hub) Cancel(ctx context.Context, sessionID string) error {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
 	up, err := h.upstream(ctx, sessionID)
 	if err != nil {
 		return err

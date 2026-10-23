@@ -235,8 +235,7 @@ func (s *Session) SoftInterrupt(ctx context.Context, content string, urgent bool
 
 // Cancel stops the running turn.
 func (s *Session) Cancel(ctx context.Context) error {
-	_, err := s.request(ctx, map[string]any{"type": "cancel"})
-	return err
+	return s.fire(ctx, map[string]any{"type": "cancel"})
 }
 
 // RequestHistory asks for a fresh history event, delivered on Events.
