@@ -1,4 +1,4 @@
-// Package config loads settings from defaults, a TOML file, env, and flags.
+// Package config loads settings from defaults, a YAML file, env, and flags.
 package config
 
 import (
@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/knadh/koanf/parsers/toml/v2"
+	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/env/v2"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/structs"
@@ -68,13 +68,13 @@ func Defaults() Config {
 	}
 }
 
-// DefaultPath is ~/.config/jcode-web/config.toml.
+// DefaultPath is ~/.config/jcode-web/config.yaml.
 func DefaultPath() string {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(dir, "jcode-web", "config.toml")
+	return filepath.Join(dir, "jcode-web", "config.yaml")
 }
 
 // Load merges defaults, the file at path (optional when missing and
@@ -86,8 +86,13 @@ func Load(path string, explicit bool, overrides map[string]any) (Config, error) 
 	}
 	if path != "" {
 		if _, err := os.Stat(path); err == nil || explicit {
-			if err := k.Load(file.Provider(path), toml.Parser()); err != nil {
+			if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
 				return Config{}, fmt.Errorf("load %s: %w", path, err)
+			}
+		} else if strings.HasSuffix(path, ".yaml") {
+			legacy := strings.TrimSuffix(path, ".yaml") + ".toml"
+			if _, err := os.Stat(legacy); err == nil {
+				return Config{}, fmt.Errorf("convert %s to YAML and save it as %s", legacy, path)
 			}
 		}
 	}

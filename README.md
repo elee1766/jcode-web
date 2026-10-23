@@ -57,7 +57,7 @@ Browser reconnects replay persisted events. Events missed while the backend itse
 
 ## Configuration
 
-Copy `contrib/config.example.toml` to `~/.config/jcode-web/config.toml`, or use `-c /path/to/config.toml`. Defaults work without a config file. Configuration precedence is defaults, TOML, environment, CLI overrides.
+Copy `contrib/config.example.yaml` to `~/.config/jcode-web/config.yaml`, or use `-c /path/to/config.yaml`. Defaults work without a config file. Configuration precedence is defaults, YAML, environment, CLI overrides. Existing TOML configurations must be converted to YAML; an old default config is reported rather than silently ignored.
 
 Environment variables use the `JCODE_WEB_` prefix, with `__` separating nested fields. For example:
 

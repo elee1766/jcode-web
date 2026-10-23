@@ -42,7 +42,7 @@
             src = ./.;
             filter = path: _: !(pkgs.lib.hasInfix "/web/node_modules" path);
           };
-          vendorHash = "sha256-zqR6bV5ECJNqgD91X2G14wOK4T9YybZoYiEgplP0UGI=";
+          vendorHash = "sha256-z8BFq3wVMa4Epavvps5FzW2j9Npye+xAeDTrMJXO2Ho=";
           subPackages = [ "cmd/jcode-web" ];
           env.CGO_ENABLED = 0;
           ldflags = [ "-s" "-w" "-X main.version=${version}" ];

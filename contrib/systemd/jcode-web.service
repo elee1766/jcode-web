@@ -10,7 +10,7 @@ Type=simple
 ExecStart=%h/.local/bin/jcode-web serve
 Restart=on-failure
 RestartSec=3
-# Config lives at ~/.config/jcode-web/config.toml. Env overrides use JCODE_WEB_*,
+# Config lives at ~/.config/jcode-web/config.yaml. Env overrides use JCODE_WEB_*,
 # with __ for nesting, e.g. JCODE_WEB_SUMMARY__MODEL.
 Environment=JCODE_WEB_LOG_FORMAT=json
 
