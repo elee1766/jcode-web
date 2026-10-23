@@ -230,8 +230,7 @@ func (s *Session) Message(ctx context.Context, content string) error {
 
 // SoftInterrupt queues content for the running turn.
 func (s *Session) SoftInterrupt(ctx context.Context, content string, urgent bool) error {
-	_, err := s.request(ctx, map[string]any{"type": "soft_interrupt", "content": content, "urgent": urgent})
-	return err
+	return s.fire(ctx, map[string]any{"type": "soft_interrupt", "content": content, "urgent": urgent})
 }
 
 // Cancel stops the running turn.

@@ -52,6 +52,8 @@ const (
 // Send delivers content to a session. Auto starts a turn when idle and
 // queues a soft interrupt when busy.
 func (h *Hub) Send(ctx context.Context, sessionID, content string, mode SendMode) (SendMode, error) {
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
 	if mode == SendAuto {
 		mode = SendMessage
 		if s, ok := h.session(sessionID); ok && s.IsProcessing {
