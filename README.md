@@ -75,7 +75,7 @@ Summaries send transcript excerpts and activity to the configured provider. They
 
 SQLite stores activity, summaries, push subscriptions, and VAPID keys under the configured data directory. Migrations run automatically. Back up the database, including its WAL if the process is running. Transcript history remains owned by jcode. Sent-prompt recall also keeps up to 100 prompts per session in browser local storage. Docking layouts and workspace collapse preferences stay in that browser.
 
-The progress feed shows live relative ages, full timestamps on hover, and dates for updates older than 24 hours. Session discovery includes headless swarm workers, but the sidebar lists only top-level sessions. Quiet top-level sessions stay hidden unless requested, open, scheduled, or hosting active workers. Parent panes list their sub-sessions with status and inspection links, and worker panes link back to their coordinator.
+The progress feed shows live relative ages, full timestamps on hover, and dates for updates older than 24 hours. Session discovery includes headless swarm workers, but the sidebar lists only top-level sessions. Quiet top-level sessions stay hidden unless requested, open, scheduled, or hosting active workers. Parent panes list their sub-sessions with status and inspection links. Inspect and btw open a tab alongside the parent, rather than splitting the workspace. Middle-click closes a workspace tab. Tabs use Dockview's pointer dragging, and worker panes link back to their coordinator.
 
 ## Deployment
 

@@ -46,7 +46,11 @@
       const added = ids.filter(id => !api.getPanel(id));
       for (const [i, id] of added.entries()) {
         const replacement = removed[i];
-        addPanel(api, id, replacement ? {
+        const tabTarget = layout.takeTabTarget(id);
+        const reference = tabTarget ? api.getPanel(tabTarget) : undefined;
+        addPanel(api, id, reference ? {
+          referencePanel: reference, direction: "within", index: reference.group.panels.indexOf(reference) + 1,
+        } : replacement ? {
           referencePanel: replacement, direction: "within", index: replacement.group.panels.indexOf(replacement),
         } : undefined);
       }
@@ -97,6 +101,7 @@
     const api = createDockview(node, {
       theme: { ...themeDark, gap: 4 },
       disableFloatingGroups: true,
+      dndStrategy: "pointer",
       defaultRenderer: "always",
       createComponent: ({ id }) => {
         const element = document.createElement("div");
@@ -120,6 +125,16 @@
         return { element, init() {} };
       },
     });
+    function middleTab(event: MouseEvent) {
+      if (event.button !== 1 || !(event.target instanceof Element)) return;
+      const tab = event.target.closest<HTMLElement>(".dv-tab[data-tab-panel-id]");
+      if (!tab || !node.contains(tab)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.type === "auxclick" && tab.dataset.tabPanelId) layout.close(tab.dataset.tabPanelId);
+    }
+    node.addEventListener("mousedown", middleTab, true);
+    node.addEventListener("auxclick", middleTab, true);
     const subscriptions = [
       api.onDidActivePanelChange(({ panel }) => {
         if (!syncing && panel && layout.panes.includes(panel.id)) layout.focus(panel.id);
@@ -168,6 +183,8 @@
       disposed = true;
       clearTimeout(saveTimer);
       window.removeEventListener("pagehide", persistOnExit);
+      node.removeEventListener("mousedown", middleTab, true);
+      node.removeEventListener("auxclick", middleTab, true);
       layout.saveDock(api.toJSON());
       subscriptions.forEach(s => s.dispose());
       dock = undefined;

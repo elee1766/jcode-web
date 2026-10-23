@@ -6,6 +6,7 @@ export const SESSION_DRAG_TYPE = "application/x-jcode-session";
 class Layout {
   panes = $state<string[]>([]);
   focused = $state("");
+  #tabTargets = new Map<string, string>();
   forks = $state<Record<string, string>>({});
 
   constructor() {
@@ -45,8 +46,15 @@ class Layout {
     try { localStorage.setItem("jw.dockview", JSON.stringify(value)); } catch { /* Docking still works without storage. */ }
   }
 
-  open(id: string, opts: { after?: string } = {}) {
+  takeTabTarget(id: string): string | undefined {
+    const target = this.#tabTargets.get(id);
+    this.#tabTargets.delete(id);
+    return target;
+  }
+
+  open(id: string, opts: { after?: string; tabWith?: string } = {}) {
     if (!this.panes.includes(id)) {
+      if (opts.tabWith) this.#tabTargets.set(id, opts.tabWith);
       const i = opts.after ? this.panes.indexOf(opts.after) : -1;
       const next = [...this.panes];
       next.splice(i >= 0 ? i + 1 : next.length, 0, id);
@@ -65,6 +73,7 @@ class Layout {
   }
 
   close(id: string) {
+    this.#tabTargets.delete(id);
     this.panes = this.panes.filter(p => p !== id);
     if (this.focused === id) this.focus(this.panes[this.panes.length - 1] ?? "");
     this.#write();

@@ -92,7 +92,7 @@
       if (btw) {
         const r = await api.btw({ sessionId: id, question: text });
         layout.markFork(r.sessionId, id);
-        layout.open(r.sessionId, { after: id });
+        layout.open(r.sessionId, { after: id, tabWith: id });
         btw = false;
       } else {
         const r = await api.sendMessage({ sessionId: id, content: text, mode });
@@ -197,7 +197,7 @@
       <summary>Sub-sessions · {children.filter(child => child.isProcessing).length} running · {children.length} total</summary>
       <div class="children">
         {#each children as child (child.id)}
-          <button data-child-id={child.id} onclick={() => layout.open(child.id)} title={child.detail || child.summary}>
+          <button data-child-id={child.id} onclick={() => layout.open(child.id, { tabWith: id })} title={child.detail || child.summary}>
             <strong>{child.name}</strong><span class:busy={child.isProcessing}>{child.status}</span><span class="child-detail">{child.shortSummary || child.detail || child.model}</span><span>Inspect ↗</span>
           </button>
         {/each}
