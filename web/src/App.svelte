@@ -32,9 +32,8 @@
   const busyCount = $derived(roots.filter(s => s.isProcessing || busyParents.has(s.id)).length);
 
   function pick(id: string, e?: MouseEvent) {
-    const add = !wide || layout.focused === PROGRESS_WINDOW || e?.metaKey || e?.ctrlKey || e?.shiftKey;
-    if (add || layout.panes.includes(id)) layout.open(id);
-    else layout.swap(layout.focused, id);
+    const split = e?.metaKey || e?.ctrlKey || e?.shiftKey;
+    layout.open(id, { tabWith: split ? undefined : layout.focused });
     if (!wide) showList = false;
   }
 </script>

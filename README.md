@@ -8,7 +8,7 @@ Monitor and control jcode sessions from a desktop or mobile browser.
 - Clock badges show pending scheduled-task counts. Waiting sessions remain visible even when quiet sessions are hidden.
 - Live transcripts, tool calls, token counts, and status updates.
 - Drag sessions into a Dockview tiled workspace with docking previews. Drag tabs to split at an edge or group in the center, and resize with shared dividers.
-- Click to switch sessions. Ctrl, Shift, or Cmd click opens another tile. Tiles fill the available screen, with optional maximize and restore controls. Split sizes and tab groups are saved in the browser.
+- Click a session to focus its existing tab or add a tab in the focused tile without replacing other sessions. Ctrl, Shift, or Cmd click opens another tile. Tiles fill the available screen, with optional maximize and restore controls. Split sizes and tab groups are saved in the browser.
 - Mobile tabs keep one session visible at a time.
 - Send messages, steer a running turn, cancel, or use **btw** to fork a side question without stopping the parent.
 - Persistent activity feed and reconnect replay from SQLite.
