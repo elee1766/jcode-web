@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file jcodeweb/v1/jcodeweb.proto.
  */
 export const file_jcodeweb_v1_jcodeweb: GenFile = /*@__PURE__*/
-  fileDesc("ChpqY29kZXdlYi92MS9qY29kZXdlYi5wcm90bxILamNvZGV3ZWIudjEiVAoKVG9rZW5Vc2FnZRINCgVpbnB1dBgBIAEoBBIOCgZvdXRwdXQYAiABKAQSEgoKY2FjaGVfcmVhZBgDIAEoBBITCgtjYWNoZV93cml0ZRgEIAEoBCKQAgoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCRIVCg1pc19wcm9jZXNzaW5nGAQgASgIEg0KBW1vZGVsGAUgASgJEhAKCHByb3ZpZGVyGAYgASgJEhMKC3dvcmtpbmdfZGlyGAcgASgJEhAKCHN3YXJtX2lkGAggASgJEhMKC3NlcnZlcl9uYW1lGAkgASgJEg4KBmRldGFpbBgKIAEoCRIsCgt0b2tlbl91c2FnZRgLIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2USFwoPbGFzdF9ldmVudF91bml4GAwgASgDEhAKCGF0dGFjaGVkGA0gASgIIrEBCgVFdmVudBIKCgJpZBgBIAEoAxITCgt1cHN0cmVhbV9pZBgCIAEoBBISCgpzZXNzaW9uX2lkGAMgASgJEhQKDHNlc3Npb25fbmFtZRgEIAEoCRIQCghzd2FybV9pZBgFIAEoCRIWCg50aW1lc3RhbXBfdW5peBgGIAEoAxIMCgR0eXBlGAcgASgJEhQKDHBheWxvYWRfanNvbhgIIAEoCRIPCgdzdW1tYXJ5GAkgASgJIhUKE0xpc3RTZXNzaW9uc1JlcXVlc3QiPgoUTGlzdFNlc3Npb25zUmVzcG9uc2USJgoIc2Vzc2lvbnMYASADKAsyFC5qY29kZXdlYi52MS5TZXNzaW9uIkkKEUxpc3RFdmVudHNSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEQoJYmVmb3JlX2lkGAIgASgDEg0KBWxpbWl0GAMgASgNIjgKEkxpc3RFdmVudHNSZXNwb25zZRIiCgZldmVudHMYASADKAsyEi5qY29kZXdlYi52MS5FdmVudCIgCgxXYXRjaFJlcXVlc3QSEAoIYWZ0ZXJfaWQYASABKAMioAEKDVdhdGNoUmVzcG9uc2USIwoFZXZlbnQYASABKAsyEi5qY29kZXdlYi52MS5FdmVudEgAEjEKCHNlc3Npb25zGAIgASgLMh0uamNvZGV3ZWIudjEuU2Vzc2lvbnNTbmFwc2hvdEgAEi0KCmNvbm5lY3Rpb24YAyABKAsyFy5qY29kZXdlYi52MS5Db25uZWN0aW9uSABCCAoGdXBkYXRlIjoKEFNlc3Npb25zU25hcHNob3QSJgoIc2Vzc2lvbnMYASADKAsyFC5qY29kZXdlYi52MS5TZXNzaW9uIi4KCkNvbm5lY3Rpb24SEQoJY29ubmVjdGVkGAEgASgIEg0KBWVycm9yGAIgASgJIkgKCFRvb2xEYXRhEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSEgoKaW5wdXRfanNvbhgDIAEoCRIOCgZpbnRlbnQYBCABKAkiVAoOSGlzdG9yeU1lc3NhZ2USDAoEcm9sZRgBIAEoCRIPCgdjb250ZW50GAIgASgJEiMKBHRvb2wYAyABKAsyFS5qY29kZXdlYi52MS5Ub29sRGF0YSI6Cg1BdHRhY2hSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSFQoNaGlzdG9yeV9saW1pdBgCIAEoDSL1BQoOQXR0YWNoUmVzcG9uc2USJwoHaGlzdG9yeRgBIAEoCzIULmpjb2Rld2ViLnYxLkhpc3RvcnlIABIsCgp0ZXh0X2RlbHRhGAIgASgLMhYuamNvZGV3ZWIudjEuVGV4dERlbHRhSAASMQoPcmVhc29uaW5nX2RlbHRhGAMgASgLMhYuamNvZGV3ZWIudjEuVGV4dERlbHRhSAASLAoKdG9vbF9zdGFydBgEIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xTdGFydEgAEiwKCnRvb2xfaW5wdXQYBSABKAsyFi5qY29kZXdlYi52MS5Ub29sSW5wdXRIABIrCgl0b29sX2V4ZWMYBiABKAsyFi5qY29kZXdlYi52MS5Ub29sU3RhcnRIABIqCgl0b29sX2RvbmUYByABKAsyFS5qY29kZXdlYi52MS5Ub29sRG9uZUgAEioKCXR1cm5fZG9uZRgIIAEoCzIVLmpjb2Rld2ViLnYxLlR1cm5Eb25lSAASLwoLaW50ZXJydXB0ZWQYCSABKAsyGC5qY29kZXdlYi52MS5JbnRlcnJ1cHRlZEgAEisKBWVycm9yGAogASgLMhouamNvZGV3ZWIudjEuVXBzdHJlYW1FcnJvckgAEjIKDXN0YXR1c19kZXRhaWwYCyABKAsyGS5qY29kZXdlYi52MS5TdGF0dXNEZXRhaWxIABIpCgZ0b2tlbnMYDCABKAsyFy5qY29kZXdlYi52MS5Ub2tlblVzYWdlSAASMAoMdXNlcl9tZXNzYWdlGA0gASgLMhguamNvZGV3ZWIudjEuVXNlck1lc3NhZ2VIABIuCgx0ZXh0X3JlcGxhY2UYDiABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIkCgNyYXcYDyABKAsyFS5qY29kZXdlYi52MS5SYXdFdmVudEgAEikKCGRldGFjaGVkGBAgASgLMhUuamNvZGV3ZWIudjEuRGV0YWNoZWRIAEIICgZ1cGRhdGUiRwoHSGlzdG9yeRItCghtZXNzYWdlcxgBIAMoCzIbLmpjb2Rld2ViLnYxLkhpc3RvcnlNZXNzYWdlEg0KBXRvdGFsGAIgASgNIhkKCVRleHREZWx0YRIMCgR0ZXh0GAEgASgJIiUKCVRvb2xTdGFydBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJIiYKCVRvb2xJbnB1dBIKCgJpZBgBIAEoCRINCgVkZWx0YRgCIAEoCSJDCghUb29sRG9uZRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBm91dHB1dBgDIAEoCRINCgVlcnJvchgEIAEoCSIfCghUdXJuRG9uZRITCgtzdG9wX3JlYXNvbhgBIAEoCSINCgtJbnRlcnJ1cHRlZCIgCg1VcHN0cmVhbUVycm9yEg8KB21lc3NhZ2UYASABKAkiHgoMU3RhdHVzRGV0YWlsEg4KBmRldGFpbBgBIAEoCSIuCgtVc2VyTWVzc2FnZRIPCgdjb250ZW50GAEgASgJEg4KBnNvdXJjZRgCIAEoCSImCghSYXdFdmVudBIMCgR0eXBlGAEgASgJEgwKBGpzb24YAiABKAkiGgoIRGV0YWNoZWQSDgoGcmVhc29uGAEgASgJIl4KElNlbmRNZXNzYWdlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSIwoEbW9kZRgDIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIjoKE1NlbmRNZXNzYWdlUmVzcG9uc2USIwoEbW9kZRgBIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIiMKDUNhbmNlbFJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIQCg5DYW5jZWxSZXNwb25zZSIyCgpCdHdSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEAoIcXVlc3Rpb24YAiABKAkiNwoLQnR3UmVzcG9uc2USEgoKc2Vzc2lvbl9pZBgBIAEoCRIUCgxzZXNzaW9uX25hbWUYAiABKAkiFAoSR2V0VmFwaWRLZXlSZXF1ZXN0IikKE0dldFZhcGlkS2V5UmVzcG9uc2USEgoKcHVibGljX2tleRgBIAEoCSJWChBTdWJzY3JpYmVSZXF1ZXN0EhAKCGVuZHBvaW50GAEgASgJEg4KBnAyNTZkaBgCIAEoCRIMCgRhdXRoGAMgASgJEhIKCnVzZXJfYWdlbnQYBCABKAkiEwoRU3Vic2NyaWJlUmVzcG9uc2UiJgoSVW5zdWJzY3JpYmVSZXF1ZXN0EhAKCGVuZHBvaW50GAEgASgJIhUKE1Vuc3Vic2NyaWJlUmVzcG9uc2UiDQoLVGVzdFJlcXVlc3QiHAoMVGVzdFJlc3BvbnNlEgwKBHNlbnQYASABKA0qdQoIU2VuZE1vZGUSGQoVU0VORF9NT0RFX1VOU1BFQ0lGSUVEEAASFQoRU0VORF9NT0RFX01FU1NBR0UQARIXChNTRU5EX01PREVfSU5URVJSVVBUEAISHgoaU0VORF9NT0RFX0lOVEVSUlVQVF9VUkdFTlQQAzKUBAoOU2Vzc2lvblNlcnZpY2USWAoMTGlzdFNlc3Npb25zEiAuamNvZGV3ZWIudjEuTGlzdFNlc3Npb25zUmVxdWVzdBohLmpjb2Rld2ViLnYxLkxpc3RTZXNzaW9uc1Jlc3BvbnNlIgOQAgESUgoKTGlzdEV2ZW50cxIeLmpjb2Rld2ViLnYxLkxpc3RFdmVudHNSZXF1ZXN0Gh8uamNvZGV3ZWIudjEuTGlzdEV2ZW50c1Jlc3BvbnNlIgOQAgESQAoFV2F0Y2gSGS5qY29kZXdlYi52MS5XYXRjaFJlcXVlc3QaGi5qY29kZXdlYi52MS5XYXRjaFJlc3BvbnNlMAESQwoGQXR0YWNoEhouamNvZGV3ZWIudjEuQXR0YWNoUmVxdWVzdBobLmpjb2Rld2ViLnYxLkF0dGFjaFJlc3BvbnNlMAESUAoLU2VuZE1lc3NhZ2USHy5qY29kZXdlYi52MS5TZW5kTWVzc2FnZVJlcXVlc3QaIC5qY29kZXdlYi52MS5TZW5kTWVzc2FnZVJlc3BvbnNlEkEKBkNhbmNlbBIaLmpjb2Rld2ViLnYxLkNhbmNlbFJlcXVlc3QaGy5qY29kZXdlYi52MS5DYW5jZWxSZXNwb25zZRI4CgNCdHcSFy5qY29kZXdlYi52MS5CdHdSZXF1ZXN0GhguamNvZGV3ZWIudjEuQnR3UmVzcG9uc2UyvwIKC1B1c2hTZXJ2aWNlElUKC0dldFZhcGlkS2V5Eh8uamNvZGV3ZWIudjEuR2V0VmFwaWRLZXlSZXF1ZXN0GiAuamNvZGV3ZWIudjEuR2V0VmFwaWRLZXlSZXNwb25zZSIDkAIBEkoKCVN1YnNjcmliZRIdLmpjb2Rld2ViLnYxLlN1YnNjcmliZVJlcXVlc3QaHi5qY29kZXdlYi52MS5TdWJzY3JpYmVSZXNwb25zZRJQCgtVbnN1YnNjcmliZRIfLmpjb2Rld2ViLnYxLlVuc3Vic2NyaWJlUmVxdWVzdBogLmpjb2Rld2ViLnYxLlVuc3Vic2NyaWJlUmVzcG9uc2USOwoEVGVzdBIYLmpjb2Rld2ViLnYxLlRlc3RSZXF1ZXN0GhkuamNvZGV3ZWIudjEuVGVzdFJlc3BvbnNlQjpaOGdpdGh1Yi5jb20vZWxlZTE3NjYvamNvZGUtd2ViL2dlbi9qY29kZXdlYi92MTtqY29kZXdlYnYxYgZwcm90bzM");
+  fileDesc("ChpqY29kZXdlYi92MS9qY29kZXdlYi5wcm90bxILamNvZGV3ZWIudjEiVAoKVG9rZW5Vc2FnZRINCgVpbnB1dBgBIAEoBBIOCgZvdXRwdXQYAiABKAQSEgoKY2FjaGVfcmVhZBgDIAEoBBITCgtjYWNoZV93cml0ZRgEIAEoBCK3AgoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCRIVCg1pc19wcm9jZXNzaW5nGAQgASgIEg0KBW1vZGVsGAUgASgJEhAKCHByb3ZpZGVyGAYgASgJEhMKC3dvcmtpbmdfZGlyGAcgASgJEhAKCHN3YXJtX2lkGAggASgJEhMKC3NlcnZlcl9uYW1lGAkgASgJEg4KBmRldGFpbBgKIAEoCRIsCgt0b2tlbl91c2FnZRgLIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2USFwoPbGFzdF9ldmVudF91bml4GAwgASgDEhAKCGF0dGFjaGVkGA0gASgIEg8KB3N1bW1hcnkYDiABKAkSFAoMc3VtbWFyeV91bml4GA8gASgDIrEBCgVFdmVudBIKCgJpZBgBIAEoAxITCgt1cHN0cmVhbV9pZBgCIAEoBBISCgpzZXNzaW9uX2lkGAMgASgJEhQKDHNlc3Npb25fbmFtZRgEIAEoCRIQCghzd2FybV9pZBgFIAEoCRIWCg50aW1lc3RhbXBfdW5peBgGIAEoAxIMCgR0eXBlGAcgASgJEhQKDHBheWxvYWRfanNvbhgIIAEoCRIPCgdzdW1tYXJ5GAkgASgJIhUKE0xpc3RTZXNzaW9uc1JlcXVlc3QiPgoUTGlzdFNlc3Npb25zUmVzcG9uc2USJgoIc2Vzc2lvbnMYASADKAsyFC5qY29kZXdlYi52MS5TZXNzaW9uIkkKEUxpc3RFdmVudHNSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEQoJYmVmb3JlX2lkGAIgASgDEg0KBWxpbWl0GAMgASgNIjgKEkxpc3RFdmVudHNSZXNwb25zZRIiCgZldmVudHMYASADKAsyEi5qY29kZXdlYi52MS5FdmVudCIgCgxXYXRjaFJlcXVlc3QSEAoIYWZ0ZXJfaWQYASABKAMioAEKDVdhdGNoUmVzcG9uc2USIwoFZXZlbnQYASABKAsyEi5qY29kZXdlYi52MS5FdmVudEgAEjEKCHNlc3Npb25zGAIgASgLMh0uamNvZGV3ZWIudjEuU2Vzc2lvbnNTbmFwc2hvdEgAEi0KCmNvbm5lY3Rpb24YAyABKAsyFy5qY29kZXdlYi52MS5Db25uZWN0aW9uSABCCAoGdXBkYXRlIjoKEFNlc3Npb25zU25hcHNob3QSJgoIc2Vzc2lvbnMYASADKAsyFC5qY29kZXdlYi52MS5TZXNzaW9uIi4KCkNvbm5lY3Rpb24SEQoJY29ubmVjdGVkGAEgASgIEg0KBWVycm9yGAIgASgJIkgKCFRvb2xEYXRhEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSEgoKaW5wdXRfanNvbhgDIAEoCRIOCgZpbnRlbnQYBCABKAkiVAoOSGlzdG9yeU1lc3NhZ2USDAoEcm9sZRgBIAEoCRIPCgdjb250ZW50GAIgASgJEiMKBHRvb2wYAyABKAsyFS5qY29kZXdlYi52MS5Ub29sRGF0YSI6Cg1BdHRhY2hSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSFQoNaGlzdG9yeV9saW1pdBgCIAEoDSL1BQoOQXR0YWNoUmVzcG9uc2USJwoHaGlzdG9yeRgBIAEoCzIULmpjb2Rld2ViLnYxLkhpc3RvcnlIABIsCgp0ZXh0X2RlbHRhGAIgASgLMhYuamNvZGV3ZWIudjEuVGV4dERlbHRhSAASMQoPcmVhc29uaW5nX2RlbHRhGAMgASgLMhYuamNvZGV3ZWIudjEuVGV4dERlbHRhSAASLAoKdG9vbF9zdGFydBgEIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xTdGFydEgAEiwKCnRvb2xfaW5wdXQYBSABKAsyFi5qY29kZXdlYi52MS5Ub29sSW5wdXRIABIrCgl0b29sX2V4ZWMYBiABKAsyFi5qY29kZXdlYi52MS5Ub29sU3RhcnRIABIqCgl0b29sX2RvbmUYByABKAsyFS5qY29kZXdlYi52MS5Ub29sRG9uZUgAEioKCXR1cm5fZG9uZRgIIAEoCzIVLmpjb2Rld2ViLnYxLlR1cm5Eb25lSAASLwoLaW50ZXJydXB0ZWQYCSABKAsyGC5qY29kZXdlYi52MS5JbnRlcnJ1cHRlZEgAEisKBWVycm9yGAogASgLMhouamNvZGV3ZWIudjEuVXBzdHJlYW1FcnJvckgAEjIKDXN0YXR1c19kZXRhaWwYCyABKAsyGS5qY29kZXdlYi52MS5TdGF0dXNEZXRhaWxIABIpCgZ0b2tlbnMYDCABKAsyFy5qY29kZXdlYi52MS5Ub2tlblVzYWdlSAASMAoMdXNlcl9tZXNzYWdlGA0gASgLMhguamNvZGV3ZWIudjEuVXNlck1lc3NhZ2VIABIuCgx0ZXh0X3JlcGxhY2UYDiABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIkCgNyYXcYDyABKAsyFS5qY29kZXdlYi52MS5SYXdFdmVudEgAEikKCGRldGFjaGVkGBAgASgLMhUuamNvZGV3ZWIudjEuRGV0YWNoZWRIAEIICgZ1cGRhdGUiRwoHSGlzdG9yeRItCghtZXNzYWdlcxgBIAMoCzIbLmpjb2Rld2ViLnYxLkhpc3RvcnlNZXNzYWdlEg0KBXRvdGFsGAIgASgNIhkKCVRleHREZWx0YRIMCgR0ZXh0GAEgASgJIiUKCVRvb2xTdGFydBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJIiYKCVRvb2xJbnB1dBIKCgJpZBgBIAEoCRINCgVkZWx0YRgCIAEoCSJDCghUb29sRG9uZRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBm91dHB1dBgDIAEoCRINCgVlcnJvchgEIAEoCSIfCghUdXJuRG9uZRITCgtzdG9wX3JlYXNvbhgBIAEoCSINCgtJbnRlcnJ1cHRlZCIgCg1VcHN0cmVhbUVycm9yEg8KB21lc3NhZ2UYASABKAkiHgoMU3RhdHVzRGV0YWlsEg4KBmRldGFpbBgBIAEoCSIuCgtVc2VyTWVzc2FnZRIPCgdjb250ZW50GAEgASgJEg4KBnNvdXJjZRgCIAEoCSImCghSYXdFdmVudBIMCgR0eXBlGAEgASgJEgwKBGpzb24YAiABKAkiGgoIRGV0YWNoZWQSDgoGcmVhc29uGAEgASgJIl4KElNlbmRNZXNzYWdlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSIwoEbW9kZRgDIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIjoKE1NlbmRNZXNzYWdlUmVzcG9uc2USIwoEbW9kZRgBIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIiMKDUNhbmNlbFJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIQCg5DYW5jZWxSZXNwb25zZSIyCgpCdHdSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEAoIcXVlc3Rpb24YAiABKAkiNwoLQnR3UmVzcG9uc2USEgoKc2Vzc2lvbl9pZBgBIAEoCRIUCgxzZXNzaW9uX25hbWUYAiABKAkiJgoQU3VtbWFyaXplUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIiQKEVN1bW1hcml6ZVJlc3BvbnNlEg8KB3N1bW1hcnkYASABKAkiKQoPT3ZlcnZpZXdSZXF1ZXN0EhYKDndpbmRvd19taW51dGVzGAEgASgNIi8KEE92ZXJ2aWV3UmVzcG9uc2USDAoEdGV4dBgBIAEoCRINCgVtb2RlbBgCIAEoCSIUChJHZXRGZWF0dXJlc1JlcXVlc3QiPwoTR2V0RmVhdHVyZXNSZXNwb25zZRIRCglzdW1tYXJpZXMYASABKAgSFQoNc3VtbWFyeV9tb2RlbBgCIAEoCSIUChJHZXRWYXBpZEtleVJlcXVlc3QiKQoTR2V0VmFwaWRLZXlSZXNwb25zZRISCgpwdWJsaWNfa2V5GAEgASgJIlYKEFN1YnNjcmliZVJlcXVlc3QSEAoIZW5kcG9pbnQYASABKAkSDgoGcDI1NmRoGAIgASgJEgwKBGF1dGgYAyABKAkSEgoKdXNlcl9hZ2VudBgEIAEoCSITChFTdWJzY3JpYmVSZXNwb25zZSImChJVbnN1YnNjcmliZVJlcXVlc3QSEAoIZW5kcG9pbnQYASABKAkiFQoTVW5zdWJzY3JpYmVSZXNwb25zZSINCgtUZXN0UmVxdWVzdCIcCgxUZXN0UmVzcG9uc2USDAoEc2VudBgBIAEoDSp1CghTZW5kTW9kZRIZChVTRU5EX01PREVfVU5TUEVDSUZJRUQQABIVChFTRU5EX01PREVfTUVTU0FHRRABEhcKE1NFTkRfTU9ERV9JTlRFUlJVUFQQAhIeChpTRU5EX01PREVfSU5URVJSVVBUX1VSR0VOVBADMoAGCg5TZXNzaW9uU2VydmljZRJYCgxMaXN0U2Vzc2lvbnMSIC5qY29kZXdlYi52MS5MaXN0U2Vzc2lvbnNSZXF1ZXN0GiEuamNvZGV3ZWIudjEuTGlzdFNlc3Npb25zUmVzcG9uc2UiA5ACARJSCgpMaXN0RXZlbnRzEh4uamNvZGV3ZWIudjEuTGlzdEV2ZW50c1JlcXVlc3QaHy5qY29kZXdlYi52MS5MaXN0RXZlbnRzUmVzcG9uc2UiA5ACARJACgVXYXRjaBIZLmpjb2Rld2ViLnYxLldhdGNoUmVxdWVzdBoaLmpjb2Rld2ViLnYxLldhdGNoUmVzcG9uc2UwARJDCgZBdHRhY2gSGi5qY29kZXdlYi52MS5BdHRhY2hSZXF1ZXN0GhsuamNvZGV3ZWIudjEuQXR0YWNoUmVzcG9uc2UwARJQCgtTZW5kTWVzc2FnZRIfLmpjb2Rld2ViLnYxLlNlbmRNZXNzYWdlUmVxdWVzdBogLmpjb2Rld2ViLnYxLlNlbmRNZXNzYWdlUmVzcG9uc2USQQoGQ2FuY2VsEhouamNvZGV3ZWIudjEuQ2FuY2VsUmVxdWVzdBobLmpjb2Rld2ViLnYxLkNhbmNlbFJlc3BvbnNlEjgKA0J0dxIXLmpjb2Rld2ViLnYxLkJ0d1JlcXVlc3QaGC5qY29kZXdlYi52MS5CdHdSZXNwb25zZRJKCglTdW1tYXJpemUSHS5qY29kZXdlYi52MS5TdW1tYXJpemVSZXF1ZXN0Gh4uamNvZGV3ZWIudjEuU3VtbWFyaXplUmVzcG9uc2USRwoIT3ZlcnZpZXcSHC5qY29kZXdlYi52MS5PdmVydmlld1JlcXVlc3QaHS5qY29kZXdlYi52MS5PdmVydmlld1Jlc3BvbnNlElUKC0dldEZlYXR1cmVzEh8uamNvZGV3ZWIudjEuR2V0RmVhdHVyZXNSZXF1ZXN0GiAuamNvZGV3ZWIudjEuR2V0RmVhdHVyZXNSZXNwb25zZSIDkAIBMr8CCgtQdXNoU2VydmljZRJVCgtHZXRWYXBpZEtleRIfLmpjb2Rld2ViLnYxLkdldFZhcGlkS2V5UmVxdWVzdBogLmpjb2Rld2ViLnYxLkdldFZhcGlkS2V5UmVzcG9uc2UiA5ACARJKCglTdWJzY3JpYmUSHS5qY29kZXdlYi52MS5TdWJzY3JpYmVSZXF1ZXN0Gh4uamNvZGV3ZWIudjEuU3Vic2NyaWJlUmVzcG9uc2USUAoLVW5zdWJzY3JpYmUSHy5qY29kZXdlYi52MS5VbnN1YnNjcmliZVJlcXVlc3QaIC5qY29kZXdlYi52MS5VbnN1YnNjcmliZVJlc3BvbnNlEjsKBFRlc3QSGC5qY29kZXdlYi52MS5UZXN0UmVxdWVzdBoZLmpjb2Rld2ViLnYxLlRlc3RSZXNwb25zZUI6WjhnaXRodWIuY29tL2VsZWUxNzY2L2pjb2RlLXdlYi9nZW4vamNvZGV3ZWIvdjE7amNvZGV3ZWJ2MWIGcHJvdG8z");
 
 /**
  * @generated from message jcodeweb.v1.TokenUsage
@@ -116,6 +116,18 @@ export type Session = Message<"jcodeweb.v1.Session"> & {
    * @generated from field: bool attached = 13;
    */
   attached: boolean;
+
+  /**
+   * AI summary, empty when none.
+   *
+   * @generated from field: string summary = 14;
+   */
+  summary: string;
+
+  /**
+   * @generated from field: int64 summary_unix = 15;
+   */
+  summaryUnix: bigint;
 };
 
 /**
@@ -929,6 +941,116 @@ export const BtwResponseSchema: GenMessage<BtwResponse> = /*@__PURE__*/
   messageDesc(file_jcodeweb_v1_jcodeweb, 32);
 
 /**
+ * @generated from message jcodeweb.v1.SummarizeRequest
+ */
+export type SummarizeRequest = Message<"jcodeweb.v1.SummarizeRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SummarizeRequest.
+ * Use `create(SummarizeRequestSchema)` to create a new message.
+ */
+export const SummarizeRequestSchema: GenMessage<SummarizeRequest> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 33);
+
+/**
+ * @generated from message jcodeweb.v1.SummarizeResponse
+ */
+export type SummarizeResponse = Message<"jcodeweb.v1.SummarizeResponse"> & {
+  /**
+   * @generated from field: string summary = 1;
+   */
+  summary: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SummarizeResponse.
+ * Use `create(SummarizeResponseSchema)` to create a new message.
+ */
+export const SummarizeResponseSchema: GenMessage<SummarizeResponse> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 34);
+
+/**
+ * @generated from message jcodeweb.v1.OverviewRequest
+ */
+export type OverviewRequest = Message<"jcodeweb.v1.OverviewRequest"> & {
+  /**
+   * Look back this many minutes. 0 means 60.
+   *
+   * @generated from field: uint32 window_minutes = 1;
+   */
+  windowMinutes: number;
+};
+
+/**
+ * Describes the message jcodeweb.v1.OverviewRequest.
+ * Use `create(OverviewRequestSchema)` to create a new message.
+ */
+export const OverviewRequestSchema: GenMessage<OverviewRequest> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 35);
+
+/**
+ * @generated from message jcodeweb.v1.OverviewResponse
+ */
+export type OverviewResponse = Message<"jcodeweb.v1.OverviewResponse"> & {
+  /**
+   * @generated from field: string text = 1;
+   */
+  text: string;
+
+  /**
+   * @generated from field: string model = 2;
+   */
+  model: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.OverviewResponse.
+ * Use `create(OverviewResponseSchema)` to create a new message.
+ */
+export const OverviewResponseSchema: GenMessage<OverviewResponse> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 36);
+
+/**
+ * @generated from message jcodeweb.v1.GetFeaturesRequest
+ */
+export type GetFeaturesRequest = Message<"jcodeweb.v1.GetFeaturesRequest"> & {
+};
+
+/**
+ * Describes the message jcodeweb.v1.GetFeaturesRequest.
+ * Use `create(GetFeaturesRequestSchema)` to create a new message.
+ */
+export const GetFeaturesRequestSchema: GenMessage<GetFeaturesRequest> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 37);
+
+/**
+ * @generated from message jcodeweb.v1.GetFeaturesResponse
+ */
+export type GetFeaturesResponse = Message<"jcodeweb.v1.GetFeaturesResponse"> & {
+  /**
+   * @generated from field: bool summaries = 1;
+   */
+  summaries: boolean;
+
+  /**
+   * @generated from field: string summary_model = 2;
+   */
+  summaryModel: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.GetFeaturesResponse.
+ * Use `create(GetFeaturesResponseSchema)` to create a new message.
+ */
+export const GetFeaturesResponseSchema: GenMessage<GetFeaturesResponse> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 38);
+
+/**
  * @generated from message jcodeweb.v1.GetVapidKeyRequest
  */
 export type GetVapidKeyRequest = Message<"jcodeweb.v1.GetVapidKeyRequest"> & {
@@ -939,7 +1061,7 @@ export type GetVapidKeyRequest = Message<"jcodeweb.v1.GetVapidKeyRequest"> & {
  * Use `create(GetVapidKeyRequestSchema)` to create a new message.
  */
 export const GetVapidKeyRequestSchema: GenMessage<GetVapidKeyRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 33);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 39);
 
 /**
  * @generated from message jcodeweb.v1.GetVapidKeyResponse
@@ -956,7 +1078,7 @@ export type GetVapidKeyResponse = Message<"jcodeweb.v1.GetVapidKeyResponse"> & {
  * Use `create(GetVapidKeyResponseSchema)` to create a new message.
  */
 export const GetVapidKeyResponseSchema: GenMessage<GetVapidKeyResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 34);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 40);
 
 /**
  * @generated from message jcodeweb.v1.SubscribeRequest
@@ -988,7 +1110,7 @@ export type SubscribeRequest = Message<"jcodeweb.v1.SubscribeRequest"> & {
  * Use `create(SubscribeRequestSchema)` to create a new message.
  */
 export const SubscribeRequestSchema: GenMessage<SubscribeRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 35);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 41);
 
 /**
  * @generated from message jcodeweb.v1.SubscribeResponse
@@ -1001,7 +1123,7 @@ export type SubscribeResponse = Message<"jcodeweb.v1.SubscribeResponse"> & {
  * Use `create(SubscribeResponseSchema)` to create a new message.
  */
 export const SubscribeResponseSchema: GenMessage<SubscribeResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 36);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 42);
 
 /**
  * @generated from message jcodeweb.v1.UnsubscribeRequest
@@ -1018,7 +1140,7 @@ export type UnsubscribeRequest = Message<"jcodeweb.v1.UnsubscribeRequest"> & {
  * Use `create(UnsubscribeRequestSchema)` to create a new message.
  */
 export const UnsubscribeRequestSchema: GenMessage<UnsubscribeRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 37);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 43);
 
 /**
  * @generated from message jcodeweb.v1.UnsubscribeResponse
@@ -1031,7 +1153,7 @@ export type UnsubscribeResponse = Message<"jcodeweb.v1.UnsubscribeResponse"> & {
  * Use `create(UnsubscribeResponseSchema)` to create a new message.
  */
 export const UnsubscribeResponseSchema: GenMessage<UnsubscribeResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 38);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 44);
 
 /**
  * @generated from message jcodeweb.v1.TestRequest
@@ -1044,7 +1166,7 @@ export type TestRequest = Message<"jcodeweb.v1.TestRequest"> & {
  * Use `create(TestRequestSchema)` to create a new message.
  */
 export const TestRequestSchema: GenMessage<TestRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 39);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 45);
 
 /**
  * @generated from message jcodeweb.v1.TestResponse
@@ -1061,7 +1183,7 @@ export type TestResponse = Message<"jcodeweb.v1.TestResponse"> & {
  * Use `create(TestResponseSchema)` to create a new message.
  */
 export const TestResponseSchema: GenMessage<TestResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 40);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 46);
 
 /**
  * @generated from enum jcodeweb.v1.SendMode
@@ -1170,6 +1292,34 @@ export const SessionService: GenService<{
     methodKind: "unary";
     input: typeof BtwRequestSchema;
     output: typeof BtwResponseSchema;
+  },
+  /**
+   * Summarize regenerates the AI summary for one session.
+   *
+   * @generated from rpc jcodeweb.v1.SessionService.Summarize
+   */
+  summarize: {
+    methodKind: "unary";
+    input: typeof SummarizeRequestSchema;
+    output: typeof SummarizeResponseSchema;
+  },
+  /**
+   * Overview summarizes recent activity across all sessions.
+   *
+   * @generated from rpc jcodeweb.v1.SessionService.Overview
+   */
+  overview: {
+    methodKind: "unary";
+    input: typeof OverviewRequestSchema;
+    output: typeof OverviewResponseSchema;
+  },
+  /**
+   * @generated from rpc jcodeweb.v1.SessionService.GetFeatures
+   */
+  getFeatures: {
+    methodKind: "unary";
+    input: typeof GetFeaturesRequestSchema;
+    output: typeof GetFeaturesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_jcodeweb_v1_jcodeweb, 0);

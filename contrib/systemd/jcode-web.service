@@ -1,0 +1,24 @@
+# User service. Install:
+#   install -Dm644 contrib/systemd/jcode-web.service ~/.config/systemd/user/jcode-web.service
+#   systemctl --user daemon-reload && systemctl --user enable --now jcode-web
+[Unit]
+Description=jcode web UI
+After=default.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/jcode-web serve
+Restart=on-failure
+RestartSec=3
+# Config lives at ~/.config/jcode-web/config.toml. Env overrides use JCODE_WEB_*,
+# with __ for nesting, e.g. JCODE_WEB_SUMMARY__MODEL.
+Environment=JCODE_WEB_LOG_FORMAT=json
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=%S/jcode-web %t
+StateDirectory=jcode-web
+
+[Install]
+WantedBy=default.target

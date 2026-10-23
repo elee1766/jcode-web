@@ -145,7 +145,9 @@ func (s *Session) readLoop() {
 		select {
 		case s.events <- env:
 		default:
-			// Drop on overflow. Consumers recover via history on reattach.
+			s.err = errors.New("session event buffer overflow: reattach to recover history")
+			_ = s.c.c.Close()
+			return
 		}
 	}
 	s.err = sc.Err()

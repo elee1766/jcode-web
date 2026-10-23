@@ -24,6 +24,14 @@ service SessionService {
   // Btw forks a session with its full history and asks question in the fork.
   // The parent keeps working.
   rpc Btw(BtwRequest) returns (BtwResponse);
+
+  // Summarize regenerates the AI summary for one session.
+  rpc Summarize(SummarizeRequest) returns (SummarizeResponse);
+  // Overview summarizes recent activity across all sessions.
+  rpc Overview(OverviewRequest) returns (OverviewResponse);
+  rpc GetFeatures(GetFeaturesRequest) returns (GetFeaturesResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
 }
 
 // PushService manages Web Push subscriptions.
@@ -59,6 +67,9 @@ message Session {
   int64 last_event_unix = 12;
   // A jcode-web upstream connection is attached.
   bool attached = 13;
+  // AI summary, empty when none.
+  string summary = 14;
+  int64 summary_unix = 15;
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -233,6 +244,28 @@ message BtwRequest {
 message BtwResponse {
   string session_id = 1;
   string session_name = 2;
+}
+
+message SummarizeRequest {
+  string session_id = 1;
+}
+message SummarizeResponse {
+  string summary = 1;
+}
+
+message OverviewRequest {
+  // Look back this many minutes. 0 means 60.
+  uint32 window_minutes = 1;
+}
+message OverviewResponse {
+  string text = 1;
+  string model = 2;
+}
+
+message GetFeaturesRequest {}
+message GetFeaturesResponse {
+  bool summaries = 1;
+  string summary_model = 2;
 }
 
 message GetVapidKeyRequest {}

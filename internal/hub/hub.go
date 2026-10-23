@@ -14,6 +14,7 @@ import (
 
 	"github.com/elee1766/jcode-web/internal/jcode"
 	"github.com/elee1766/jcode-web/internal/store"
+	"github.com/elee1766/jcode-web/internal/summarize"
 )
 
 type Config struct {
@@ -44,6 +45,10 @@ type Hub struct {
 	connErr   string
 	watchers  map[chan WatchUpdate]struct{}
 	attached  map[string]*attachment
+
+	sum       *summarize.Client
+	sumQueue  chan string
+	summaries map[string]store.Summary
 }
 
 // WatchUpdate is one item for Watch subscribers. Exactly one field is set.
@@ -62,6 +67,8 @@ type SessionView struct {
 	jcode.SessionInfo
 	LastEventUnix int64
 	Attached      bool
+	Summary       string
+	SummaryAt     int64
 }
 
 func New(cfg Config, log *slog.Logger, st *store.Store, notify Notifier) *Hub {
@@ -75,6 +82,7 @@ func New(cfg Config, log *slog.Logger, st *store.Store, notify Notifier) *Hub {
 		lastEvent: map[string]int64{},
 		watchers:  map[chan WatchUpdate]struct{}{},
 		attached:  map[string]*attachment{},
+		summaries: map[string]store.Summary{},
 	}
 }
 
@@ -87,11 +95,13 @@ func (h *Hub) Run(ctx context.Context) {
 		h.lastEvent = times
 		h.mu.Unlock()
 	}
+	h.loadSummaries(ctx)
 	var wg sync.WaitGroup
-	wg.Add(3)
+	wg.Add(4)
 	go func() { defer wg.Done(); h.pollLoop(ctx) }()
 	go func() { defer wg.Done(); h.busLoop(ctx) }()
 	go func() { defer wg.Done(); h.pruneLoop(ctx) }()
+	go func() { defer wg.Done(); h.summaryLoop(ctx) }()
 	wg.Wait()
 }
 
@@ -114,7 +124,7 @@ func (h *Hub) refresh(ctx context.Context) {
 	defer cancel()
 	list, err := h.debug.Sessions(ctx)
 	if err != nil {
-		if ctx.Err() == nil {
+		if !errors.Is(ctx.Err(), context.Canceled) {
 			h.setConnection(false, err.Error())
 		}
 		return
@@ -176,7 +186,8 @@ func (h *Hub) Sessions() []SessionView {
 	out := make([]SessionView, 0, len(h.sessions))
 	for id, s := range h.sessions {
 		_, att := h.attached[id]
-		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att})
+		sm := h.summaries[id]
+		out = append(out, SessionView{SessionInfo: s, LastEventUnix: h.lastEvent[id], Attached: att, Summary: sm.Text, SummaryAt: sm.UpdatedAt})
 	}
 	sort.Slice(out, func(i, j int) bool {
 		if out[i].IsProcessing != out[j].IsProcessing {
@@ -258,6 +269,15 @@ func (h *Hub) ingest(ctx context.Context, ev jcode.BusEvent) {
 	if typ == "status_change" || typ == "member_change" {
 		go h.refresh(ctx)
 	}
+	if typ == "status_change" {
+		var p struct {
+			Old string `json:"old_status"`
+		}
+		if json.Unmarshal(ev.Event, &p) == nil && p.Old == "running" {
+			h.resync(e.SessionID)
+			h.queueSummary(e.SessionID)
+		}
+	}
 	h.maybeNotify(ctx, e)
 }
 
@@ -288,6 +308,18 @@ func (h *Hub) maybeNotify(ctx context.Context, e *store.Event) {
 	case p.New == "blocked":
 		body = "needs input"
 	default:
+		return
+	}
+	if h.sum.Enabled() && p.Old == "running" {
+		// Wait for the summary so the notification says what happened.
+		go func() {
+			sctx, cancel := context.WithTimeout(ctx, 45*time.Second)
+			defer cancel()
+			if s, err := h.SummarizeSession(sctx, e.SessionID); err == nil && s.Text != "" {
+				body = body + ": " + s.Text
+			}
+			h.notify.Notify(ctx, name, body, e.SessionID, "/#/s/"+e.SessionID)
+		}()
 		return
 	}
 	h.notify.Notify(ctx, name, body, e.SessionID, "/#/s/"+e.SessionID)
@@ -341,7 +373,8 @@ func (h *Hub) broadcast(u WatchUpdate) {
 		select {
 		case ch <- u:
 		default:
-			// Slow client. It resyncs from after_id on reconnect.
+			delete(h.watchers, ch)
+			close(ch)
 		}
 	}
 }

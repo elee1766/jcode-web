@@ -160,7 +160,10 @@ type Session struct {
 	TokenUsage    *TokenUsage `protobuf:"bytes,11,opt,name=token_usage,json=tokenUsage,proto3" json:"token_usage,omitempty"`
 	LastEventUnix int64       `protobuf:"varint,12,opt,name=last_event_unix,json=lastEventUnix,proto3" json:"last_event_unix,omitempty"`
 	// A jcode-web upstream connection is attached.
-	Attached      bool `protobuf:"varint,13,opt,name=attached,proto3" json:"attached,omitempty"`
+	Attached bool `protobuf:"varint,13,opt,name=attached,proto3" json:"attached,omitempty"`
+	// AI summary, empty when none.
+	Summary       string `protobuf:"bytes,14,opt,name=summary,proto3" json:"summary,omitempty"`
+	SummaryUnix   int64  `protobuf:"varint,15,opt,name=summary_unix,json=summaryUnix,proto3" json:"summary_unix,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -284,6 +287,20 @@ func (x *Session) GetAttached() bool {
 		return x.Attached
 	}
 	return false
+}
+
+func (x *Session) GetSummary() string {
+	if x != nil {
+		return x.Summary
+	}
+	return ""
+}
+
+func (x *Session) GetSummaryUnix() int64 {
+	if x != nil {
+		return x.SummaryUnix
+	}
+	return 0
 }
 
 // Event is a server-wide event from the jcode debug event bus.
@@ -2189,6 +2206,279 @@ func (x *BtwResponse) GetSessionName() string {
 	return ""
 }
 
+type SummarizeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SessionId     string                 `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SummarizeRequest) Reset() {
+	*x = SummarizeRequest{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SummarizeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SummarizeRequest) ProtoMessage() {}
+
+func (x *SummarizeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SummarizeRequest.ProtoReflect.Descriptor instead.
+func (*SummarizeRequest) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *SummarizeRequest) GetSessionId() string {
+	if x != nil {
+		return x.SessionId
+	}
+	return ""
+}
+
+type SummarizeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Summary       string                 `protobuf:"bytes,1,opt,name=summary,proto3" json:"summary,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SummarizeResponse) Reset() {
+	*x = SummarizeResponse{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SummarizeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SummarizeResponse) ProtoMessage() {}
+
+func (x *SummarizeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SummarizeResponse.ProtoReflect.Descriptor instead.
+func (*SummarizeResponse) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *SummarizeResponse) GetSummary() string {
+	if x != nil {
+		return x.Summary
+	}
+	return ""
+}
+
+type OverviewRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Look back this many minutes. 0 means 60.
+	WindowMinutes uint32 `protobuf:"varint,1,opt,name=window_minutes,json=windowMinutes,proto3" json:"window_minutes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OverviewRequest) Reset() {
+	*x = OverviewRequest{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OverviewRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OverviewRequest) ProtoMessage() {}
+
+func (x *OverviewRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OverviewRequest.ProtoReflect.Descriptor instead.
+func (*OverviewRequest) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *OverviewRequest) GetWindowMinutes() uint32 {
+	if x != nil {
+		return x.WindowMinutes
+	}
+	return 0
+}
+
+type OverviewResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	Model         string                 `protobuf:"bytes,2,opt,name=model,proto3" json:"model,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OverviewResponse) Reset() {
+	*x = OverviewResponse{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OverviewResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OverviewResponse) ProtoMessage() {}
+
+func (x *OverviewResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OverviewResponse.ProtoReflect.Descriptor instead.
+func (*OverviewResponse) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *OverviewResponse) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *OverviewResponse) GetModel() string {
+	if x != nil {
+		return x.Model
+	}
+	return ""
+}
+
+type GetFeaturesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFeaturesRequest) Reset() {
+	*x = GetFeaturesRequest{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFeaturesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFeaturesRequest) ProtoMessage() {}
+
+func (x *GetFeaturesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFeaturesRequest.ProtoReflect.Descriptor instead.
+func (*GetFeaturesRequest) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{37}
+}
+
+type GetFeaturesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Summaries     bool                   `protobuf:"varint,1,opt,name=summaries,proto3" json:"summaries,omitempty"`
+	SummaryModel  string                 `protobuf:"bytes,2,opt,name=summary_model,json=summaryModel,proto3" json:"summary_model,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFeaturesResponse) Reset() {
+	*x = GetFeaturesResponse{}
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFeaturesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFeaturesResponse) ProtoMessage() {}
+
+func (x *GetFeaturesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFeaturesResponse.ProtoReflect.Descriptor instead.
+func (*GetFeaturesResponse) Descriptor() ([]byte, []int) {
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *GetFeaturesResponse) GetSummaries() bool {
+	if x != nil {
+		return x.Summaries
+	}
+	return false
+}
+
+func (x *GetFeaturesResponse) GetSummaryModel() string {
+	if x != nil {
+		return x.SummaryModel
+	}
+	return ""
+}
+
 type GetVapidKeyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -2197,7 +2487,7 @@ type GetVapidKeyRequest struct {
 
 func (x *GetVapidKeyRequest) Reset() {
 	*x = GetVapidKeyRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2209,7 +2499,7 @@ func (x *GetVapidKeyRequest) String() string {
 func (*GetVapidKeyRequest) ProtoMessage() {}
 
 func (x *GetVapidKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[33]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2222,7 +2512,7 @@ func (x *GetVapidKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVapidKeyRequest.ProtoReflect.Descriptor instead.
 func (*GetVapidKeyRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{33}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{39}
 }
 
 type GetVapidKeyResponse struct {
@@ -2234,7 +2524,7 @@ type GetVapidKeyResponse struct {
 
 func (x *GetVapidKeyResponse) Reset() {
 	*x = GetVapidKeyResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2246,7 +2536,7 @@ func (x *GetVapidKeyResponse) String() string {
 func (*GetVapidKeyResponse) ProtoMessage() {}
 
 func (x *GetVapidKeyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[34]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2259,7 +2549,7 @@ func (x *GetVapidKeyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVapidKeyResponse.ProtoReflect.Descriptor instead.
 func (*GetVapidKeyResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{34}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *GetVapidKeyResponse) GetPublicKey() string {
@@ -2281,7 +2571,7 @@ type SubscribeRequest struct {
 
 func (x *SubscribeRequest) Reset() {
 	*x = SubscribeRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2293,7 +2583,7 @@ func (x *SubscribeRequest) String() string {
 func (*SubscribeRequest) ProtoMessage() {}
 
 func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[35]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2306,7 +2596,7 @@ func (x *SubscribeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubscribeRequest.ProtoReflect.Descriptor instead.
 func (*SubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{35}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *SubscribeRequest) GetEndpoint() string {
@@ -2345,7 +2635,7 @@ type SubscribeResponse struct {
 
 func (x *SubscribeResponse) Reset() {
 	*x = SubscribeResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2357,7 +2647,7 @@ func (x *SubscribeResponse) String() string {
 func (*SubscribeResponse) ProtoMessage() {}
 
 func (x *SubscribeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[36]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2370,7 +2660,7 @@ func (x *SubscribeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SubscribeResponse.ProtoReflect.Descriptor instead.
 func (*SubscribeResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{36}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{42}
 }
 
 type UnsubscribeRequest struct {
@@ -2382,7 +2672,7 @@ type UnsubscribeRequest struct {
 
 func (x *UnsubscribeRequest) Reset() {
 	*x = UnsubscribeRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2394,7 +2684,7 @@ func (x *UnsubscribeRequest) String() string {
 func (*UnsubscribeRequest) ProtoMessage() {}
 
 func (x *UnsubscribeRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[37]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2407,7 +2697,7 @@ func (x *UnsubscribeRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnsubscribeRequest.ProtoReflect.Descriptor instead.
 func (*UnsubscribeRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{37}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *UnsubscribeRequest) GetEndpoint() string {
@@ -2425,7 +2715,7 @@ type UnsubscribeResponse struct {
 
 func (x *UnsubscribeResponse) Reset() {
 	*x = UnsubscribeResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2437,7 +2727,7 @@ func (x *UnsubscribeResponse) String() string {
 func (*UnsubscribeResponse) ProtoMessage() {}
 
 func (x *UnsubscribeResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[38]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2450,7 +2740,7 @@ func (x *UnsubscribeResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UnsubscribeResponse.ProtoReflect.Descriptor instead.
 func (*UnsubscribeResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{38}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{44}
 }
 
 type TestRequest struct {
@@ -2461,7 +2751,7 @@ type TestRequest struct {
 
 func (x *TestRequest) Reset() {
 	*x = TestRequest{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2473,7 +2763,7 @@ func (x *TestRequest) String() string {
 func (*TestRequest) ProtoMessage() {}
 
 func (x *TestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[39]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2486,7 +2776,7 @@ func (x *TestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestRequest.ProtoReflect.Descriptor instead.
 func (*TestRequest) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{39}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{45}
 }
 
 type TestResponse struct {
@@ -2498,7 +2788,7 @@ type TestResponse struct {
 
 func (x *TestResponse) Reset() {
 	*x = TestResponse{}
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2510,7 +2800,7 @@ func (x *TestResponse) String() string {
 func (*TestResponse) ProtoMessage() {}
 
 func (x *TestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[40]
+	mi := &file_jcodeweb_v1_jcodeweb_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2523,7 +2813,7 @@ func (x *TestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TestResponse.ProtoReflect.Descriptor instead.
 func (*TestResponse) Descriptor() ([]byte, []int) {
-	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{40}
+	return file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *TestResponse) GetSent() uint32 {
@@ -2545,7 +2835,7 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\n" +
 	"cache_read\x18\x03 \x01(\x04R\tcacheRead\x12\x1f\n" +
 	"\vcache_write\x18\x04 \x01(\x04R\n" +
-	"cacheWrite\"\x8f\x03\n" +
+	"cacheWrite\"\xcc\x03\n" +
 	"\aSession\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
@@ -2563,7 +2853,9 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\vtoken_usage\x18\v \x01(\v2\x17.jcodeweb.v1.TokenUsageR\n" +
 	"tokenUsage\x12&\n" +
 	"\x0flast_event_unix\x18\f \x01(\x03R\rlastEventUnix\x12\x1a\n" +
-	"\battached\x18\r \x01(\bR\battached\"\x8d\x02\n" +
+	"\battached\x18\r \x01(\bR\battached\x12\x18\n" +
+	"\asummary\x18\x0e \x01(\tR\asummary\x12!\n" +
+	"\fsummary_unix\x18\x0f \x01(\x03R\vsummaryUnix\"\x8d\x02\n" +
 	"\x05Event\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vupstream_id\x18\x02 \x01(\x04R\n" +
@@ -2688,7 +2980,21 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\vBtwResponse\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\tR\tsessionId\x12!\n" +
-	"\fsession_name\x18\x02 \x01(\tR\vsessionName\"\x14\n" +
+	"\fsession_name\x18\x02 \x01(\tR\vsessionName\"1\n" +
+	"\x10SummarizeRequest\x12\x1d\n" +
+	"\n" +
+	"session_id\x18\x01 \x01(\tR\tsessionId\"-\n" +
+	"\x11SummarizeResponse\x12\x18\n" +
+	"\asummary\x18\x01 \x01(\tR\asummary\"8\n" +
+	"\x0fOverviewRequest\x12%\n" +
+	"\x0ewindow_minutes\x18\x01 \x01(\rR\rwindowMinutes\"<\n" +
+	"\x10OverviewResponse\x12\x12\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\x12\x14\n" +
+	"\x05model\x18\x02 \x01(\tR\x05model\"\x14\n" +
+	"\x12GetFeaturesRequest\"X\n" +
+	"\x13GetFeaturesResponse\x12\x1c\n" +
+	"\tsummaries\x18\x01 \x01(\bR\tsummaries\x12#\n" +
+	"\rsummary_model\x18\x02 \x01(\tR\fsummaryModel\"\x14\n" +
 	"\x12GetVapidKeyRequest\"4\n" +
 	"\x13GetVapidKeyResponse\x12\x1d\n" +
 	"\n" +
@@ -2710,7 +3016,7 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\x15SEND_MODE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11SEND_MODE_MESSAGE\x10\x01\x12\x17\n" +
 	"\x13SEND_MODE_INTERRUPT\x10\x02\x12\x1e\n" +
-	"\x1aSEND_MODE_INTERRUPT_URGENT\x10\x032\x94\x04\n" +
+	"\x1aSEND_MODE_INTERRUPT_URGENT\x10\x032\x80\x06\n" +
 	"\x0eSessionService\x12X\n" +
 	"\fListSessions\x12 .jcodeweb.v1.ListSessionsRequest\x1a!.jcodeweb.v1.ListSessionsResponse\"\x03\x90\x02\x01\x12R\n" +
 	"\n" +
@@ -2719,7 +3025,10 @@ const file_jcodeweb_v1_jcodeweb_proto_rawDesc = "" +
 	"\x06Attach\x12\x1a.jcodeweb.v1.AttachRequest\x1a\x1b.jcodeweb.v1.AttachResponse0\x01\x12P\n" +
 	"\vSendMessage\x12\x1f.jcodeweb.v1.SendMessageRequest\x1a .jcodeweb.v1.SendMessageResponse\x12A\n" +
 	"\x06Cancel\x12\x1a.jcodeweb.v1.CancelRequest\x1a\x1b.jcodeweb.v1.CancelResponse\x128\n" +
-	"\x03Btw\x12\x17.jcodeweb.v1.BtwRequest\x1a\x18.jcodeweb.v1.BtwResponse2\xbf\x02\n" +
+	"\x03Btw\x12\x17.jcodeweb.v1.BtwRequest\x1a\x18.jcodeweb.v1.BtwResponse\x12J\n" +
+	"\tSummarize\x12\x1d.jcodeweb.v1.SummarizeRequest\x1a\x1e.jcodeweb.v1.SummarizeResponse\x12G\n" +
+	"\bOverview\x12\x1c.jcodeweb.v1.OverviewRequest\x1a\x1d.jcodeweb.v1.OverviewResponse\x12U\n" +
+	"\vGetFeatures\x12\x1f.jcodeweb.v1.GetFeaturesRequest\x1a .jcodeweb.v1.GetFeaturesResponse\"\x03\x90\x02\x012\xbf\x02\n" +
 	"\vPushService\x12U\n" +
 	"\vGetVapidKey\x12\x1f.jcodeweb.v1.GetVapidKeyRequest\x1a .jcodeweb.v1.GetVapidKeyResponse\"\x03\x90\x02\x01\x12J\n" +
 	"\tSubscribe\x12\x1d.jcodeweb.v1.SubscribeRequest\x1a\x1e.jcodeweb.v1.SubscribeResponse\x12P\n" +
@@ -2739,7 +3048,7 @@ func file_jcodeweb_v1_jcodeweb_proto_rawDescGZIP() []byte {
 }
 
 var file_jcodeweb_v1_jcodeweb_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_jcodeweb_v1_jcodeweb_proto_msgTypes = make([]protoimpl.MessageInfo, 41)
+var file_jcodeweb_v1_jcodeweb_proto_msgTypes = make([]protoimpl.MessageInfo, 47)
 var file_jcodeweb_v1_jcodeweb_proto_goTypes = []any{
 	(SendMode)(0),                // 0: jcodeweb.v1.SendMode
 	(*TokenUsage)(nil),           // 1: jcodeweb.v1.TokenUsage
@@ -2775,14 +3084,20 @@ var file_jcodeweb_v1_jcodeweb_proto_goTypes = []any{
 	(*CancelResponse)(nil),       // 31: jcodeweb.v1.CancelResponse
 	(*BtwRequest)(nil),           // 32: jcodeweb.v1.BtwRequest
 	(*BtwResponse)(nil),          // 33: jcodeweb.v1.BtwResponse
-	(*GetVapidKeyRequest)(nil),   // 34: jcodeweb.v1.GetVapidKeyRequest
-	(*GetVapidKeyResponse)(nil),  // 35: jcodeweb.v1.GetVapidKeyResponse
-	(*SubscribeRequest)(nil),     // 36: jcodeweb.v1.SubscribeRequest
-	(*SubscribeResponse)(nil),    // 37: jcodeweb.v1.SubscribeResponse
-	(*UnsubscribeRequest)(nil),   // 38: jcodeweb.v1.UnsubscribeRequest
-	(*UnsubscribeResponse)(nil),  // 39: jcodeweb.v1.UnsubscribeResponse
-	(*TestRequest)(nil),          // 40: jcodeweb.v1.TestRequest
-	(*TestResponse)(nil),         // 41: jcodeweb.v1.TestResponse
+	(*SummarizeRequest)(nil),     // 34: jcodeweb.v1.SummarizeRequest
+	(*SummarizeResponse)(nil),    // 35: jcodeweb.v1.SummarizeResponse
+	(*OverviewRequest)(nil),      // 36: jcodeweb.v1.OverviewRequest
+	(*OverviewResponse)(nil),     // 37: jcodeweb.v1.OverviewResponse
+	(*GetFeaturesRequest)(nil),   // 38: jcodeweb.v1.GetFeaturesRequest
+	(*GetFeaturesResponse)(nil),  // 39: jcodeweb.v1.GetFeaturesResponse
+	(*GetVapidKeyRequest)(nil),   // 40: jcodeweb.v1.GetVapidKeyRequest
+	(*GetVapidKeyResponse)(nil),  // 41: jcodeweb.v1.GetVapidKeyResponse
+	(*SubscribeRequest)(nil),     // 42: jcodeweb.v1.SubscribeRequest
+	(*SubscribeResponse)(nil),    // 43: jcodeweb.v1.SubscribeResponse
+	(*UnsubscribeRequest)(nil),   // 44: jcodeweb.v1.UnsubscribeRequest
+	(*UnsubscribeResponse)(nil),  // 45: jcodeweb.v1.UnsubscribeResponse
+	(*TestRequest)(nil),          // 46: jcodeweb.v1.TestRequest
+	(*TestResponse)(nil),         // 47: jcodeweb.v1.TestResponse
 }
 var file_jcodeweb_v1_jcodeweb_proto_depIdxs = []int32{
 	1,  // 0: jcodeweb.v1.Session.token_usage:type_name -> jcodeweb.v1.TokenUsage
@@ -2819,23 +3134,29 @@ var file_jcodeweb_v1_jcodeweb_proto_depIdxs = []int32{
 	28, // 31: jcodeweb.v1.SessionService.SendMessage:input_type -> jcodeweb.v1.SendMessageRequest
 	30, // 32: jcodeweb.v1.SessionService.Cancel:input_type -> jcodeweb.v1.CancelRequest
 	32, // 33: jcodeweb.v1.SessionService.Btw:input_type -> jcodeweb.v1.BtwRequest
-	34, // 34: jcodeweb.v1.PushService.GetVapidKey:input_type -> jcodeweb.v1.GetVapidKeyRequest
-	36, // 35: jcodeweb.v1.PushService.Subscribe:input_type -> jcodeweb.v1.SubscribeRequest
-	38, // 36: jcodeweb.v1.PushService.Unsubscribe:input_type -> jcodeweb.v1.UnsubscribeRequest
-	40, // 37: jcodeweb.v1.PushService.Test:input_type -> jcodeweb.v1.TestRequest
-	5,  // 38: jcodeweb.v1.SessionService.ListSessions:output_type -> jcodeweb.v1.ListSessionsResponse
-	7,  // 39: jcodeweb.v1.SessionService.ListEvents:output_type -> jcodeweb.v1.ListEventsResponse
-	9,  // 40: jcodeweb.v1.SessionService.Watch:output_type -> jcodeweb.v1.WatchResponse
-	15, // 41: jcodeweb.v1.SessionService.Attach:output_type -> jcodeweb.v1.AttachResponse
-	29, // 42: jcodeweb.v1.SessionService.SendMessage:output_type -> jcodeweb.v1.SendMessageResponse
-	31, // 43: jcodeweb.v1.SessionService.Cancel:output_type -> jcodeweb.v1.CancelResponse
-	33, // 44: jcodeweb.v1.SessionService.Btw:output_type -> jcodeweb.v1.BtwResponse
-	35, // 45: jcodeweb.v1.PushService.GetVapidKey:output_type -> jcodeweb.v1.GetVapidKeyResponse
-	37, // 46: jcodeweb.v1.PushService.Subscribe:output_type -> jcodeweb.v1.SubscribeResponse
-	39, // 47: jcodeweb.v1.PushService.Unsubscribe:output_type -> jcodeweb.v1.UnsubscribeResponse
-	41, // 48: jcodeweb.v1.PushService.Test:output_type -> jcodeweb.v1.TestResponse
-	38, // [38:49] is the sub-list for method output_type
-	27, // [27:38] is the sub-list for method input_type
+	34, // 34: jcodeweb.v1.SessionService.Summarize:input_type -> jcodeweb.v1.SummarizeRequest
+	36, // 35: jcodeweb.v1.SessionService.Overview:input_type -> jcodeweb.v1.OverviewRequest
+	38, // 36: jcodeweb.v1.SessionService.GetFeatures:input_type -> jcodeweb.v1.GetFeaturesRequest
+	40, // 37: jcodeweb.v1.PushService.GetVapidKey:input_type -> jcodeweb.v1.GetVapidKeyRequest
+	42, // 38: jcodeweb.v1.PushService.Subscribe:input_type -> jcodeweb.v1.SubscribeRequest
+	44, // 39: jcodeweb.v1.PushService.Unsubscribe:input_type -> jcodeweb.v1.UnsubscribeRequest
+	46, // 40: jcodeweb.v1.PushService.Test:input_type -> jcodeweb.v1.TestRequest
+	5,  // 41: jcodeweb.v1.SessionService.ListSessions:output_type -> jcodeweb.v1.ListSessionsResponse
+	7,  // 42: jcodeweb.v1.SessionService.ListEvents:output_type -> jcodeweb.v1.ListEventsResponse
+	9,  // 43: jcodeweb.v1.SessionService.Watch:output_type -> jcodeweb.v1.WatchResponse
+	15, // 44: jcodeweb.v1.SessionService.Attach:output_type -> jcodeweb.v1.AttachResponse
+	29, // 45: jcodeweb.v1.SessionService.SendMessage:output_type -> jcodeweb.v1.SendMessageResponse
+	31, // 46: jcodeweb.v1.SessionService.Cancel:output_type -> jcodeweb.v1.CancelResponse
+	33, // 47: jcodeweb.v1.SessionService.Btw:output_type -> jcodeweb.v1.BtwResponse
+	35, // 48: jcodeweb.v1.SessionService.Summarize:output_type -> jcodeweb.v1.SummarizeResponse
+	37, // 49: jcodeweb.v1.SessionService.Overview:output_type -> jcodeweb.v1.OverviewResponse
+	39, // 50: jcodeweb.v1.SessionService.GetFeatures:output_type -> jcodeweb.v1.GetFeaturesResponse
+	41, // 51: jcodeweb.v1.PushService.GetVapidKey:output_type -> jcodeweb.v1.GetVapidKeyResponse
+	43, // 52: jcodeweb.v1.PushService.Subscribe:output_type -> jcodeweb.v1.SubscribeResponse
+	45, // 53: jcodeweb.v1.PushService.Unsubscribe:output_type -> jcodeweb.v1.UnsubscribeResponse
+	47, // 54: jcodeweb.v1.PushService.Test:output_type -> jcodeweb.v1.TestResponse
+	41, // [41:55] is the sub-list for method output_type
+	27, // [27:41] is the sub-list for method input_type
 	27, // [27:27] is the sub-list for extension type_name
 	27, // [27:27] is the sub-list for extension extendee
 	0,  // [0:27] is the sub-list for field type_name
@@ -2875,7 +3196,7 @@ func file_jcodeweb_v1_jcodeweb_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_jcodeweb_v1_jcodeweb_proto_rawDesc), len(file_jcodeweb_v1_jcodeweb_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   41,
+			NumMessages:   47,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

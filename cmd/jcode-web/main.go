@@ -26,6 +26,7 @@ import (
 	"github.com/elee1766/jcode-web/internal/hub"
 	"github.com/elee1766/jcode-web/internal/push"
 	"github.com/elee1766/jcode-web/internal/store"
+	"github.com/elee1766/jcode-web/internal/summarize"
 	"github.com/elee1766/jcode-web/web"
 )
 
@@ -130,6 +131,15 @@ func (cmd *ServeCmd) Run(cli *CLI) error {
 		Retention:    c.Retention,
 		AttachLinger: c.AttachLinger,
 	}, log, st, pusher)
+	h.SetSummarizer(summarize.New(summarize.Config{
+		Enabled:         c.Summary.Enabled,
+		BaseURL:         c.Summary.BaseURL,
+		APIKey:          c.Summary.APIKey,
+		Model:           c.Summary.Model,
+		ReasoningEffort: c.Summary.ReasoningEffort,
+		MaxTokens:       c.Summary.MaxTokens,
+		Timeout:         c.Summary.Timeout,
+	}))
 	go h.Run(ctx)
 
 	server := connect.NewServer(recoverInterceptor(log))
@@ -138,6 +148,7 @@ func (cmd *ServeCmd) Run(cli *CLI) error {
 
 	r := chi.NewRouter()
 	r.Use(middleware.RealIP, middleware.Recoverer)
+	r.Use(func(next http.Handler) http.Handler { return http.NewCrossOriginProtection().Handler(next) })
 	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) { w.Write([]byte("ok")) })
 	rpc := http.NewServeMux()
 	connecthttp.Mount(rpc, server)

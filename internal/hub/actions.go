@@ -38,7 +38,19 @@ func (h *Hub) Send(ctx context.Context, sessionID, content string, mode SendMode
 	default:
 		err = fmt.Errorf("unknown send mode %d", mode)
 	}
+	if err == nil && mode == SendMessage {
+		h.echo(sessionID, content)
+	}
 	return mode, err
+}
+
+func (h *Hub) echo(sessionID, content string) {
+	h.mu.Lock()
+	a := h.attached[sessionID]
+	h.mu.Unlock()
+	if a != nil {
+		a.echo(content, "web")
+	}
 }
 
 func (h *Hub) Cancel(ctx context.Context, sessionID string) error {
@@ -67,6 +79,7 @@ func (h *Hub) Btw(ctx context.Context, sessionID, question string) (id, name str
 	if err := child.Message(ctx, question); err != nil {
 		return id, name, fmt.Errorf("ask fork: %w", err)
 	}
+	h.echo(id, question)
 	// Pick up the new session in the list without waiting for the poll.
 	go func() {
 		time.Sleep(500 * time.Millisecond)

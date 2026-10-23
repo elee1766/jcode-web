@@ -33,9 +33,29 @@ type attachment struct {
 // turn boundary resyncs history.
 const maxTail = 20000
 
-// resyncTail is the tail length that triggers a history refresh at the next
-// turn boundary.
-const resyncTail = 2000
+// echo records a message sent from the web. jcode only echoes user turns to
+// other attachments, so viewers of this one would not see it otherwise.
+func (a *attachment) echo(content, source string) {
+	b, _ := json.Marshal(map[string]string{"type": "web_user_message", "content": content, "source": source})
+	a.dispatch(jcode.Envelope{Type: "web_user_message", Raw: b})
+}
+
+// resync refreshes the history snapshot. Called when a turn ends so the tail
+// does not grow without bound.
+func (h *Hub) resync(sessionID string) {
+	h.mu.Lock()
+	a := h.attached[sessionID]
+	h.mu.Unlock()
+	if a == nil {
+		return
+	}
+	a.mu.Lock()
+	s := a.sess
+	a.mu.Unlock()
+	if s != nil {
+		go s.RequestHistory(context.Background())
+	}
+}
 
 // Viewer is a live subscription to one session.
 type Viewer struct {
@@ -59,6 +79,10 @@ func (h *Hub) View(ctx context.Context, sessionID string) (*Viewer, error) {
 	}
 	ch := make(chan jcode.Envelope, 4096)
 	a.mu.Lock()
+	if a.sess == nil {
+		a.mu.Unlock()
+		return nil, errors.New("session detached: reconnect")
+	}
 	if a.idle != nil {
 		a.idle.Stop()
 		a.idle = nil
@@ -179,9 +203,6 @@ func (a *attachment) dispatch(env jcode.Envelope) {
 			a.tail = append(a.tail[:0], a.tail[len(a.tail)/2:]...)
 		}
 		a.tail = append(a.tail, env)
-		if (env.Type == "message_end" || env.Type == "interrupted") && len(a.tail) > resyncTail && a.sess != nil {
-			go a.sess.RequestHistory(context.Background())
-		}
 	}
 	for ch := range a.viewers {
 		select {

@@ -28,6 +28,18 @@ type Config struct {
 	PushSubject  string        `koanf:"push_subject"`
 	LogLevel     string        `koanf:"log_level"`
 	LogFormat    string        `koanf:"log_format"`
+	Summary      Summary       `koanf:"summary"`
+}
+
+// Summary configures an OpenAI-compatible model for AI summaries.
+type Summary struct {
+	Enabled         bool          `koanf:"enabled"`
+	BaseURL         string        `koanf:"base_url"`
+	APIKey          string        `koanf:"api_key"`
+	Model           string        `koanf:"model"`
+	ReasoningEffort string        `koanf:"reasoning_effort"`
+	MaxTokens       int           `koanf:"max_tokens"`
+	Timeout         time.Duration `koanf:"timeout"`
 }
 
 func Defaults() Config {
@@ -48,6 +60,11 @@ func Defaults() Config {
 		PushSubject:  "mailto:jcode-web@localhost",
 		LogLevel:     "info",
 		LogFormat:    "text",
+		Summary: Summary{
+			ReasoningEffort: "low",
+			MaxTokens:       400,
+			Timeout:         60 * time.Second,
+		},
 	}
 }
 
@@ -76,8 +93,10 @@ func Load(path string, explicit bool, overrides map[string]any) (Config, error) 
 	}
 	err := k.Load(env.Provider(".", env.Opt{
 		Prefix: "JCODE_WEB_",
+		// JCODE_WEB_SUMMARY__BASE_URL -> summary.base_url
 		TransformFunc: func(key, value string) (string, any) {
-			return strings.ToLower(strings.TrimPrefix(key, "JCODE_WEB_")), value
+			k := strings.ToLower(strings.TrimPrefix(key, "JCODE_WEB_"))
+			return strings.ReplaceAll(k, "__", "."), value
 		},
 	}), nil)
 	if err != nil {

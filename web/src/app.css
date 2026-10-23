@@ -1,0 +1,90 @@
+@import "@fontsource/ibm-plex-sans/latin-400.css";
+@import "@fontsource/ibm-plex-sans/latin-500.css";
+@import "@fontsource/ibm-plex-sans/latin-600.css";
+@import "@fontsource/ibm-plex-mono/latin-400.css";
+
+:root {
+  --ink: #141a26;
+  --ink-2: #1b2232;
+  --ink-3: #242d40;
+  --line: #2f3a50;
+  --fg: #dfe4ee;
+  --fg-2: #9aa6bb;
+  --fg-3: #6b7a93;
+  --busy: #e8a33d;
+  --ready: #4fb5a5;
+  --failed: #e0625a;
+  --idle: #4a566c;
+  --user: #2b3a5c;
+  --focus: #8fb3ff;
+
+  --sans: "IBM Plex Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  --s-1: 0.8125rem;
+  --s0: 0.9375rem;
+  --s1: 1.0625rem;
+
+  color-scheme: dark;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  background: var(--ink);
+  color: var(--fg);
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+code,
+pre,
+.mono {
+  font-family: var(--mono);
+  font-size: var(--s-1);
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
+a {
+  color: var(--focus);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

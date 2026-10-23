@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"sync"
+	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
 
@@ -63,6 +64,8 @@ func (p *Pusher) Notify(ctx context.Context, title, body, tag, url string) {
 
 // Send returns the number of successful deliveries.
 func (p *Pusher) Send(ctx context.Context, title, body, tag, url string) int {
+	ctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	defer cancel()
 	subs, err := p.store.ListPush(ctx)
 	if err != nil {
 		p.log.Error("list push subscriptions", "error", err)

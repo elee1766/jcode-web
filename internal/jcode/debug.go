@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 )
@@ -30,15 +31,23 @@ func DefaultSockets() (main, debug string) {
 
 // Envelope holds the type tag and the raw line.
 type Envelope struct {
-	Type string `json:"type"`
-	ID   *uint64 `json:"id,omitempty"`
+	Type string          `json:"type"`
+	ID   *uint64         `json:"id,omitempty"`
 	Raw  json.RawMessage `json:"-"`
 }
 
 func decodeEnvelope(line []byte) (Envelope, error) {
-	var env Envelope
-	if err := json.Unmarshal(line, &env); err != nil {
-		return env, err
+	var wire struct {
+		Type string          `json:"type"`
+		ID   json.RawMessage `json:"id"`
+	}
+	if err := json.Unmarshal(line, &wire); err != nil {
+		return Envelope{}, err
+	}
+	env := Envelope{Type: wire.Type}
+	var id uint64
+	if len(wire.ID) > 0 && json.Unmarshal(wire.ID, &id) == nil {
+		env.ID = &id
 	}
 	env.Raw = append(json.RawMessage(nil), line...)
 	return env, nil
@@ -143,20 +152,20 @@ func (d *Debug) Run(ctx context.Context, command, sessionID string) (string, err
 }
 
 func isDebugDisabled(msg string) bool {
-	return len(msg) >= 22 && msg[:22] == "Debug control is disab"
+	return strings.HasPrefix(msg, "Debug control is disabled")
 }
 
 // SessionInfo is one entry from the debug "sessions" command.
 type SessionInfo struct {
-	SessionID    string `json:"session_id"`
-	FriendlyName string `json:"friendly_name"`
-	Status       string `json:"status"`
-	IsProcessing bool   `json:"is_processing"`
-	Model        string `json:"model"`
-	Provider     string `json:"provider"`
-	WorkingDir   string `json:"working_dir"`
-	SwarmID      string `json:"swarm_id"`
-	ServerName   string `json:"server_name"`
+	SessionID    string  `json:"session_id"`
+	FriendlyName string  `json:"friendly_name"`
+	Status       string  `json:"status"`
+	IsProcessing bool    `json:"is_processing"`
+	Model        string  `json:"model"`
+	Provider     string  `json:"provider"`
+	WorkingDir   string  `json:"working_dir"`
+	SwarmID      string  `json:"swarm_id"`
+	ServerName   string  `json:"server_name"`
 	Detail       *string `json:"detail"`
 	TokenUsage   struct {
 		Input      uint64  `json:"input"`

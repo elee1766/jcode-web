@@ -183,6 +183,38 @@ func (s *Store) ListPush(ctx context.Context) ([]PushSubscription, error) {
 	return out, rows.Err()
 }
 
+type Summary struct {
+	SessionID string
+	Text      string
+	Model     string
+	UpdatedAt int64
+}
+
+func (s *Store) PutSummary(ctx context.Context, m Summary) error {
+	_, err := s.db.ExecContext(ctx,
+		`INSERT INTO summaries (session_id, text, model, updated_at) VALUES (?, ?, ?, ?)
+		 ON CONFLICT(session_id) DO UPDATE SET text = excluded.text, model = excluded.model, updated_at = excluded.updated_at`,
+		m.SessionID, m.Text, m.Model, m.UpdatedAt)
+	return err
+}
+
+func (s *Store) Summaries(ctx context.Context) (map[string]Summary, error) {
+	rows, err := s.db.QueryContext(ctx, `SELECT session_id, text, model, updated_at FROM summaries`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := map[string]Summary{}
+	for rows.Next() {
+		var m Summary
+		if err := rows.Scan(&m.SessionID, &m.Text, &m.Model, &m.UpdatedAt); err != nil {
+			return nil, err
+		}
+		out[m.SessionID] = m
+	}
+	return out, rows.Err()
+}
+
 // ErrNotFound is returned by Get when the key is missing.
 var ErrNotFound = errors.New("not found")
 

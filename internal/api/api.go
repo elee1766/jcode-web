@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"time"
 
 	"connectrpc.com/connect/v2"
 
@@ -76,7 +78,10 @@ func (s *Sessions) Watch(ctx context.Context, req *v1.WatchRequest, stream jcode
 		select {
 		case <-ctx.Done():
 			return nil
-		case u := <-ch:
+		case u, ok := <-ch:
+			if !ok {
+				return connect.NewError(connect.CodeResourceExhausted, "watch buffer full: reconnect to replay")
+			}
 			var msg *v1.WatchResponse
 			switch {
 			case u.Event != nil:
@@ -110,15 +115,7 @@ func (s *Sessions) Attach(ctx context.Context, req *v1.AttachRequest, stream jco
 	defer v.Close()
 
 	msgs := v.History
-	total := len(msgs)
-	if req.HistoryLimit > 0 && len(msgs) > int(req.HistoryLimit) {
-		msgs = msgs[len(msgs)-int(req.HistoryLimit):]
-	}
-	hist := &v1.History{Total: uint32(total), Messages: make([]*v1.HistoryMessage, len(msgs))}
-	for i, m := range msgs {
-		hist.Messages[i] = historyPB(m)
-	}
-	if err := stream.Send(&v1.AttachResponse{Update: &v1.AttachResponse_History{History: hist}}); err != nil {
+	if err := stream.Send(historyMsg(msgs, req.HistoryLimit)); err != nil {
 		return err
 	}
 	for _, env := range v.Tail {
@@ -135,6 +132,15 @@ func (s *Sessions) Attach(ctx context.Context, req *v1.AttachRequest, stream jco
 		case env, ok := <-v.Events:
 			if !ok {
 				return stream.Send(&v1.AttachResponse{Update: &v1.AttachResponse_Detached{Detached: &v1.Detached{Reason: "upstream closed"}}})
+			}
+			if env.Type == "history" {
+				var h jcode.History
+				if json.Unmarshal(env.Raw, &h) == nil {
+					if err := stream.Send(historyMsg(h.Messages, req.HistoryLimit)); err != nil {
+						return err
+					}
+				}
+				continue
 			}
 			msg := attachPB(env)
 			if msg == nil {
@@ -170,10 +176,43 @@ func (s *Sessions) Btw(ctx context.Context, req *v1.BtwRequest) (*v1.BtwResponse
 		return nil, connect.NewError(connect.CodeInvalidArgument, "session_id and question required")
 	}
 	id, name, err := s.Hub.Btw(ctx, req.SessionId, req.Question)
-	if err != nil && id == "" {
+	if err != nil {
+		if id != "" {
+			return nil, upstreamErr(fmt.Errorf("fork %s (%s) was created, but the question was not confirmed: %w", name, id, err))
+		}
 		return nil, upstreamErr(err)
 	}
 	return &v1.BtwResponse{SessionId: id, SessionName: name}, nil
+}
+
+func (s *Sessions) Summarize(ctx context.Context, req *v1.SummarizeRequest) (*v1.SummarizeResponse, error) {
+	if !s.Hub.SummariesEnabled() {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, "summaries are not configured")
+	}
+	sum, err := s.Hub.SummarizeSession(ctx, req.SessionId)
+	if err != nil {
+		return nil, upstreamErr(err)
+	}
+	return &v1.SummarizeResponse{Summary: sum.Text}, nil
+}
+
+func (s *Sessions) Overview(ctx context.Context, req *v1.OverviewRequest) (*v1.OverviewResponse, error) {
+	if !s.Hub.SummariesEnabled() {
+		return nil, connect.NewError(connect.CodeFailedPrecondition, "summaries are not configured")
+	}
+	mins := req.WindowMinutes
+	if mins == 0 {
+		mins = 60
+	}
+	text, err := s.Hub.Overview(ctx, time.Duration(mins)*time.Minute)
+	if err != nil {
+		return nil, upstreamErr(err)
+	}
+	return &v1.OverviewResponse{Text: text, Model: s.Hub.SummaryModel()}, nil
+}
+
+func (s *Sessions) GetFeatures(context.Context, *v1.GetFeaturesRequest) (*v1.GetFeaturesResponse, error) {
+	return &v1.GetFeaturesResponse{Summaries: s.Hub.SummariesEnabled(), SummaryModel: s.Hub.SummaryModel()}, nil
 }
 
 func upstreamErr(err error) error {
@@ -234,7 +273,7 @@ func sessionsPB(in []hub.SessionView) []*v1.Session {
 			Id: s.SessionID, Name: s.FriendlyName, Status: s.Status, IsProcessing: s.IsProcessing,
 			Model: s.Model, Provider: s.Provider, WorkingDir: s.WorkingDir, SwarmId: s.SwarmID,
 			ServerName: s.ServerName, Detail: detail, TokenUsage: tu, LastEventUnix: s.LastEventUnix,
-			Attached: s.Attached,
+			Attached: s.Attached, Summary: s.Summary, SummaryUnix: s.SummaryAt,
 		}
 	}
 	return out
@@ -246,6 +285,18 @@ func eventPB(e *store.Event) *v1.Event {
 		SwarmId: e.SwarmID, TimestampUnix: e.TimestampUnix, Type: e.Type, PayloadJson: e.PayloadJSON,
 		Summary: e.Summary,
 	}
+}
+
+func historyMsg(msgs []jcode.HistoryMessage, limit uint32) *v1.AttachResponse {
+	total := len(msgs)
+	if limit > 0 && len(msgs) > int(limit) {
+		msgs = msgs[len(msgs)-int(limit):]
+	}
+	hist := &v1.History{Total: uint32(total), Messages: make([]*v1.HistoryMessage, len(msgs))}
+	for i, m := range msgs {
+		hist.Messages[i] = historyPB(m)
+	}
+	return &v1.AttachResponse{Update: &v1.AttachResponse_History{History: hist}}
 }
 
 func historyPB(m jcode.HistoryMessage) *v1.HistoryMessage {
@@ -324,7 +375,10 @@ func attachPB(env jcode.Envelope) *v1.AttachResponse {
 		r.Update = &v1.AttachResponse_UserMessage{UserMessage: &v1.UserMessage{Content: f.Content, Source: "peer"}}
 	case "soft_interrupt_injected":
 		r.Update = &v1.AttachResponse_UserMessage{UserMessage: &v1.UserMessage{Content: f.Content, Source: "interrupt"}}
-	case "history", "ack", "pong", "mcp_status", "done":
+	case "web_user_message":
+		r.Update = &v1.AttachResponse_UserMessage{UserMessage: &v1.UserMessage{Content: f.Content, Source: "web"}}
+	case "history", "ack", "pong", "mcp_status", "done", "session", "kv_cache_request", "connection_type",
+		"connection_phase", "available_models_updated", "swarm_status", "model_catalog":
 		return nil
 	default:
 		r.Update = &v1.AttachResponse_Raw{Raw: &v1.RawEvent{Type: env.Type, Json: string(env.Raw)}}

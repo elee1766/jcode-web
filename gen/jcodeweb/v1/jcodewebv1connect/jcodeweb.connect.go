@@ -41,6 +41,12 @@ const (
 	SessionServiceCancelProcedure = "/jcodeweb.v1.SessionService/Cancel"
 	// SessionServiceBtwProcedure is the procedure name of the SessionService's Btw RPC.
 	SessionServiceBtwProcedure = "/jcodeweb.v1.SessionService/Btw"
+	// SessionServiceSummarizeProcedure is the procedure name of the SessionService's Summarize RPC.
+	SessionServiceSummarizeProcedure = "/jcodeweb.v1.SessionService/Summarize"
+	// SessionServiceOverviewProcedure is the procedure name of the SessionService's Overview RPC.
+	SessionServiceOverviewProcedure = "/jcodeweb.v1.SessionService/Overview"
+	// SessionServiceGetFeaturesProcedure is the procedure name of the SessionService's GetFeatures RPC.
+	SessionServiceGetFeaturesProcedure = "/jcodeweb.v1.SessionService/GetFeatures"
 	// PushServiceGetVapidKeyProcedure is the procedure name of the PushService's GetVapidKey RPC.
 	PushServiceGetVapidKeyProcedure = "/jcodeweb.v1.PushService/GetVapidKey"
 	// PushServiceSubscribeProcedure is the procedure name of the PushService's Subscribe RPC.
@@ -103,6 +109,28 @@ var (
 			Procedure:  SessionServiceBtwProcedure,
 		}
 	})
+	sessionServiceSummarizeSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("Summarize"),
+			Procedure:  SessionServiceSummarizeProcedure,
+		}
+	})
+	sessionServiceOverviewSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeUnary,
+			Schema:     v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("Overview"),
+			Procedure:  SessionServiceOverviewProcedure,
+		}
+	})
+	sessionServiceGetFeaturesSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType:       connect.StreamTypeUnary,
+			Schema:           v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("GetFeatures"),
+			Procedure:        SessionServiceGetFeaturesProcedure,
+			IdempotencyLevel: connect.IdempotencyNoSideEffects,
+		}
+	})
 )
 
 // SessionServiceClient is a client for the jcodeweb.v1.SessionService service.
@@ -119,6 +147,11 @@ type SessionServiceClient interface {
 	// Btw forks a session with its full history and asks question in the fork.
 	// The parent keeps working.
 	Btw(context.Context, *v1.BtwRequest) (*v1.BtwResponse, error)
+	// Summarize regenerates the AI summary for one session.
+	Summarize(context.Context, *v1.SummarizeRequest) (*v1.SummarizeResponse, error)
+	// Overview summarizes recent activity across all sessions.
+	Overview(context.Context, *v1.OverviewRequest) (*v1.OverviewResponse, error)
+	GetFeatures(context.Context, *v1.GetFeaturesRequest) (*v1.GetFeaturesResponse, error)
 }
 
 // NewSessionServiceClient constructs a client for the jcodeweb.v1.SessionService service. Multiple
@@ -181,6 +214,11 @@ type SessionServiceHandler interface {
 	// Btw forks a session with its full history and asks question in the fork.
 	// The parent keeps working.
 	Btw(context.Context, *v1.BtwRequest) (*v1.BtwResponse, error)
+	// Summarize regenerates the AI summary for one session.
+	Summarize(context.Context, *v1.SummarizeRequest) (*v1.SummarizeResponse, error)
+	// Overview summarizes recent activity across all sessions.
+	Overview(context.Context, *v1.OverviewRequest) (*v1.OverviewResponse, error)
+	GetFeatures(context.Context, *v1.GetFeaturesRequest) (*v1.GetFeaturesResponse, error)
 }
 
 // RegisterSessionServiceHandler registers svc as the jcodeweb.v1.SessionService implementation on
@@ -195,6 +233,9 @@ func RegisterSessionServiceHandler(server *connect.Server, svc SessionServiceHan
 		connect.Method{Spec: sessionServiceSendMessageSpec(), Handler: adapter.sendMessage},
 		connect.Method{Spec: sessionServiceCancelSpec(), Handler: adapter.cancel},
 		connect.Method{Spec: sessionServiceBtwSpec(), Handler: adapter.btw},
+		connect.Method{Spec: sessionServiceSummarizeSpec(), Handler: adapter.summarize},
+		connect.Method{Spec: sessionServiceOverviewSpec(), Handler: adapter.overview},
+		connect.Method{Spec: sessionServiceGetFeaturesSpec(), Handler: adapter.getFeatures},
 	)
 }
 
@@ -259,6 +300,18 @@ func (UnimplementedSessionServiceHandler) Btw(context.Context, *v1.BtwRequest) (
 	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.Btw is not implemented")
 }
 
+func (UnimplementedSessionServiceHandler) Summarize(context.Context, *v1.SummarizeRequest) (*v1.SummarizeResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.Summarize is not implemented")
+}
+
+func (UnimplementedSessionServiceHandler) Overview(context.Context, *v1.OverviewRequest) (*v1.OverviewResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.Overview is not implemented")
+}
+
+func (UnimplementedSessionServiceHandler) GetFeatures(context.Context, *v1.GetFeaturesRequest) (*v1.GetFeaturesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.GetFeatures is not implemented")
+}
+
 type sessionServiceClient struct {
 	client *connect.Client
 }
@@ -314,6 +367,30 @@ func (c *sessionServiceClient) Cancel(ctx context.Context, req *v1.CancelRequest
 func (c *sessionServiceClient) Btw(ctx context.Context, req *v1.BtwRequest) (*v1.BtwResponse, error) {
 	var res v1.BtwResponse
 	if err := c.client.CallUnary(ctx, sessionServiceBtwSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *sessionServiceClient) Summarize(ctx context.Context, req *v1.SummarizeRequest) (*v1.SummarizeResponse, error) {
+	var res v1.SummarizeResponse
+	if err := c.client.CallUnary(ctx, sessionServiceSummarizeSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *sessionServiceClient) Overview(ctx context.Context, req *v1.OverviewRequest) (*v1.OverviewResponse, error) {
+	var res v1.OverviewResponse
+	if err := c.client.CallUnary(ctx, sessionServiceOverviewSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *sessionServiceClient) GetFeatures(ctx context.Context, req *v1.GetFeaturesRequest) (*v1.GetFeaturesResponse, error) {
+	var res v1.GetFeaturesResponse
+	if err := c.client.CallUnary(ctx, sessionServiceGetFeaturesSpec(), req, &res); err != nil {
 		return nil, err
 	}
 	return &res, nil
@@ -391,6 +468,42 @@ func (h sessionServiceHandler) btw(ctx context.Context, _ connect.Spec, stream c
 		return err
 	}
 	res, err := h.svc.Btw(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h sessionServiceHandler) summarize(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.SummarizeRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.Summarize(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h sessionServiceHandler) overview(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.OverviewRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.Overview(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h sessionServiceHandler) getFeatures(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.GetFeaturesRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.GetFeatures(ctx, &req)
 	if err != nil {
 		return err
 	}
