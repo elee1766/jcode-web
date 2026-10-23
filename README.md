@@ -13,8 +13,11 @@ Monitor and control jcode sessions from a desktop or mobile browser.
 - Send messages, steer a running turn, cancel, or use **btw** to fork a side question without stopping the parent.
 - Persistent activity feed and reconnect replay from SQLite.
 - Optional AI task titles, session summaries, a milestone feed tile, and a time-window activity overview.
+- Summaries start collapsed. Use the pane-header Summary control to expand them or hover to preview. Refresh lives beside it. Sidebar hover also previews each session summary.
+- Right-click a sidebar session to open, split, replace, search, copy its ID, or close and hide it locally. Hiding does not stop the agent. Reveal quiet sessions and click it to restore it.
+- Switch the sidebar to Content for indexed history search, or use the pane-header search control to search only that session. Results show up to three matching excerpts per session.
 - Workspace **+** creates a session in that directory. Load older transcript messages or recall sent prompts with Up/Down and the composer history buttons.
-- Scheduled tasks per session, with due times and live countdowns.
+- Scheduled tasks per session, with due times and live countdowns. Empty task sections stay hidden.
 - Content links open in a new tab.
 - Installable PWA with optional Web Push notifications.
 
@@ -75,6 +78,24 @@ Summaries send transcript excerpts and activity to the configured provider. They
 
 SQLite stores activity, summaries, push subscriptions, and VAPID keys under the configured data directory. Migrations run automatically. Back up the database, including its WAL if the process is running. Transcript history remains owned by jcode. Sent-prompt recall also keeps up to 100 prompts per session in browser local storage. Docking layouts and workspace collapse preferences stay in that browser.
 
+### Saved session content search
+
+Search is enabled by default. `search.sessions_dir` defaults to `$JCODE_HOME/sessions`, or `~/.jcode/sessions` when `JCODE_HOME` is unset. `search.poll_interval` defaults to `15s` (values below `1s` use the default). Set `search.enabled: false` or `JCODE_WEB_SEARCH__ENABLED=false` to disable it. The equivalent directory override is `JCODE_WEB_SEARCH__SESSIONS_DIR`.
+
+The backend reads jcode's JSON snapshots and append-only `.journal.jsonl` files directly. It does not subscribe, resume sessions, write source files, or ask agents for history. Backfill starts in the background, newest snapshots first. Unchanged snapshots are skipped, journal appends are consumed from a persisted byte offset, and snapshot replacement or journal rotation rebuilds only that session. Message IDs suppress duplicate snapshot/journal entries. Inherited fork histories remain searchable in each fork, grouped under that fork's session ID.
+
+The disposable index is `session-search.db` in `data_dir`, separate from `jcode-web.db`, with its own Goose migrations. SQLite FTS5 uses the trigram tokenizer with compact, position-free postings. Text is split into overlapping chunks, and queries intersect literal trigrams before checking the exact lowercased substring in candidates. Queries do not open or scan transcript files. Quotes, SQL/FTS operators, punctuation, and wildcard characters have no special query meaning. Matching uses Unicode lowercasing without accent removal, stemming, or fuzzy matching. Queries must contain 3 to 256 Unicode characters and no NUL.
+
+One worker indexes with at most 128 database operations per transaction and a short yield between batches. Source reads are capped at 32 MiB/s, one source record at 64 MiB, and one source file at 1 GiB. Separate WAL reader connections and 8 MiB connection page caches keep indexing off the activity store's single connection. There are at most two concurrent database readers and one archived-history reader. Search requests have a five-second deadline. Index size depends on the saved text, including duplicated fork history, and can exceed source JSON size.
+
+`SessionService.SearchSessions` accepts `query`, `limit` (default 20 sessions, maximum 100), and optional `session_id` to search within one session before applying limits. It returns one result per session, at most three plain-text excerpts with saved-message positions, session metadata, index status, and `truncated` when more matching sessions exist. Result order is index order, not relevance or recency. `GetSearchIndexStatus` returns `{ status }` with enabled/available/indexing flags, total/indexed/failed session counts, the last completed scan timestamp, and an error string. Results are partial during backfill. Failed updates preserve the last published version; indexed and failed counts can therefore overlap. Startup index failures do not stop the other services.
+
+Ordinary message text, reasoning, tool names, tool inputs, and tool results are indexed. Binary images, encrypted provider payloads, assembled system prompts outside the conversation, replay-only UI events, backups, and orphan journals without snapshots are not. Text is visible only after jcode saves it and the worker reaches it. A corrupt complete journal record or oversized source is reported, not silently skipped. Incomplete trailing journal lines wait for the next append. A file changed during a checkpoint is retried on the next scan. Unchanged failed sources use a one-minute retry delay, while changed files are retried immediately on the next scan. A stopped process can leave unpublished work, which is cleaned up on restart.
+
+Archived results use the existing `Attach` RPC to read saved history without starting an agent. `History.read_only` is true and the stream then ends with `Detached`. This view includes up to the trailing 1,000 rendered rows and 8 MiB, and reports the full row count in `History.total`. Individual rows over 8 MiB are replaced with an explicit display-limit notice. Search still covers earlier indexed text, but archived history pagination and jumping to a search position are not implemented. Live sessions retain their existing attachment behavior. Disabling search leaves normal upstream attachments unchanged.
+
+The index contains private conversation text. Keep the data directory private and treat its backups like transcripts. It can be rebuilt by removing only the search database and its WAL/SHM files while jcode-web is stopped. Never remove the activity database to rebuild search.
+
 The progress feed shows live relative ages, full timestamps on hover, and dates for updates older than 24 hours. Session discovery includes headless swarm workers, but the sidebar lists only top-level sessions. Quiet top-level sessions stay hidden unless requested, open, scheduled, or hosting active workers. Parent panes list their sub-sessions with status and inspection links. Inspect and btw open a tab alongside the parent, rather than splitting the workspace. Middle-click closes a workspace tab. Tabs use Dockview's pointer dragging, and worker panes link back to their coordinator.
 
 ## Deployment
@@ -92,6 +113,6 @@ systemctl --user enable --now jcode-web
 
 ## Implementation
 
-Go with chi, Connect-Go v2, protobuf-generated TypeScript clients, SQLite with plain SQL and Goose, koanf, kong, and slog. The frontend uses Svelte, Vite, and Connect server streaming over HTTP. No WebSocket transport or second database is needed. Production assets are embedded into one binary. No embedded tailnet daemon is included.
+Go with chi, Connect-Go v2, protobuf-generated TypeScript clients, SQLite with plain SQL and Goose, koanf, kong, and slog. The frontend uses Svelte, Vite, and Connect server streaming over HTTP. A separate local SQLite search cache isolates indexing from the activity store. No WebSocket transport is needed. Production assets are embedded into one binary. No embedded tailnet daemon is included.
 
 The jcode socket protocol is currently tied to the server implementation tested with jcode `35fe5e4a9`. Unknown stream events are preserved as raw events. Changes to upstream socket messages may require adapter updates.

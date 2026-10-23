@@ -6,6 +6,7 @@ export const SESSION_DRAG_TYPE = "application/x-jcode-session";
 class Layout {
   panes = $state<string[]>([]);
   focused = $state("");
+  searchSession = $state("");
   #tabTargets = new Map<string, string>();
   forks = $state<Record<string, string>>({});
 

@@ -9,6 +9,7 @@
   import { features } from "../lib/features.svelte";
   import Block from "./Block.svelte";
   import ScheduledTasks from "./ScheduledTasks.svelte";
+  import SessionSearch from "./SessionSearch.svelte";
   import { promptHistory, rememberPrompt } from "../lib/prompt-history";
 
   let { id, windowed = false, onwindowkey, onmaximize, maximized = false }: {
@@ -31,12 +32,26 @@
   const working = $derived(t.busy || !!s?.isProcessing);
 
   let draft = $state("");
+  let finding = $state(false);
+  let summaryOpen = $state(false);
+  let summaryPreview = $state<{ x: number; y: number } | null>(null);
+  function previewSummary(node: HTMLElement) {
+    const rect = node.getBoundingClientRect();
+    summaryPreview = { x: Math.max(8, Math.min(rect.right - 360, innerWidth - 368)), y: Math.max(8, Math.min(rect.bottom + 6, innerHeight - 276)) };
+  }
+  function showPreview(node: HTMLDivElement) { node.showPopover(); }
+  $effect(() => {
+    if (layout.searchSession === id) {
+      finding = true;
+      layout.searchSession = "";
+    }
+  });
   let btw = $state(false);
   let sending = $state(false);
   let notice = $state("");
   let scroller: HTMLElement;
   let pinned = $state(true);
-  let composer: HTMLTextAreaElement;
+  let composer = $state<HTMLTextAreaElement>();
   let historyIndex = $state(-1);
   let recalled: string[] = [];
   let savedDraft = "";
@@ -166,18 +181,26 @@
         {#if s?.shortSummary}<span class="task" title={s.summary}>{s.shortSummary}</span>{/if}
         <span class="dir" title={s?.workingDir}>{s ? shortDir(s.workingDir) : ""}</span>
         {#if parent}<span class="context">btw fork of {parent.name}</span>{/if}
-        {#if !t.attached}<span class="context warn">{t.error ? "Reconnecting" : "Connecting"}</span>{/if}
+        {#if !t.attached && !t.readOnly}<span class="context warn">{t.error ? "Reconnecting" : "Connecting"}</span>{/if}
       </div>
     </button>
     {#if onmaximize}<button class="x" onclick={onmaximize} aria-label={maximized ? "Restore window" : "Maximize window"}>{maximized ? "▣" : "□"}</button>{/if}
+    {#if features.summaries}
+      <button class="x" onclick={() => { summaryOpen = !summaryOpen; summaryPreview = null; }} aria-label="Toggle session summary" aria-expanded={summaryOpen}
+        onpointerenter={(e) => { if (e.pointerType !== "touch") previewSummary(e.currentTarget); }} onpointerleave={() => summaryPreview = null}
+        onfocus={(e) => previewSummary(e.currentTarget)} onblur={() => summaryPreview = null}>{summaryOpen ? "▾" : "▸"} Summary</button>
+      <button class="x" onclick={resummarize} disabled={summarizing || t.readOnly} aria-label="Refresh session summary" title={s?.summaryUnix ? `Updated ${ago(s.summaryUnix)} ago` : "Generate summary"}>{summarizing ? "…" : "↻"}</button>
+    {/if}
+    <button class="x" onclick={() => finding = !finding} aria-label="Search this session" title="Search saved session history">⌕</button>
     <button class="x" onclick={() => layout.close(id)} aria-label="Close pane">✕</button>
   </header>
-  {#if features.summaries}
+  {#if summaryPreview}
+    <div class="summary-preview" popover="manual" use:showPreview role="tooltip" style="inset: auto; margin: 0; left: {summaryPreview.x}px; top: {summaryPreview.y}px">{s?.summary || "No summary yet."}</div>
+  {/if}
+  {#if finding}<SessionSearch {id} onclose={() => finding = false} />{/if}
+  {#if features.summaries && summaryOpen}
     <div class="summary">
       <p>{s?.summary || (summarizing ? "" : "No summary yet.")}</p>
-      <button onclick={resummarize} disabled={summarizing} title={s?.summaryUnix ? `Updated ${ago(s.summaryUnix)} ago` : ""}>
-        {summarizing ? "Summarizing" : s?.summary ? "Refresh" : "Summarize"}
-      </button>
     </div>
   {/if}
 
@@ -198,9 +221,9 @@
       </div>
     </details>
   {/if}
-  <ScheduledTasks {id} />
+  {#if !t.readOnly}<ScheduledTasks {id} />{/if}
   <div class="scroll" bind:this={scroller} onscroll={onScroll}>
-    {#if t.total > t.shownMessages}
+    {#if t.total > t.shownMessages && (!t.readOnly || t.historyLimit < 1000)}
       <button class="older" disabled={t.loadingOlder} onclick={loadOlder}>{t.loadingOlder ? "Loading history…" : `Load older messages (${t.total - t.shownMessages} earlier)`}</button>
     {/if}
     {#each t.blocks as b, i (i)}
@@ -211,6 +234,9 @@
     {/if}
   </div>
 
+  {#if t.readOnly}
+    <p class="archive-notice">Archived session · Read-only history</p>
+  {:else}
   <form class="composer" class:btw onsubmit={(e) => (e.preventDefault(), submit())}>
     {#if btw}
       <p class="mode">Side question. It runs in a fork with this conversation. {s?.name ?? "This session"} keeps going.</p>
@@ -245,6 +271,7 @@
       </button>
     </div>
   </form>
+  {/if}
 </section>
 
 <style>
@@ -346,13 +373,7 @@
     flex: 1;
     margin: 0;
   }
-  .summary button {
-    flex: none;
-    color: var(--fg-3);
-  }
-  .summary button:hover {
-    color: var(--fg);
-  }
+  .summary-preview { position: fixed; z-index: 100; width: min(360px, calc(100vw - 16px)); max-height: min(260px, calc(100dvh - 16px)); overflow: hidden; padding: 0.75rem; border: 1px solid var(--line); border-radius: 6px; background: var(--ink-2); color: var(--fg-2); font-size: var(--s-1); line-height: 1.5; box-shadow: 0 6px 20px #0006; pointer-events: none; overflow-wrap: anywhere; }
   .scroll {
     flex: 1;
     min-height: 0;
@@ -391,6 +412,7 @@
       transform: rotate(360deg);
     }
   }
+  .archive-notice { margin: 0; padding: 0.65rem 0.75rem; border-top: 1px solid var(--line); background: var(--ink-2); color: var(--fg-3); font-size: var(--s-1); }
   .composer {
     border-top: 1px solid var(--line);
     padding: 0.5rem 0.75rem calc(0.5rem + env(safe-area-inset-bottom));

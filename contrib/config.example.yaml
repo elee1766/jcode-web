@@ -16,6 +16,13 @@ attach_linger: "2m"
 push_subject: "mailto:you@example.com"
 log_level: "info"
 
+# Local saved-history search, without attaching archived agents.
+search:
+  enabled: true
+  # Defaults to $JCODE_HOME/sessions, or ~/.jcode/sessions.
+  # sessions_dir: "/home/you/.jcode/sessions"
+  poll_interval: "15s"
+
 # AI summaries of sessions and activity. Any OpenAI-compatible endpoint.
 # Use a small fast model. Requests run one at a time.
 summary:

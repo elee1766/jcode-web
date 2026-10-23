@@ -15,6 +15,7 @@ import (
 	"github.com/knadh/koanf/v2"
 
 	"github.com/elee1766/jcode-web/internal/jcode"
+	"github.com/elee1766/jcode-web/internal/search"
 )
 
 type Config struct {
@@ -29,6 +30,7 @@ type Config struct {
 	LogLevel     string        `koanf:"log_level"`
 	LogFormat    string        `koanf:"log_format"`
 	Summary      Summary       `koanf:"summary"`
+	Search       search.Config `koanf:"search"`
 }
 
 // Summary configures an OpenAI-compatible model for AI summaries.
@@ -44,6 +46,11 @@ type Summary struct {
 
 func Defaults() Config {
 	mainSock, debugSock := jcode.DefaultSockets()
+	home, _ := os.UserHomeDir()
+	jcodeHome := os.Getenv("JCODE_HOME")
+	if jcodeHome == "" {
+		jcodeHome = filepath.Join(home, ".jcode")
+	}
 	data := os.Getenv("XDG_STATE_HOME")
 	if data == "" {
 		home, _ := os.UserHomeDir()
@@ -60,6 +67,11 @@ func Defaults() Config {
 		PushSubject:  "mailto:jcode-web@localhost",
 		LogLevel:     "info",
 		LogFormat:    "text",
+		Search: search.Config{
+			Enabled:      true,
+			SessionsDir:  filepath.Join(jcodeHome, "sessions"),
+			PollInterval: 15 * time.Second,
+		},
 		Summary: Summary{
 			ReasoningEffort: "low",
 			MaxTokens:       400,

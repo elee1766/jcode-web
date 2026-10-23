@@ -26,6 +26,12 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// SessionServiceSearchSessionsProcedure is the procedure name of the SessionService's
+	// SearchSessions RPC.
+	SessionServiceSearchSessionsProcedure = "/jcodeweb.v1.SessionService/SearchSessions"
+	// SessionServiceGetSearchIndexStatusProcedure is the procedure name of the SessionService's
+	// GetSearchIndexStatus RPC.
+	SessionServiceGetSearchIndexStatusProcedure = "/jcodeweb.v1.SessionService/GetSearchIndexStatus"
 	// SessionServiceListScheduledTasksProcedure is the procedure name of the SessionService's
 	// ListScheduledTasks RPC.
 	SessionServiceListScheduledTasksProcedure = "/jcodeweb.v1.SessionService/ListScheduledTasks"
@@ -64,6 +70,22 @@ const (
 )
 
 var (
+	sessionServiceSearchSessionsSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType:       connect.StreamTypeUnary,
+			Schema:           v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("SearchSessions"),
+			Procedure:        SessionServiceSearchSessionsProcedure,
+			IdempotencyLevel: connect.IdempotencyNoSideEffects,
+		}
+	})
+	sessionServiceGetSearchIndexStatusSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType:       connect.StreamTypeUnary,
+			Schema:           v1.File_jcodeweb_v1_jcodeweb_proto.Services().ByName("SessionService").Methods().ByName("GetSearchIndexStatus"),
+			Procedure:        SessionServiceGetSearchIndexStatusProcedure,
+			IdempotencyLevel: connect.IdempotencyNoSideEffects,
+		}
+	})
 	sessionServiceListScheduledTasksSpec = sync.OnceValue(func() connect.Spec {
 		return connect.Spec{
 			StreamType:       connect.StreamTypeUnary,
@@ -156,6 +178,9 @@ var (
 
 // SessionServiceClient is a client for the jcodeweb.v1.SessionService service.
 type SessionServiceClient interface {
+	// Literal case-insensitive substring search of saved session content.
+	SearchSessions(context.Context, *v1.SearchSessionsRequest) (*v1.SearchSessionsResponse, error)
+	GetSearchIndexStatus(context.Context, *v1.GetSearchIndexStatusRequest) (*v1.GetSearchIndexStatusResponse, error)
 	ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error)
 	ListSessions(context.Context, *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error)
 	ListEvents(context.Context, *v1.ListEventsRequest) (*v1.ListEventsResponse, error)
@@ -225,6 +250,9 @@ func (s SessionServiceAttachClientStream) Close() error {
 
 // SessionServiceHandler is an implementation of the jcodeweb.v1.SessionService service.
 type SessionServiceHandler interface {
+	// Literal case-insensitive substring search of saved session content.
+	SearchSessions(context.Context, *v1.SearchSessionsRequest) (*v1.SearchSessionsResponse, error)
+	GetSearchIndexStatus(context.Context, *v1.GetSearchIndexStatusRequest) (*v1.GetSearchIndexStatusResponse, error)
 	ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error)
 	ListSessions(context.Context, *v1.ListSessionsRequest) (*v1.ListSessionsResponse, error)
 	ListEvents(context.Context, *v1.ListEventsRequest) (*v1.ListEventsResponse, error)
@@ -251,6 +279,8 @@ type SessionServiceHandler interface {
 func RegisterSessionServiceHandler(server *connect.Server, svc SessionServiceHandler) {
 	adapter := sessionServiceHandler{svc: svc}
 	server.Register(
+		connect.Method{Spec: sessionServiceSearchSessionsSpec(), Handler: adapter.searchSessions},
+		connect.Method{Spec: sessionServiceGetSearchIndexStatusSpec(), Handler: adapter.getSearchIndexStatus},
 		connect.Method{Spec: sessionServiceListScheduledTasksSpec(), Handler: adapter.listScheduledTasks},
 		connect.Method{Spec: sessionServiceListSessionsSpec(), Handler: adapter.listSessions},
 		connect.Method{Spec: sessionServiceListEventsSpec(), Handler: adapter.listEvents},
@@ -298,6 +328,14 @@ func (s SessionServiceAttachServerStream) Send(res *v1.AttachResponse) error {
 
 // UnimplementedSessionServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedSessionServiceHandler struct{}
+
+func (UnimplementedSessionServiceHandler) SearchSessions(context.Context, *v1.SearchSessionsRequest) (*v1.SearchSessionsResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.SearchSessions is not implemented")
+}
+
+func (UnimplementedSessionServiceHandler) GetSearchIndexStatus(context.Context, *v1.GetSearchIndexStatusRequest) (*v1.GetSearchIndexStatusResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.GetSearchIndexStatus is not implemented")
+}
 
 func (UnimplementedSessionServiceHandler) ListScheduledTasks(context.Context, *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, "jcodeweb.v1.SessionService.ListScheduledTasks is not implemented")
@@ -349,6 +387,22 @@ func (UnimplementedSessionServiceHandler) GetFeatures(context.Context, *v1.GetFe
 
 type sessionServiceClient struct {
 	client *connect.Client
+}
+
+func (c *sessionServiceClient) SearchSessions(ctx context.Context, req *v1.SearchSessionsRequest) (*v1.SearchSessionsResponse, error) {
+	var res v1.SearchSessionsResponse
+	if err := c.client.CallUnary(ctx, sessionServiceSearchSessionsSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (c *sessionServiceClient) GetSearchIndexStatus(ctx context.Context, req *v1.GetSearchIndexStatusRequest) (*v1.GetSearchIndexStatusResponse, error) {
+	var res v1.GetSearchIndexStatusResponse
+	if err := c.client.CallUnary(ctx, sessionServiceGetSearchIndexStatusSpec(), req, &res); err != nil {
+		return nil, err
+	}
+	return &res, nil
 }
 
 func (c *sessionServiceClient) ListScheduledTasks(ctx context.Context, req *v1.ListScheduledTasksRequest) (*v1.ListScheduledTasksResponse, error) {
@@ -448,6 +502,30 @@ func (c *sessionServiceClient) GetFeatures(ctx context.Context, req *v1.GetFeatu
 }
 
 type sessionServiceHandler struct{ svc SessionServiceHandler }
+
+func (h sessionServiceHandler) searchSessions(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.SearchSessionsRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.SearchSessions(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
+
+func (h sessionServiceHandler) getSearchIndexStatus(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	var req v1.GetSearchIndexStatusRequest
+	if err := stream.Receive(&req); err != nil {
+		return err
+	}
+	res, err := h.svc.GetSearchIndexStatus(ctx, &req)
+	if err != nil {
+		return err
+	}
+	return stream.Send(res)
+}
 
 func (h sessionServiceHandler) listScheduledTasks(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
 	var req v1.ListScheduledTasksRequest

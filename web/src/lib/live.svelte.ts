@@ -1,10 +1,25 @@
-import type { Event, Session } from "../gen/jcodeweb/v1/jcodeweb_pb";
+import { fromJson, toJson } from "@bufbuild/protobuf";
+import { SessionSchema, type Event, type Session } from "../gen/jcodeweb/v1/jcodeweb_pb";
 import { sessions as api } from "./client";
 
 const MAX_EVENTS = 2000;
 
 class Live {
   sessions = $state<Session[]>([]);
+  #known = $state<Session[]>([]);
+
+  constructor() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("jw.searchSessions") ?? "[]");
+      if (Array.isArray(saved)) this.#known = saved.slice(0, 100).map(value => fromJson(SessionSchema, value));
+    } catch { /* Search results remain usable without stored metadata. */ }
+  }
+
+  remember(session: Session) {
+    this.#known = [session, ...this.#known.filter(s => s.id !== session.id)].slice(0, 100);
+    try { localStorage.setItem("jw.searchSessions", JSON.stringify(this.#known.map(s => toJson(SessionSchema, s)))); }
+    catch { /* Opening a result does not require storage. */ }
+  }
   events = $state<Event[]>([]);
   connected = $state(false);
   upstreamError = $state("");
@@ -18,7 +33,7 @@ class Live {
   }
 
   byId(id: string): Session | undefined {
-    return this.sessions.find((s) => s.id === id);
+    return this.sessions.find((s) => s.id === id) ?? this.#known.find((s) => s.id === id);
   }
 
   start() {

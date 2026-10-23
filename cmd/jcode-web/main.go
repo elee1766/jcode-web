@@ -25,6 +25,7 @@ import (
 	"github.com/elee1766/jcode-web/internal/config"
 	"github.com/elee1766/jcode-web/internal/hub"
 	"github.com/elee1766/jcode-web/internal/push"
+	"github.com/elee1766/jcode-web/internal/search"
 	"github.com/elee1766/jcode-web/internal/store"
 	"github.com/elee1766/jcode-web/internal/summarize"
 	"github.com/elee1766/jcode-web/web"
@@ -118,6 +119,8 @@ func (cmd *ServeCmd) Run(cli *CLI) error {
 		return err
 	}
 	defer st.Close()
+	searchIndex := search.Open(ctx, filepath.Join(c.DataDir, "session-search.db"), c.Search, log)
+	defer searchIndex.Close()
 
 	pusher, err := push.New(ctx, log, st, c.PushSubject)
 	if err != nil {
@@ -143,7 +146,7 @@ func (cmd *ServeCmd) Run(cli *CLI) error {
 	go h.Run(ctx)
 
 	server := connect.NewServer(recoverInterceptor(log))
-	jcodewebv1connect.RegisterSessionServiceHandler(server, &api.Sessions{Hub: h, Store: st})
+	jcodewebv1connect.RegisterSessionServiceHandler(server, &api.Sessions{Hub: h, Store: st, Search: searchIndex})
 	jcodewebv1connect.RegisterPushServiceHandler(server, &api.Push{Pusher: pusher, Store: st})
 
 	r := chi.NewRouter()

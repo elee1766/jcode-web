@@ -102,6 +102,19 @@
       theme: { ...themeDark, gap: 4 },
       disableFloatingGroups: true,
       dndStrategy: "pointer",
+      dropPositionResolver: {
+        resolve({ x, y, width, height, zones, event }) {
+          const target = document.elementFromPoint(event.clientX, event.clientY);
+          if (target?.closest(".pane > .head, .dv-tabs-and-actions-container") && zones.has("center")) return { position: "center" };
+          const edges = [
+            { position: "left" as const, distance: x / width },
+            { position: "right" as const, distance: (width - x) / width },
+            { position: "top" as const, distance: y / height },
+            { position: "bottom" as const, distance: (height - y) / height },
+          ].filter(edge => zones.has(edge.position) && edge.distance < 0.2).sort((a, b) => a.distance - b.distance);
+          return edges.length ? { position: edges[0].position } : zones.has("center") ? { position: "center" } : null;
+        },
+      },
       defaultRenderer: "always",
       createComponent: ({ id }) => {
         const element = document.createElement("div");

@@ -18,6 +18,7 @@ export class Transcript {
   loadingOlder = $state(false);
   status = $state("");
   attached = $state(false);
+  readOnly = $state(false);
   error = $state("");
   busy = $state(false);
 
@@ -54,6 +55,7 @@ export class Transcript {
           backoff = 500;
           this.#apply(res);
         }
+        if (this.readOnly) return;
       } catch (e) {
         if (signal.aborted) return;
         this.error = e instanceof Error ? e.message : String(e);
@@ -86,6 +88,7 @@ export class Transcript {
     const u = res.update;
     switch (u.case) {
       case "history":
+        this.readOnly = u.value.readOnly;
         this.total = u.value.total;
         this.shownMessages = u.value.messages.length;
         this.userMessages = u.value.messages.filter(m => m.role === "user").map(m => m.content);

@@ -46,6 +46,7 @@
   }
 </script>
 
+{#if tasks.length || error}
 <details class="scheduled" bind:open>
   <summary>Scheduled tasks{#if loaded} <span>({tasks.length} pending)</span>{/if}{#if error} <span class="error">unavailable</span>{/if}</summary>
   {#if error}<p class="error" role="status">Could not refresh scheduled tasks: {error}. Retrying automatically.{tasks.length ? " Showing last successful result." : ""}</p>{/if}
@@ -65,6 +66,7 @@
     {/if}
   {/if}
 </details>
+{/if}
 
 <style>
   .scheduled { flex: 0 0 auto; border-bottom: 1px solid var(--line); padding: 7px 14px; font-size: 12px; max-height: 30%; overflow: auto; }

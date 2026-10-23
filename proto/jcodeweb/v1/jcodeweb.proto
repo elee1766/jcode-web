@@ -7,6 +7,13 @@ option go_package = "github.com/elee1766/jcode-web/gen/jcodeweb/v1;jcodewebv1";
 // SessionService exposes jcode sessions, a merged server event feed, and
 // per-session live streams.
 service SessionService {
+  // Literal case-insensitive substring search of saved session content.
+  rpc SearchSessions(SearchSessionsRequest) returns (SearchSessionsResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+  rpc GetSearchIndexStatus(GetSearchIndexStatusRequest) returns (GetSearchIndexStatusResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
   rpc ListScheduledTasks(ListScheduledTasksRequest) returns (ListScheduledTasksResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   }
@@ -104,6 +111,48 @@ message Event {
 }
 
 message ListSessionsRequest {}
+message SearchSessionsRequest {
+  // 3 to 256 Unicode characters. Quotes and punctuation are literal.
+  string query = 1;
+  // Maximum sessions, default 20, capped at 100.
+  uint32 limit = 2;
+  // Empty searches all saved sessions. Otherwise filters before result limits.
+  string session_id = 3;
+}
+message SearchSessionsResponse {
+  repeated SessionSearchResult results = 1;
+  SearchIndexStatus status = 2;
+  // More matching sessions exist. Results are not a total match count.
+  bool truncated = 3;
+}
+message SessionSearchResult {
+  // Archived sessions can be opened with Attach for read-only saved history.
+  Session session = 1;
+  // At most three plain-text excerpts, without HTML or highlight markup.
+  repeated SessionSearchExcerpt excerpts = 2;
+}
+message SessionSearchExcerpt {
+  string text = 1;
+  string role = 2;
+  // Zero-based position in the saved conversation, not an Attach history row.
+  uint32 message_index = 3;
+}
+message GetSearchIndexStatusRequest {}
+message GetSearchIndexStatusResponse {
+  SearchIndexStatus status = 1;
+}
+message SearchIndexStatus {
+  bool enabled = 1;
+  // The search database is usable. Results can be partial during indexing.
+  bool available = 2;
+  bool indexing = 3;
+  uint64 total_sessions = 4;
+  uint64 indexed_sessions = 5;
+  uint64 failed_sessions = 6;
+  int64 last_scan_unix = 7;
+  // Last scan/index error, or why search is unavailable. Empty on success.
+  string error = 8;
+}
 message ListScheduledTasksRequest {
   string session_id = 1;
 }
@@ -205,6 +254,8 @@ message History {
   repeated HistoryMessage messages = 1;
   // Count before history_limit truncation.
   uint32 total = 2;
+  // Saved archived history. No live stream or composer should be started.
+  bool read_only = 3;
 }
 message TextDelta {
   string text = 1;

@@ -4,13 +4,59 @@
   import { layout, SESSION_DRAG_TYPE } from "../lib/layout.svelte";
   import { sessions as api } from "../lib/client";
   import { ago, shortDir, tone } from "../lib/format";
+  import ContentSearch from "./ContentSearch.svelte";
+  import SessionMenu from "./SessionMenu.svelte";
 
   let { onpick }: { onpick: (id: string, e?: MouseEvent) => void } = $props();
 
   let q = $state("");
+  let searchContent = $state(false);
   let showIdle = $state(false);
   let creating = $state("");
   let createError = $state("");
+  let dismissed = $state<Record<string, boolean>>(readDismissed());
+  let hovered = $state<{ id: string; x: number; y: number } | null>(null);
+  let menu = $state<{ session: Session; x: number; y: number } | null>(null);
+
+  function readDismissed(): Record<string, boolean> {
+    try {
+      const value = JSON.parse(localStorage.getItem("jw.dismissed") ?? "{}");
+      return value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    } catch { return {}; }
+  }
+
+  function saveDismissed() {
+    try { localStorage.setItem("jw.dismissed", JSON.stringify(dismissed)); } catch { /* Hiding still works for this page. */ }
+  }
+
+  function pick(id: string, event?: MouseEvent) {
+    if (dismissed[id]) {
+      const next = { ...dismissed }; delete next[id]; dismissed = next; saveDismissed();
+    }
+    hovered = null;
+    onpick(id, event);
+  }
+
+  function hide(id: string) {
+    layout.close(id);
+    dismissed = { ...dismissed, [id]: true };
+    saveDismissed();
+    hovered = null;
+    menu = null;
+  }
+
+  function preview(id: string, node: HTMLElement) {
+    if (menu) return;
+    const rect = node.getBoundingClientRect();
+    hovered = { id, x: Math.max(8, Math.min(rect.right + 8, innerWidth - 368)), y: Math.max(8, Math.min(rect.top, innerHeight - 376)) };
+  }
+
+  function context(event: MouseEvent, session: Session) {
+    event.preventDefault();
+    hovered = null;
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    menu = { session, x: event.clientX || rect.right, y: event.clientY || rect.top };
+  }
 
   async function create(dir: string) {
     if (creating) return;
@@ -54,6 +100,7 @@
     const now = Date.now() / 1000;
     const needle = q.trim().toLowerCase();
     return roots.filter((s) => {
+      if (dismissed[s.id] && !showIdle && !needle && !layout.panes.includes(s.id)) return false;
       if (needle) {
         return [s.name, s.workingDir, s.model, s.detail, s.shortSummary, s.summary].some((f) => f.toLowerCase().includes(needle));
       }
@@ -81,7 +128,14 @@
 </script>
 
 <div class="wrap">
-  <input class="search" type="search" placeholder="Filter by name, folder, model" bind:value={q} />
+  <input class="search" type="search" aria-label={searchContent ? "Search session content" : "Filter sessions"} placeholder={searchContent ? "Search content (3+ characters)" : "Filter by name, folder, model"} bind:value={q} />
+  <div class="search-modes" aria-label="Search scope">
+    <button class:chosen={!searchContent} aria-pressed={!searchContent} onclick={() => (searchContent = false)}>Sessions</button>
+    <button class:chosen={searchContent} aria-pressed={searchContent} onclick={() => (searchContent = true)}>Content</button>
+  </div>
+  {#if searchContent}
+    <ContentSearch query={q} onpick={pick} />
+  {:else}
   <div class="list">
     {#each groups as g (g.dir)}
       {@const shut = collapsed[g.dir] && !q}
@@ -104,9 +158,15 @@
                   class:focused={layout.focused === s.id}
                   use:dragSource={s.id}
                   data-session-id={s.id}
-                  title={[s.shortSummary, s.summary, s.detail].filter(Boolean).join("\n")}
+                  aria-describedby={hovered?.id === s.id ? "session-summary" : undefined}
+                  aria-haspopup="menu"
+                  onpointerenter={(e) => { if (e.pointerType !== "touch") preview(s.id, e.currentTarget); }}
+                  onpointerleave={() => (hovered = null)}
+                  onfocus={(e) => preview(s.id, e.currentTarget)}
+                  onblur={() => (hovered = null)}
+                  oncontextmenu={(e) => context(e, s)}
                   data-tone={t}
-                  onclick={(e) => onpick(s.id, e)}
+                  onclick={(e) => pick(s.id, e)}
                 >
                   <span class="bar"></span>
                   <span class="main">
@@ -121,7 +181,7 @@
                       {#if childCount}<span class="scheduled-badge" title={`${childCount} sub-sessions. Open to inspect.`} aria-label={`${childCount} sub-sessions`}>⑂ {childCount}</span>{/if}
                       <span class="age">{ago(s.lastEventUnix)}</span>
                     </span>
-                    <span class="sub" title={s.summary || s.detail}>{s.summary || s.detail || "No recent activity"}</span>
+                    <span class="sub">{s.summary || s.detail || "No recent activity"}</span>
                     <span class="meta"><span class:waiting={!s.isProcessing && s.scheduledTaskCount > 0}>{s.isProcessing ? "Working" : s.scheduledTaskCount > 0 ? "Waiting · scheduled" : s.status}</span><span class="model" title={s.detail || s.model}>{s.isProcessing && s.detail ? s.detail : s.model}</span></span>
                   </span>
                 </button>
@@ -138,9 +198,28 @@
       {showIdle ? "Hide quiet sessions" : `Show ${hidden} quiet sessions`}
     </button>
   {/if}
+  {/if}
 </div>
 
+{#if hovered}
+  {@const session = live.byId(hovered.id)}
+  {#if session}
+    <div id="session-summary" class="session-preview" role="tooltip" style:left={`${hovered.x}px`} style:top={`${hovered.y}px`}>
+      <strong>{session.shortSummary || session.name}</strong>
+      <p>{session.summary || session.detail || "No session summary yet."}</p>
+      <small>{shortDir(session.workingDir)} · {session.model}</small>
+    </div>
+  {/if}
+{/if}
+{#if menu}
+  <SessionMenu session={menu.session} x={menu.x} y={menu.y} onpick={pick} onhide={hide} onclose={() => (menu = null)} />
+{/if}
+<svelte:window onkeydown={(e) => { if (e.key === "Escape") hovered = null; }} onresize={() => { hovered = null; menu = null; }} />
+
 <style>
+  .session-preview { position: fixed; z-index: 100; width: min(360px, calc(100vw - 16px)); max-height: min(360px, calc(100dvh - 16px)); overflow: hidden; padding: 0.75rem; border: 1px solid var(--line); border-radius: 6px; background: var(--ink-2); color: var(--fg); box-shadow: 0 8px 24px #0006; pointer-events: none; font-size: var(--s-1); }
+  .session-preview p { margin: 0.4rem 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .session-preview small { color: var(--fg-3); overflow-wrap: anywhere; }
   .wrap {
     flex: 1;
     min-height: 0;
@@ -155,6 +234,9 @@
     background: var(--ink);
     font-size: var(--s0);
   }
+  .search-modes { display: flex; gap: 0.25rem; padding: 0 0.75rem 0.5rem; font-size: var(--s-1); color: var(--fg-3); }
+  .search-modes button { padding: 0.2rem 0.5rem; border-radius: 4px; }
+  .search-modes button.chosen { background: var(--ink-3); color: var(--fg); }
   .list {
     overflow-y: auto;
     flex: 1;

@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file jcodeweb/v1/jcodeweb.proto.
  */
 export const file_jcodeweb_v1_jcodeweb: GenFile = /*@__PURE__*/
-  fileDesc("ChpqY29kZXdlYi92MS9qY29kZXdlYi5wcm90bxILamNvZGV3ZWIudjEiVAoKVG9rZW5Vc2FnZRINCgVpbnB1dBgBIAEoBBIOCgZvdXRwdXQYAiABKAQSEgoKY2FjaGVfcmVhZBgDIAEoBBITCgtjYWNoZV93cml0ZRgEIAEoBCKcAwoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCRIVCg1pc19wcm9jZXNzaW5nGAQgASgIEg0KBW1vZGVsGAUgASgJEhAKCHByb3ZpZGVyGAYgASgJEhMKC3dvcmtpbmdfZGlyGAcgASgJEhAKCHN3YXJtX2lkGAggASgJEhMKC3NlcnZlcl9uYW1lGAkgASgJEg4KBmRldGFpbBgKIAEoCRIsCgt0b2tlbl91c2FnZRgLIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2USFwoPbGFzdF9ldmVudF91bml4GAwgASgDEhAKCGF0dGFjaGVkGA0gASgIEg8KB3N1bW1hcnkYDiABKAkSFAoMc3VtbWFyeV91bml4GA8gASgDEhUKDXNob3J0X3N1bW1hcnkYECABKAkSHAoUc2NoZWR1bGVkX3Rhc2tfY291bnQYESABKA0SEwoLaXNfaGVhZGxlc3MYEiABKAgSGQoRcGFyZW50X3Nlc3Npb25faWQYEyABKAkisQEKBUV2ZW50EgoKAmlkGAEgASgDEhMKC3Vwc3RyZWFtX2lkGAIgASgEEhIKCnNlc3Npb25faWQYAyABKAkSFAoMc2Vzc2lvbl9uYW1lGAQgASgJEhAKCHN3YXJtX2lkGAUgASgJEhYKDnRpbWVzdGFtcF91bml4GAYgASgDEgwKBHR5cGUYByABKAkSFAoMcGF5bG9hZF9qc29uGAggASgJEg8KB3N1bW1hcnkYCSABKAkiFQoTTGlzdFNlc3Npb25zUmVxdWVzdCIvChlMaXN0U2NoZWR1bGVkVGFza3NSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiYgoNU2NoZWR1bGVkVGFzaxIKCgJpZBgBIAEoCRIMCgR0YXNrGAIgASgJEhUKDXNjaGVkdWxlZF9mb3IYAyABKAkSDgoGdGFyZ2V0GAQgASgJEhAKCHByaW9yaXR5GAUgASgJIkcKGkxpc3RTY2hlZHVsZWRUYXNrc1Jlc3BvbnNlEikKBXRhc2tzGAEgAygLMhouamNvZGV3ZWIudjEuU2NoZWR1bGVkVGFzayI+ChRMaXN0U2Vzc2lvbnNSZXNwb25zZRImCghzZXNzaW9ucxgBIAMoCzIULmpjb2Rld2ViLnYxLlNlc3Npb24iXQoRTGlzdEV2ZW50c1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIRCgliZWZvcmVfaWQYAiABKAMSDQoFbGltaXQYAyABKA0SEgoKZXZlbnRfdHlwZRgEIAEoCSI4ChJMaXN0RXZlbnRzUmVzcG9uc2USIgoGZXZlbnRzGAEgAygLMhIuamNvZGV3ZWIudjEuRXZlbnQiKwoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEwoLd29ya2luZ19kaXIYASABKAkiQQoVQ3JlYXRlU2Vzc2lvblJlc3BvbnNlEhIKCnNlc3Npb25faWQYASABKAkSFAoMc2Vzc2lvbl9uYW1lGAIgASgJIiAKDFdhdGNoUmVxdWVzdBIQCghhZnRlcl9pZBgBIAEoAyKgAQoNV2F0Y2hSZXNwb25zZRIjCgVldmVudBgBIAEoCzISLmpjb2Rld2ViLnYxLkV2ZW50SAASMQoIc2Vzc2lvbnMYAiABKAsyHS5qY29kZXdlYi52MS5TZXNzaW9uc1NuYXBzaG90SAASLQoKY29ubmVjdGlvbhgDIAEoCzIXLmpjb2Rld2ViLnYxLkNvbm5lY3Rpb25IAEIICgZ1cGRhdGUiOgoQU2Vzc2lvbnNTbmFwc2hvdBImCghzZXNzaW9ucxgBIAMoCzIULmpjb2Rld2ViLnYxLlNlc3Npb24iLgoKQ29ubmVjdGlvbhIRCgljb25uZWN0ZWQYASABKAgSDQoFZXJyb3IYAiABKAkiSAoIVG9vbERhdGESCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRISCgppbnB1dF9qc29uGAMgASgJEg4KBmludGVudBgEIAEoCSJUCg5IaXN0b3J5TWVzc2FnZRIMCgRyb2xlGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSIwoEdG9vbBgDIAEoCzIVLmpjb2Rld2ViLnYxLlRvb2xEYXRhIjoKDUF0dGFjaFJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIVCg1oaXN0b3J5X2xpbWl0GAIgASgNIvUFCg5BdHRhY2hSZXNwb25zZRInCgdoaXN0b3J5GAEgASgLMhQuamNvZGV3ZWIudjEuSGlzdG9yeUgAEiwKCnRleHRfZGVsdGEYAiABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIxCg9yZWFzb25pbmdfZGVsdGEYAyABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIsCgp0b29sX3N0YXJ0GAQgASgLMhYuamNvZGV3ZWIudjEuVG9vbFN0YXJ0SAASLAoKdG9vbF9pbnB1dBgFIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xJbnB1dEgAEisKCXRvb2xfZXhlYxgGIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xTdGFydEgAEioKCXRvb2xfZG9uZRgHIAEoCzIVLmpjb2Rld2ViLnYxLlRvb2xEb25lSAASKgoJdHVybl9kb25lGAggASgLMhUuamNvZGV3ZWIudjEuVHVybkRvbmVIABIvCgtpbnRlcnJ1cHRlZBgJIAEoCzIYLmpjb2Rld2ViLnYxLkludGVycnVwdGVkSAASKwoFZXJyb3IYCiABKAsyGi5qY29kZXdlYi52MS5VcHN0cmVhbUVycm9ySAASMgoNc3RhdHVzX2RldGFpbBgLIAEoCzIZLmpjb2Rld2ViLnYxLlN0YXR1c0RldGFpbEgAEikKBnRva2VucxgMIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2VIABIwCgx1c2VyX21lc3NhZ2UYDSABKAsyGC5qY29kZXdlYi52MS5Vc2VyTWVzc2FnZUgAEi4KDHRleHRfcmVwbGFjZRgOIAEoCzIWLmpjb2Rld2ViLnYxLlRleHREZWx0YUgAEiQKA3JhdxgPIAEoCzIVLmpjb2Rld2ViLnYxLlJhd0V2ZW50SAASKQoIZGV0YWNoZWQYECABKAsyFS5qY29kZXdlYi52MS5EZXRhY2hlZEgAQggKBnVwZGF0ZSJHCgdIaXN0b3J5Ei0KCG1lc3NhZ2VzGAEgAygLMhsuamNvZGV3ZWIudjEuSGlzdG9yeU1lc3NhZ2USDQoFdG90YWwYAiABKA0iGQoJVGV4dERlbHRhEgwKBHRleHQYASABKAkiJQoJVG9vbFN0YXJ0EgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkiJgoJVG9vbElucHV0EgoKAmlkGAEgASgJEg0KBWRlbHRhGAIgASgJIkMKCFRvb2xEb25lEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDgoGb3V0cHV0GAMgASgJEg0KBWVycm9yGAQgASgJIh8KCFR1cm5Eb25lEhMKC3N0b3BfcmVhc29uGAEgASgJIg0KC0ludGVycnVwdGVkIiAKDVVwc3RyZWFtRXJyb3ISDwoHbWVzc2FnZRgBIAEoCSIeCgxTdGF0dXNEZXRhaWwSDgoGZGV0YWlsGAEgASgJIi4KC1VzZXJNZXNzYWdlEg8KB2NvbnRlbnQYASABKAkSDgoGc291cmNlGAIgASgJIiYKCFJhd0V2ZW50EgwKBHR5cGUYASABKAkSDAoEanNvbhgCIAEoCSIaCghEZXRhY2hlZBIOCgZyZWFzb24YASABKAkiXgoSU2VuZE1lc3NhZ2VSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSDwoHY29udGVudBgCIAEoCRIjCgRtb2RlGAMgASgOMhUuamNvZGV3ZWIudjEuU2VuZE1vZGUiOgoTU2VuZE1lc3NhZ2VSZXNwb25zZRIjCgRtb2RlGAEgASgOMhUuamNvZGV3ZWIudjEuU2VuZE1vZGUiIwoNQ2FuY2VsUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIhAKDkNhbmNlbFJlc3BvbnNlIjIKCkJ0d1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIQCghxdWVzdGlvbhgCIAEoCSI3CgtCdHdSZXNwb25zZRISCgpzZXNzaW9uX2lkGAEgASgJEhQKDHNlc3Npb25fbmFtZRgCIAEoCSImChBTdW1tYXJpemVSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiJAoRU3VtbWFyaXplUmVzcG9uc2USDwoHc3VtbWFyeRgBIAEoCSIpCg9PdmVydmlld1JlcXVlc3QSFgoOd2luZG93X21pbnV0ZXMYASABKA0iLwoQT3ZlcnZpZXdSZXNwb25zZRIMCgR0ZXh0GAEgASgJEg0KBW1vZGVsGAIgASgJIhQKEkdldEZlYXR1cmVzUmVxdWVzdCI/ChNHZXRGZWF0dXJlc1Jlc3BvbnNlEhEKCXN1bW1hcmllcxgBIAEoCBIVCg1zdW1tYXJ5X21vZGVsGAIgASgJIhQKEkdldFZhcGlkS2V5UmVxdWVzdCIpChNHZXRWYXBpZEtleVJlc3BvbnNlEhIKCnB1YmxpY19rZXkYASABKAkiVgoQU3Vic2NyaWJlUmVxdWVzdBIQCghlbmRwb2ludBgBIAEoCRIOCgZwMjU2ZGgYAiABKAkSDAoEYXV0aBgDIAEoCRISCgp1c2VyX2FnZW50GAQgASgJIhMKEVN1YnNjcmliZVJlc3BvbnNlIiYKElVuc3Vic2NyaWJlUmVxdWVzdBIQCghlbmRwb2ludBgBIAEoCSIVChNVbnN1YnNjcmliZVJlc3BvbnNlIg0KC1Rlc3RSZXF1ZXN0IhwKDFRlc3RSZXNwb25zZRIMCgRzZW50GAEgASgNKnUKCFNlbmRNb2RlEhkKFVNFTkRfTU9ERV9VTlNQRUNJRklFRBAAEhUKEVNFTkRfTU9ERV9NRVNTQUdFEAESFwoTU0VORF9NT0RFX0lOVEVSUlVQVBACEh4KGlNFTkRfTU9ERV9JTlRFUlJVUFRfVVJHRU5UEAMyxAcKDlNlc3Npb25TZXJ2aWNlEmoKEkxpc3RTY2hlZHVsZWRUYXNrcxImLmpjb2Rld2ViLnYxLkxpc3RTY2hlZHVsZWRUYXNrc1JlcXVlc3QaJy5qY29kZXdlYi52MS5MaXN0U2NoZWR1bGVkVGFza3NSZXNwb25zZSIDkAIBElgKDExpc3RTZXNzaW9ucxIgLmpjb2Rld2ViLnYxLkxpc3RTZXNzaW9uc1JlcXVlc3QaIS5qY29kZXdlYi52MS5MaXN0U2Vzc2lvbnNSZXNwb25zZSIDkAIBElIKCkxpc3RFdmVudHMSHi5qY29kZXdlYi52MS5MaXN0RXZlbnRzUmVxdWVzdBofLmpjb2Rld2ViLnYxLkxpc3RFdmVudHNSZXNwb25zZSIDkAIBEkAKBVdhdGNoEhkuamNvZGV3ZWIudjEuV2F0Y2hSZXF1ZXN0GhouamNvZGV3ZWIudjEuV2F0Y2hSZXNwb25zZTABEkMKBkF0dGFjaBIaLmpjb2Rld2ViLnYxLkF0dGFjaFJlcXVlc3QaGy5qY29kZXdlYi52MS5BdHRhY2hSZXNwb25zZTABElAKC1NlbmRNZXNzYWdlEh8uamNvZGV3ZWIudjEuU2VuZE1lc3NhZ2VSZXF1ZXN0GiAuamNvZGV3ZWIudjEuU2VuZE1lc3NhZ2VSZXNwb25zZRJWCg1DcmVhdGVTZXNzaW9uEiEuamNvZGV3ZWIudjEuQ3JlYXRlU2Vzc2lvblJlcXVlc3QaIi5qY29kZXdlYi52MS5DcmVhdGVTZXNzaW9uUmVzcG9uc2USQQoGQ2FuY2VsEhouamNvZGV3ZWIudjEuQ2FuY2VsUmVxdWVzdBobLmpjb2Rld2ViLnYxLkNhbmNlbFJlc3BvbnNlEjgKA0J0dxIXLmpjb2Rld2ViLnYxLkJ0d1JlcXVlc3QaGC5qY29kZXdlYi52MS5CdHdSZXNwb25zZRJKCglTdW1tYXJpemUSHS5qY29kZXdlYi52MS5TdW1tYXJpemVSZXF1ZXN0Gh4uamNvZGV3ZWIudjEuU3VtbWFyaXplUmVzcG9uc2USRwoIT3ZlcnZpZXcSHC5qY29kZXdlYi52MS5PdmVydmlld1JlcXVlc3QaHS5qY29kZXdlYi52MS5PdmVydmlld1Jlc3BvbnNlElUKC0dldEZlYXR1cmVzEh8uamNvZGV3ZWIudjEuR2V0RmVhdHVyZXNSZXF1ZXN0GiAuamNvZGV3ZWIudjEuR2V0RmVhdHVyZXNSZXNwb25zZSIDkAIBMr8CCgtQdXNoU2VydmljZRJVCgtHZXRWYXBpZEtleRIfLmpjb2Rld2ViLnYxLkdldFZhcGlkS2V5UmVxdWVzdBogLmpjb2Rld2ViLnYxLkdldFZhcGlkS2V5UmVzcG9uc2UiA5ACARJKCglTdWJzY3JpYmUSHS5qY29kZXdlYi52MS5TdWJzY3JpYmVSZXF1ZXN0Gh4uamNvZGV3ZWIudjEuU3Vic2NyaWJlUmVzcG9uc2USUAoLVW5zdWJzY3JpYmUSHy5qY29kZXdlYi52MS5VbnN1YnNjcmliZVJlcXVlc3QaIC5qY29kZXdlYi52MS5VbnN1YnNjcmliZVJlc3BvbnNlEjsKBFRlc3QSGC5qY29kZXdlYi52MS5UZXN0UmVxdWVzdBoZLmpjb2Rld2ViLnYxLlRlc3RSZXNwb25zZUI6WjhnaXRodWIuY29tL2VsZWUxNzY2L2pjb2RlLXdlYi9nZW4vamNvZGV3ZWIvdjE7amNvZGV3ZWJ2MWIGcHJvdG8z");
+  fileDesc("ChpqY29kZXdlYi92MS9qY29kZXdlYi5wcm90bxILamNvZGV3ZWIudjEiVAoKVG9rZW5Vc2FnZRINCgVpbnB1dBgBIAEoBBIOCgZvdXRwdXQYAiABKAQSEgoKY2FjaGVfcmVhZBgDIAEoBBITCgtjYWNoZV93cml0ZRgEIAEoBCKcAwoHU2Vzc2lvbhIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCRIVCg1pc19wcm9jZXNzaW5nGAQgASgIEg0KBW1vZGVsGAUgASgJEhAKCHByb3ZpZGVyGAYgASgJEhMKC3dvcmtpbmdfZGlyGAcgASgJEhAKCHN3YXJtX2lkGAggASgJEhMKC3NlcnZlcl9uYW1lGAkgASgJEg4KBmRldGFpbBgKIAEoCRIsCgt0b2tlbl91c2FnZRgLIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2USFwoPbGFzdF9ldmVudF91bml4GAwgASgDEhAKCGF0dGFjaGVkGA0gASgIEg8KB3N1bW1hcnkYDiABKAkSFAoMc3VtbWFyeV91bml4GA8gASgDEhUKDXNob3J0X3N1bW1hcnkYECABKAkSHAoUc2NoZWR1bGVkX3Rhc2tfY291bnQYESABKA0SEwoLaXNfaGVhZGxlc3MYEiABKAgSGQoRcGFyZW50X3Nlc3Npb25faWQYEyABKAkisQEKBUV2ZW50EgoKAmlkGAEgASgDEhMKC3Vwc3RyZWFtX2lkGAIgASgEEhIKCnNlc3Npb25faWQYAyABKAkSFAoMc2Vzc2lvbl9uYW1lGAQgASgJEhAKCHN3YXJtX2lkGAUgASgJEhYKDnRpbWVzdGFtcF91bml4GAYgASgDEgwKBHR5cGUYByABKAkSFAoMcGF5bG9hZF9qc29uGAggASgJEg8KB3N1bW1hcnkYCSABKAkiFQoTTGlzdFNlc3Npb25zUmVxdWVzdCJJChVTZWFyY2hTZXNzaW9uc1JlcXVlc3QSDQoFcXVlcnkYASABKAkSDQoFbGltaXQYAiABKA0SEgoKc2Vzc2lvbl9pZBgDIAEoCSKOAQoWU2VhcmNoU2Vzc2lvbnNSZXNwb25zZRIxCgdyZXN1bHRzGAEgAygLMiAuamNvZGV3ZWIudjEuU2Vzc2lvblNlYXJjaFJlc3VsdBIuCgZzdGF0dXMYAiABKAsyHi5qY29kZXdlYi52MS5TZWFyY2hJbmRleFN0YXR1cxIRCgl0cnVuY2F0ZWQYAyABKAgicQoTU2Vzc2lvblNlYXJjaFJlc3VsdBIlCgdzZXNzaW9uGAEgASgLMhQuamNvZGV3ZWIudjEuU2Vzc2lvbhIzCghleGNlcnB0cxgCIAMoCzIhLmpjb2Rld2ViLnYxLlNlc3Npb25TZWFyY2hFeGNlcnB0IkkKFFNlc3Npb25TZWFyY2hFeGNlcnB0EgwKBHRleHQYASABKAkSDAoEcm9sZRgCIAEoCRIVCg1tZXNzYWdlX2luZGV4GAMgASgNIh0KG0dldFNlYXJjaEluZGV4U3RhdHVzUmVxdWVzdCJOChxHZXRTZWFyY2hJbmRleFN0YXR1c1Jlc3BvbnNlEi4KBnN0YXR1cxgBIAEoCzIeLmpjb2Rld2ViLnYxLlNlYXJjaEluZGV4U3RhdHVzIrsBChFTZWFyY2hJbmRleFN0YXR1cxIPCgdlbmFibGVkGAEgASgIEhEKCWF2YWlsYWJsZRgCIAEoCBIQCghpbmRleGluZxgDIAEoCBIWCg50b3RhbF9zZXNzaW9ucxgEIAEoBBIYChBpbmRleGVkX3Nlc3Npb25zGAUgASgEEhcKD2ZhaWxlZF9zZXNzaW9ucxgGIAEoBBIWCg5sYXN0X3NjYW5fdW5peBgHIAEoAxINCgVlcnJvchgIIAEoCSIvChlMaXN0U2NoZWR1bGVkVGFza3NSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkiYgoNU2NoZWR1bGVkVGFzaxIKCgJpZBgBIAEoCRIMCgR0YXNrGAIgASgJEhUKDXNjaGVkdWxlZF9mb3IYAyABKAkSDgoGdGFyZ2V0GAQgASgJEhAKCHByaW9yaXR5GAUgASgJIkcKGkxpc3RTY2hlZHVsZWRUYXNrc1Jlc3BvbnNlEikKBXRhc2tzGAEgAygLMhouamNvZGV3ZWIudjEuU2NoZWR1bGVkVGFzayI+ChRMaXN0U2Vzc2lvbnNSZXNwb25zZRImCghzZXNzaW9ucxgBIAMoCzIULmpjb2Rld2ViLnYxLlNlc3Npb24iXQoRTGlzdEV2ZW50c1JlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIRCgliZWZvcmVfaWQYAiABKAMSDQoFbGltaXQYAyABKA0SEgoKZXZlbnRfdHlwZRgEIAEoCSI4ChJMaXN0RXZlbnRzUmVzcG9uc2USIgoGZXZlbnRzGAEgAygLMhIuamNvZGV3ZWIudjEuRXZlbnQiKwoUQ3JlYXRlU2Vzc2lvblJlcXVlc3QSEwoLd29ya2luZ19kaXIYASABKAkiQQoVQ3JlYXRlU2Vzc2lvblJlc3BvbnNlEhIKCnNlc3Npb25faWQYASABKAkSFAoMc2Vzc2lvbl9uYW1lGAIgASgJIiAKDFdhdGNoUmVxdWVzdBIQCghhZnRlcl9pZBgBIAEoAyKgAQoNV2F0Y2hSZXNwb25zZRIjCgVldmVudBgBIAEoCzISLmpjb2Rld2ViLnYxLkV2ZW50SAASMQoIc2Vzc2lvbnMYAiABKAsyHS5qY29kZXdlYi52MS5TZXNzaW9uc1NuYXBzaG90SAASLQoKY29ubmVjdGlvbhgDIAEoCzIXLmpjb2Rld2ViLnYxLkNvbm5lY3Rpb25IAEIICgZ1cGRhdGUiOgoQU2Vzc2lvbnNTbmFwc2hvdBImCghzZXNzaW9ucxgBIAMoCzIULmpjb2Rld2ViLnYxLlNlc3Npb24iLgoKQ29ubmVjdGlvbhIRCgljb25uZWN0ZWQYASABKAgSDQoFZXJyb3IYAiABKAkiSAoIVG9vbERhdGESCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRISCgppbnB1dF9qc29uGAMgASgJEg4KBmludGVudBgEIAEoCSJUCg5IaXN0b3J5TWVzc2FnZRIMCgRyb2xlGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSIwoEdG9vbBgDIAEoCzIVLmpjb2Rld2ViLnYxLlRvb2xEYXRhIjoKDUF0dGFjaFJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRIVCg1oaXN0b3J5X2xpbWl0GAIgASgNIvUFCg5BdHRhY2hSZXNwb25zZRInCgdoaXN0b3J5GAEgASgLMhQuamNvZGV3ZWIudjEuSGlzdG9yeUgAEiwKCnRleHRfZGVsdGEYAiABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIxCg9yZWFzb25pbmdfZGVsdGEYAyABKAsyFi5qY29kZXdlYi52MS5UZXh0RGVsdGFIABIsCgp0b29sX3N0YXJ0GAQgASgLMhYuamNvZGV3ZWIudjEuVG9vbFN0YXJ0SAASLAoKdG9vbF9pbnB1dBgFIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xJbnB1dEgAEisKCXRvb2xfZXhlYxgGIAEoCzIWLmpjb2Rld2ViLnYxLlRvb2xTdGFydEgAEioKCXRvb2xfZG9uZRgHIAEoCzIVLmpjb2Rld2ViLnYxLlRvb2xEb25lSAASKgoJdHVybl9kb25lGAggASgLMhUuamNvZGV3ZWIudjEuVHVybkRvbmVIABIvCgtpbnRlcnJ1cHRlZBgJIAEoCzIYLmpjb2Rld2ViLnYxLkludGVycnVwdGVkSAASKwoFZXJyb3IYCiABKAsyGi5qY29kZXdlYi52MS5VcHN0cmVhbUVycm9ySAASMgoNc3RhdHVzX2RldGFpbBgLIAEoCzIZLmpjb2Rld2ViLnYxLlN0YXR1c0RldGFpbEgAEikKBnRva2VucxgMIAEoCzIXLmpjb2Rld2ViLnYxLlRva2VuVXNhZ2VIABIwCgx1c2VyX21lc3NhZ2UYDSABKAsyGC5qY29kZXdlYi52MS5Vc2VyTWVzc2FnZUgAEi4KDHRleHRfcmVwbGFjZRgOIAEoCzIWLmpjb2Rld2ViLnYxLlRleHREZWx0YUgAEiQKA3JhdxgPIAEoCzIVLmpjb2Rld2ViLnYxLlJhd0V2ZW50SAASKQoIZGV0YWNoZWQYECABKAsyFS5qY29kZXdlYi52MS5EZXRhY2hlZEgAQggKBnVwZGF0ZSJaCgdIaXN0b3J5Ei0KCG1lc3NhZ2VzGAEgAygLMhsuamNvZGV3ZWIudjEuSGlzdG9yeU1lc3NhZ2USDQoFdG90YWwYAiABKA0SEQoJcmVhZF9vbmx5GAMgASgIIhkKCVRleHREZWx0YRIMCgR0ZXh0GAEgASgJIiUKCVRvb2xTdGFydBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJIiYKCVRvb2xJbnB1dBIKCgJpZBgBIAEoCRINCgVkZWx0YRgCIAEoCSJDCghUb29sRG9uZRIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBm91dHB1dBgDIAEoCRINCgVlcnJvchgEIAEoCSIfCghUdXJuRG9uZRITCgtzdG9wX3JlYXNvbhgBIAEoCSINCgtJbnRlcnJ1cHRlZCIgCg1VcHN0cmVhbUVycm9yEg8KB21lc3NhZ2UYASABKAkiHgoMU3RhdHVzRGV0YWlsEg4KBmRldGFpbBgBIAEoCSIuCgtVc2VyTWVzc2FnZRIPCgdjb250ZW50GAEgASgJEg4KBnNvdXJjZRgCIAEoCSImCghSYXdFdmVudBIMCgR0eXBlGAEgASgJEgwKBGpzb24YAiABKAkiGgoIRGV0YWNoZWQSDgoGcmVhc29uGAEgASgJIl4KElNlbmRNZXNzYWdlUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSIwoEbW9kZRgDIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIjoKE1NlbmRNZXNzYWdlUmVzcG9uc2USIwoEbW9kZRgBIAEoDjIVLmpjb2Rld2ViLnYxLlNlbmRNb2RlIiMKDUNhbmNlbFJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCSIQCg5DYW5jZWxSZXNwb25zZSIyCgpCdHdSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSEAoIcXVlc3Rpb24YAiABKAkiNwoLQnR3UmVzcG9uc2USEgoKc2Vzc2lvbl9pZBgBIAEoCRIUCgxzZXNzaW9uX25hbWUYAiABKAkiJgoQU3VtbWFyaXplUmVxdWVzdBISCgpzZXNzaW9uX2lkGAEgASgJIiQKEVN1bW1hcml6ZVJlc3BvbnNlEg8KB3N1bW1hcnkYASABKAkiKQoPT3ZlcnZpZXdSZXF1ZXN0EhYKDndpbmRvd19taW51dGVzGAEgASgNIi8KEE92ZXJ2aWV3UmVzcG9uc2USDAoEdGV4dBgBIAEoCRINCgVtb2RlbBgCIAEoCSIUChJHZXRGZWF0dXJlc1JlcXVlc3QiPwoTR2V0RmVhdHVyZXNSZXNwb25zZRIRCglzdW1tYXJpZXMYASABKAgSFQoNc3VtbWFyeV9tb2RlbBgCIAEoCSIUChJHZXRWYXBpZEtleVJlcXVlc3QiKQoTR2V0VmFwaWRLZXlSZXNwb25zZRISCgpwdWJsaWNfa2V5GAEgASgJIlYKEFN1YnNjcmliZVJlcXVlc3QSEAoIZW5kcG9pbnQYASABKAkSDgoGcDI1NmRoGAIgASgJEgwKBGF1dGgYAyABKAkSEgoKdXNlcl9hZ2VudBgEIAEoCSITChFTdWJzY3JpYmVSZXNwb25zZSImChJVbnN1YnNjcmliZVJlcXVlc3QSEAoIZW5kcG9pbnQYASABKAkiFQoTVW5zdWJzY3JpYmVSZXNwb25zZSINCgtUZXN0UmVxdWVzdCIcCgxUZXN0UmVzcG9uc2USDAoEc2VudBgBIAEoDSp1CghTZW5kTW9kZRIZChVTRU5EX01PREVfVU5TUEVDSUZJRUQQABIVChFTRU5EX01PREVfTUVTU0FHRRABEhcKE1NFTkRfTU9ERV9JTlRFUlJVUFQQAhIeChpTRU5EX01PREVfSU5URVJSVVBUX1VSR0VOVBADMpYJCg5TZXNzaW9uU2VydmljZRJeCg5TZWFyY2hTZXNzaW9ucxIiLmpjb2Rld2ViLnYxLlNlYXJjaFNlc3Npb25zUmVxdWVzdBojLmpjb2Rld2ViLnYxLlNlYXJjaFNlc3Npb25zUmVzcG9uc2UiA5ACARJwChRHZXRTZWFyY2hJbmRleFN0YXR1cxIoLmpjb2Rld2ViLnYxLkdldFNlYXJjaEluZGV4U3RhdHVzUmVxdWVzdBopLmpjb2Rld2ViLnYxLkdldFNlYXJjaEluZGV4U3RhdHVzUmVzcG9uc2UiA5ACARJqChJMaXN0U2NoZWR1bGVkVGFza3MSJi5qY29kZXdlYi52MS5MaXN0U2NoZWR1bGVkVGFza3NSZXF1ZXN0GicuamNvZGV3ZWIudjEuTGlzdFNjaGVkdWxlZFRhc2tzUmVzcG9uc2UiA5ACARJYCgxMaXN0U2Vzc2lvbnMSIC5qY29kZXdlYi52MS5MaXN0U2Vzc2lvbnNSZXF1ZXN0GiEuamNvZGV3ZWIudjEuTGlzdFNlc3Npb25zUmVzcG9uc2UiA5ACARJSCgpMaXN0RXZlbnRzEh4uamNvZGV3ZWIudjEuTGlzdEV2ZW50c1JlcXVlc3QaHy5qY29kZXdlYi52MS5MaXN0RXZlbnRzUmVzcG9uc2UiA5ACARJACgVXYXRjaBIZLmpjb2Rld2ViLnYxLldhdGNoUmVxdWVzdBoaLmpjb2Rld2ViLnYxLldhdGNoUmVzcG9uc2UwARJDCgZBdHRhY2gSGi5qY29kZXdlYi52MS5BdHRhY2hSZXF1ZXN0GhsuamNvZGV3ZWIudjEuQXR0YWNoUmVzcG9uc2UwARJQCgtTZW5kTWVzc2FnZRIfLmpjb2Rld2ViLnYxLlNlbmRNZXNzYWdlUmVxdWVzdBogLmpjb2Rld2ViLnYxLlNlbmRNZXNzYWdlUmVzcG9uc2USVgoNQ3JlYXRlU2Vzc2lvbhIhLmpjb2Rld2ViLnYxLkNyZWF0ZVNlc3Npb25SZXF1ZXN0GiIuamNvZGV3ZWIudjEuQ3JlYXRlU2Vzc2lvblJlc3BvbnNlEkEKBkNhbmNlbBIaLmpjb2Rld2ViLnYxLkNhbmNlbFJlcXVlc3QaGy5qY29kZXdlYi52MS5DYW5jZWxSZXNwb25zZRI4CgNCdHcSFy5qY29kZXdlYi52MS5CdHdSZXF1ZXN0GhguamNvZGV3ZWIudjEuQnR3UmVzcG9uc2USSgoJU3VtbWFyaXplEh0uamNvZGV3ZWIudjEuU3VtbWFyaXplUmVxdWVzdBoeLmpjb2Rld2ViLnYxLlN1bW1hcml6ZVJlc3BvbnNlEkcKCE92ZXJ2aWV3EhwuamNvZGV3ZWIudjEuT3ZlcnZpZXdSZXF1ZXN0Gh0uamNvZGV3ZWIudjEuT3ZlcnZpZXdSZXNwb25zZRJVCgtHZXRGZWF0dXJlcxIfLmpjb2Rld2ViLnYxLkdldEZlYXR1cmVzUmVxdWVzdBogLmpjb2Rld2ViLnYxLkdldEZlYXR1cmVzUmVzcG9uc2UiA5ACATK/AgoLUHVzaFNlcnZpY2USVQoLR2V0VmFwaWRLZXkSHy5qY29kZXdlYi52MS5HZXRWYXBpZEtleVJlcXVlc3QaIC5qY29kZXdlYi52MS5HZXRWYXBpZEtleVJlc3BvbnNlIgOQAgESSgoJU3Vic2NyaWJlEh0uamNvZGV3ZWIudjEuU3Vic2NyaWJlUmVxdWVzdBoeLmpjb2Rld2ViLnYxLlN1YnNjcmliZVJlc3BvbnNlElAKC1Vuc3Vic2NyaWJlEh8uamNvZGV3ZWIudjEuVW5zdWJzY3JpYmVSZXF1ZXN0GiAuamNvZGV3ZWIudjEuVW5zdWJzY3JpYmVSZXNwb25zZRI7CgRUZXN0EhguamNvZGV3ZWIudjEuVGVzdFJlcXVlc3QaGS5qY29kZXdlYi52MS5UZXN0UmVzcG9uc2VCOlo4Z2l0aHViLmNvbS9lbGVlMTc2Ni9qY29kZS13ZWIvZ2VuL2pjb2Rld2ViL3YxO2pjb2Rld2VidjFiBnByb3RvMw");
 
 /**
  * @generated from message jcodeweb.v1.TokenUsage
@@ -249,6 +249,209 @@ export const ListSessionsRequestSchema: GenMessage<ListSessionsRequest> = /*@__P
   messageDesc(file_jcodeweb_v1_jcodeweb, 3);
 
 /**
+ * @generated from message jcodeweb.v1.SearchSessionsRequest
+ */
+export type SearchSessionsRequest = Message<"jcodeweb.v1.SearchSessionsRequest"> & {
+  /**
+   * 3 to 256 Unicode characters. Quotes and punctuation are literal.
+   *
+   * @generated from field: string query = 1;
+   */
+  query: string;
+
+  /**
+   * Maximum sessions, default 20, capped at 100.
+   *
+   * @generated from field: uint32 limit = 2;
+   */
+  limit: number;
+
+  /**
+   * Empty searches all saved sessions. Otherwise filters before result limits.
+   *
+   * @generated from field: string session_id = 3;
+   */
+  sessionId: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SearchSessionsRequest.
+ * Use `create(SearchSessionsRequestSchema)` to create a new message.
+ */
+export const SearchSessionsRequestSchema: GenMessage<SearchSessionsRequest> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 4);
+
+/**
+ * @generated from message jcodeweb.v1.SearchSessionsResponse
+ */
+export type SearchSessionsResponse = Message<"jcodeweb.v1.SearchSessionsResponse"> & {
+  /**
+   * @generated from field: repeated jcodeweb.v1.SessionSearchResult results = 1;
+   */
+  results: SessionSearchResult[];
+
+  /**
+   * @generated from field: jcodeweb.v1.SearchIndexStatus status = 2;
+   */
+  status?: SearchIndexStatus | undefined;
+
+  /**
+   * More matching sessions exist. Results are not a total match count.
+   *
+   * @generated from field: bool truncated = 3;
+   */
+  truncated: boolean;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SearchSessionsResponse.
+ * Use `create(SearchSessionsResponseSchema)` to create a new message.
+ */
+export const SearchSessionsResponseSchema: GenMessage<SearchSessionsResponse> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 5);
+
+/**
+ * @generated from message jcodeweb.v1.SessionSearchResult
+ */
+export type SessionSearchResult = Message<"jcodeweb.v1.SessionSearchResult"> & {
+  /**
+   * Archived sessions can be opened with Attach for read-only saved history.
+   *
+   * @generated from field: jcodeweb.v1.Session session = 1;
+   */
+  session?: Session | undefined;
+
+  /**
+   * At most three plain-text excerpts, without HTML or highlight markup.
+   *
+   * @generated from field: repeated jcodeweb.v1.SessionSearchExcerpt excerpts = 2;
+   */
+  excerpts: SessionSearchExcerpt[];
+};
+
+/**
+ * Describes the message jcodeweb.v1.SessionSearchResult.
+ * Use `create(SessionSearchResultSchema)` to create a new message.
+ */
+export const SessionSearchResultSchema: GenMessage<SessionSearchResult> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 6);
+
+/**
+ * @generated from message jcodeweb.v1.SessionSearchExcerpt
+ */
+export type SessionSearchExcerpt = Message<"jcodeweb.v1.SessionSearchExcerpt"> & {
+  /**
+   * @generated from field: string text = 1;
+   */
+  text: string;
+
+  /**
+   * @generated from field: string role = 2;
+   */
+  role: string;
+
+  /**
+   * Zero-based position in the saved conversation, not an Attach history row.
+   *
+   * @generated from field: uint32 message_index = 3;
+   */
+  messageIndex: number;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SessionSearchExcerpt.
+ * Use `create(SessionSearchExcerptSchema)` to create a new message.
+ */
+export const SessionSearchExcerptSchema: GenMessage<SessionSearchExcerpt> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 7);
+
+/**
+ * @generated from message jcodeweb.v1.GetSearchIndexStatusRequest
+ */
+export type GetSearchIndexStatusRequest = Message<"jcodeweb.v1.GetSearchIndexStatusRequest"> & {
+};
+
+/**
+ * Describes the message jcodeweb.v1.GetSearchIndexStatusRequest.
+ * Use `create(GetSearchIndexStatusRequestSchema)` to create a new message.
+ */
+export const GetSearchIndexStatusRequestSchema: GenMessage<GetSearchIndexStatusRequest> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 8);
+
+/**
+ * @generated from message jcodeweb.v1.GetSearchIndexStatusResponse
+ */
+export type GetSearchIndexStatusResponse = Message<"jcodeweb.v1.GetSearchIndexStatusResponse"> & {
+  /**
+   * @generated from field: jcodeweb.v1.SearchIndexStatus status = 1;
+   */
+  status?: SearchIndexStatus | undefined;
+};
+
+/**
+ * Describes the message jcodeweb.v1.GetSearchIndexStatusResponse.
+ * Use `create(GetSearchIndexStatusResponseSchema)` to create a new message.
+ */
+export const GetSearchIndexStatusResponseSchema: GenMessage<GetSearchIndexStatusResponse> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 9);
+
+/**
+ * @generated from message jcodeweb.v1.SearchIndexStatus
+ */
+export type SearchIndexStatus = Message<"jcodeweb.v1.SearchIndexStatus"> & {
+  /**
+   * @generated from field: bool enabled = 1;
+   */
+  enabled: boolean;
+
+  /**
+   * The search database is usable. Results can be partial during indexing.
+   *
+   * @generated from field: bool available = 2;
+   */
+  available: boolean;
+
+  /**
+   * @generated from field: bool indexing = 3;
+   */
+  indexing: boolean;
+
+  /**
+   * @generated from field: uint64 total_sessions = 4;
+   */
+  totalSessions: bigint;
+
+  /**
+   * @generated from field: uint64 indexed_sessions = 5;
+   */
+  indexedSessions: bigint;
+
+  /**
+   * @generated from field: uint64 failed_sessions = 6;
+   */
+  failedSessions: bigint;
+
+  /**
+   * @generated from field: int64 last_scan_unix = 7;
+   */
+  lastScanUnix: bigint;
+
+  /**
+   * Last scan/index error, or why search is unavailable. Empty on success.
+   *
+   * @generated from field: string error = 8;
+   */
+  error: string;
+};
+
+/**
+ * Describes the message jcodeweb.v1.SearchIndexStatus.
+ * Use `create(SearchIndexStatusSchema)` to create a new message.
+ */
+export const SearchIndexStatusSchema: GenMessage<SearchIndexStatus> = /*@__PURE__*/
+  messageDesc(file_jcodeweb_v1_jcodeweb, 10);
+
+/**
  * @generated from message jcodeweb.v1.ListScheduledTasksRequest
  */
 export type ListScheduledTasksRequest = Message<"jcodeweb.v1.ListScheduledTasksRequest"> & {
@@ -263,7 +466,7 @@ export type ListScheduledTasksRequest = Message<"jcodeweb.v1.ListScheduledTasksR
  * Use `create(ListScheduledTasksRequestSchema)` to create a new message.
  */
 export const ListScheduledTasksRequestSchema: GenMessage<ListScheduledTasksRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 4);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 11);
 
 /**
  * @generated from message jcodeweb.v1.ScheduledTask
@@ -300,7 +503,7 @@ export type ScheduledTask = Message<"jcodeweb.v1.ScheduledTask"> & {
  * Use `create(ScheduledTaskSchema)` to create a new message.
  */
 export const ScheduledTaskSchema: GenMessage<ScheduledTask> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 5);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 12);
 
 /**
  * @generated from message jcodeweb.v1.ListScheduledTasksResponse
@@ -317,7 +520,7 @@ export type ListScheduledTasksResponse = Message<"jcodeweb.v1.ListScheduledTasks
  * Use `create(ListScheduledTasksResponseSchema)` to create a new message.
  */
 export const ListScheduledTasksResponseSchema: GenMessage<ListScheduledTasksResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 6);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 13);
 
 /**
  * @generated from message jcodeweb.v1.ListSessionsResponse
@@ -334,7 +537,7 @@ export type ListSessionsResponse = Message<"jcodeweb.v1.ListSessionsResponse"> &
  * Use `create(ListSessionsResponseSchema)` to create a new message.
  */
 export const ListSessionsResponseSchema: GenMessage<ListSessionsResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 7);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 14);
 
 /**
  * @generated from message jcodeweb.v1.ListEventsRequest
@@ -372,7 +575,7 @@ export type ListEventsRequest = Message<"jcodeweb.v1.ListEventsRequest"> & {
  * Use `create(ListEventsRequestSchema)` to create a new message.
  */
 export const ListEventsRequestSchema: GenMessage<ListEventsRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 8);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 15);
 
 /**
  * @generated from message jcodeweb.v1.ListEventsResponse
@@ -389,7 +592,7 @@ export type ListEventsResponse = Message<"jcodeweb.v1.ListEventsResponse"> & {
  * Use `create(ListEventsResponseSchema)` to create a new message.
  */
 export const ListEventsResponseSchema: GenMessage<ListEventsResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 9);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 16);
 
 /**
  * @generated from message jcodeweb.v1.CreateSessionRequest
@@ -406,7 +609,7 @@ export type CreateSessionRequest = Message<"jcodeweb.v1.CreateSessionRequest"> &
  * Use `create(CreateSessionRequestSchema)` to create a new message.
  */
 export const CreateSessionRequestSchema: GenMessage<CreateSessionRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 10);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 17);
 
 /**
  * @generated from message jcodeweb.v1.CreateSessionResponse
@@ -428,7 +631,7 @@ export type CreateSessionResponse = Message<"jcodeweb.v1.CreateSessionResponse">
  * Use `create(CreateSessionResponseSchema)` to create a new message.
  */
 export const CreateSessionResponseSchema: GenMessage<CreateSessionResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 11);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 18);
 
 /**
  * @generated from message jcodeweb.v1.WatchRequest
@@ -445,7 +648,7 @@ export type WatchRequest = Message<"jcodeweb.v1.WatchRequest"> & {
  * Use `create(WatchRequestSchema)` to create a new message.
  */
 export const WatchRequestSchema: GenMessage<WatchRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 12);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 19);
 
 /**
  * @generated from message jcodeweb.v1.WatchResponse
@@ -480,7 +683,7 @@ export type WatchResponse = Message<"jcodeweb.v1.WatchResponse"> & {
  * Use `create(WatchResponseSchema)` to create a new message.
  */
 export const WatchResponseSchema: GenMessage<WatchResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 13);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 20);
 
 /**
  * @generated from message jcodeweb.v1.SessionsSnapshot
@@ -497,7 +700,7 @@ export type SessionsSnapshot = Message<"jcodeweb.v1.SessionsSnapshot"> & {
  * Use `create(SessionsSnapshotSchema)` to create a new message.
  */
 export const SessionsSnapshotSchema: GenMessage<SessionsSnapshot> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 14);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 21);
 
 /**
  * @generated from message jcodeweb.v1.Connection
@@ -519,7 +722,7 @@ export type Connection = Message<"jcodeweb.v1.Connection"> & {
  * Use `create(ConnectionSchema)` to create a new message.
  */
 export const ConnectionSchema: GenMessage<Connection> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 15);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 22);
 
 /**
  * @generated from message jcodeweb.v1.ToolData
@@ -551,7 +754,7 @@ export type ToolData = Message<"jcodeweb.v1.ToolData"> & {
  * Use `create(ToolDataSchema)` to create a new message.
  */
 export const ToolDataSchema: GenMessage<ToolData> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 16);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 23);
 
 /**
  * @generated from message jcodeweb.v1.HistoryMessage
@@ -578,7 +781,7 @@ export type HistoryMessage = Message<"jcodeweb.v1.HistoryMessage"> & {
  * Use `create(HistoryMessageSchema)` to create a new message.
  */
 export const HistoryMessageSchema: GenMessage<HistoryMessage> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 17);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 24);
 
 /**
  * @generated from message jcodeweb.v1.AttachRequest
@@ -602,7 +805,7 @@ export type AttachRequest = Message<"jcodeweb.v1.AttachRequest"> & {
  * Use `create(AttachRequestSchema)` to create a new message.
  */
 export const AttachRequestSchema: GenMessage<AttachRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 18);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 25);
 
 /**
  * @generated from message jcodeweb.v1.AttachResponse
@@ -717,7 +920,7 @@ export type AttachResponse = Message<"jcodeweb.v1.AttachResponse"> & {
  * Use `create(AttachResponseSchema)` to create a new message.
  */
 export const AttachResponseSchema: GenMessage<AttachResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 19);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 26);
 
 /**
  * @generated from message jcodeweb.v1.History
@@ -734,6 +937,13 @@ export type History = Message<"jcodeweb.v1.History"> & {
    * @generated from field: uint32 total = 2;
    */
   total: number;
+
+  /**
+   * Saved archived history. No live stream or composer should be started.
+   *
+   * @generated from field: bool read_only = 3;
+   */
+  readOnly: boolean;
 };
 
 /**
@@ -741,7 +951,7 @@ export type History = Message<"jcodeweb.v1.History"> & {
  * Use `create(HistorySchema)` to create a new message.
  */
 export const HistorySchema: GenMessage<History> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 20);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 27);
 
 /**
  * @generated from message jcodeweb.v1.TextDelta
@@ -758,7 +968,7 @@ export type TextDelta = Message<"jcodeweb.v1.TextDelta"> & {
  * Use `create(TextDeltaSchema)` to create a new message.
  */
 export const TextDeltaSchema: GenMessage<TextDelta> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 21);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 28);
 
 /**
  * @generated from message jcodeweb.v1.ToolStart
@@ -780,7 +990,7 @@ export type ToolStart = Message<"jcodeweb.v1.ToolStart"> & {
  * Use `create(ToolStartSchema)` to create a new message.
  */
 export const ToolStartSchema: GenMessage<ToolStart> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 22);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 29);
 
 /**
  * @generated from message jcodeweb.v1.ToolInput
@@ -802,7 +1012,7 @@ export type ToolInput = Message<"jcodeweb.v1.ToolInput"> & {
  * Use `create(ToolInputSchema)` to create a new message.
  */
 export const ToolInputSchema: GenMessage<ToolInput> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 23);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 30);
 
 /**
  * @generated from message jcodeweb.v1.ToolDone
@@ -834,7 +1044,7 @@ export type ToolDone = Message<"jcodeweb.v1.ToolDone"> & {
  * Use `create(ToolDoneSchema)` to create a new message.
  */
 export const ToolDoneSchema: GenMessage<ToolDone> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 24);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 31);
 
 /**
  * @generated from message jcodeweb.v1.TurnDone
@@ -851,7 +1061,7 @@ export type TurnDone = Message<"jcodeweb.v1.TurnDone"> & {
  * Use `create(TurnDoneSchema)` to create a new message.
  */
 export const TurnDoneSchema: GenMessage<TurnDone> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 25);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 32);
 
 /**
  * @generated from message jcodeweb.v1.Interrupted
@@ -864,7 +1074,7 @@ export type Interrupted = Message<"jcodeweb.v1.Interrupted"> & {
  * Use `create(InterruptedSchema)` to create a new message.
  */
 export const InterruptedSchema: GenMessage<Interrupted> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 26);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 33);
 
 /**
  * @generated from message jcodeweb.v1.UpstreamError
@@ -881,7 +1091,7 @@ export type UpstreamError = Message<"jcodeweb.v1.UpstreamError"> & {
  * Use `create(UpstreamErrorSchema)` to create a new message.
  */
 export const UpstreamErrorSchema: GenMessage<UpstreamError> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 27);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 34);
 
 /**
  * @generated from message jcodeweb.v1.StatusDetail
@@ -898,7 +1108,7 @@ export type StatusDetail = Message<"jcodeweb.v1.StatusDetail"> & {
  * Use `create(StatusDetailSchema)` to create a new message.
  */
 export const StatusDetailSchema: GenMessage<StatusDetail> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 28);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 35);
 
 /**
  * A user turn started, from any client including the TUI.
@@ -924,7 +1134,7 @@ export type UserMessage = Message<"jcodeweb.v1.UserMessage"> & {
  * Use `create(UserMessageSchema)` to create a new message.
  */
 export const UserMessageSchema: GenMessage<UserMessage> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 29);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 36);
 
 /**
  * @generated from message jcodeweb.v1.RawEvent
@@ -946,7 +1156,7 @@ export type RawEvent = Message<"jcodeweb.v1.RawEvent"> & {
  * Use `create(RawEventSchema)` to create a new message.
  */
 export const RawEventSchema: GenMessage<RawEvent> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 30);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 37);
 
 /**
  * @generated from message jcodeweb.v1.Detached
@@ -963,7 +1173,7 @@ export type Detached = Message<"jcodeweb.v1.Detached"> & {
  * Use `create(DetachedSchema)` to create a new message.
  */
 export const DetachedSchema: GenMessage<Detached> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 31);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 38);
 
 /**
  * @generated from message jcodeweb.v1.SendMessageRequest
@@ -992,7 +1202,7 @@ export type SendMessageRequest = Message<"jcodeweb.v1.SendMessageRequest"> & {
  * Use `create(SendMessageRequestSchema)` to create a new message.
  */
 export const SendMessageRequestSchema: GenMessage<SendMessageRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 32);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 39);
 
 /**
  * @generated from message jcodeweb.v1.SendMessageResponse
@@ -1009,7 +1219,7 @@ export type SendMessageResponse = Message<"jcodeweb.v1.SendMessageResponse"> & {
  * Use `create(SendMessageResponseSchema)` to create a new message.
  */
 export const SendMessageResponseSchema: GenMessage<SendMessageResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 33);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 40);
 
 /**
  * @generated from message jcodeweb.v1.CancelRequest
@@ -1026,7 +1236,7 @@ export type CancelRequest = Message<"jcodeweb.v1.CancelRequest"> & {
  * Use `create(CancelRequestSchema)` to create a new message.
  */
 export const CancelRequestSchema: GenMessage<CancelRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 34);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 41);
 
 /**
  * @generated from message jcodeweb.v1.CancelResponse
@@ -1039,7 +1249,7 @@ export type CancelResponse = Message<"jcodeweb.v1.CancelResponse"> & {
  * Use `create(CancelResponseSchema)` to create a new message.
  */
 export const CancelResponseSchema: GenMessage<CancelResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 35);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 42);
 
 /**
  * @generated from message jcodeweb.v1.BtwRequest
@@ -1061,7 +1271,7 @@ export type BtwRequest = Message<"jcodeweb.v1.BtwRequest"> & {
  * Use `create(BtwRequestSchema)` to create a new message.
  */
 export const BtwRequestSchema: GenMessage<BtwRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 36);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 43);
 
 /**
  * @generated from message jcodeweb.v1.BtwResponse
@@ -1083,7 +1293,7 @@ export type BtwResponse = Message<"jcodeweb.v1.BtwResponse"> & {
  * Use `create(BtwResponseSchema)` to create a new message.
  */
 export const BtwResponseSchema: GenMessage<BtwResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 37);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 44);
 
 /**
  * @generated from message jcodeweb.v1.SummarizeRequest
@@ -1100,7 +1310,7 @@ export type SummarizeRequest = Message<"jcodeweb.v1.SummarizeRequest"> & {
  * Use `create(SummarizeRequestSchema)` to create a new message.
  */
 export const SummarizeRequestSchema: GenMessage<SummarizeRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 38);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 45);
 
 /**
  * @generated from message jcodeweb.v1.SummarizeResponse
@@ -1117,7 +1327,7 @@ export type SummarizeResponse = Message<"jcodeweb.v1.SummarizeResponse"> & {
  * Use `create(SummarizeResponseSchema)` to create a new message.
  */
 export const SummarizeResponseSchema: GenMessage<SummarizeResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 39);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 46);
 
 /**
  * @generated from message jcodeweb.v1.OverviewRequest
@@ -1136,7 +1346,7 @@ export type OverviewRequest = Message<"jcodeweb.v1.OverviewRequest"> & {
  * Use `create(OverviewRequestSchema)` to create a new message.
  */
 export const OverviewRequestSchema: GenMessage<OverviewRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 40);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 47);
 
 /**
  * @generated from message jcodeweb.v1.OverviewResponse
@@ -1158,7 +1368,7 @@ export type OverviewResponse = Message<"jcodeweb.v1.OverviewResponse"> & {
  * Use `create(OverviewResponseSchema)` to create a new message.
  */
 export const OverviewResponseSchema: GenMessage<OverviewResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 41);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 48);
 
 /**
  * @generated from message jcodeweb.v1.GetFeaturesRequest
@@ -1171,7 +1381,7 @@ export type GetFeaturesRequest = Message<"jcodeweb.v1.GetFeaturesRequest"> & {
  * Use `create(GetFeaturesRequestSchema)` to create a new message.
  */
 export const GetFeaturesRequestSchema: GenMessage<GetFeaturesRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 42);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 49);
 
 /**
  * @generated from message jcodeweb.v1.GetFeaturesResponse
@@ -1193,7 +1403,7 @@ export type GetFeaturesResponse = Message<"jcodeweb.v1.GetFeaturesResponse"> & {
  * Use `create(GetFeaturesResponseSchema)` to create a new message.
  */
 export const GetFeaturesResponseSchema: GenMessage<GetFeaturesResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 43);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 50);
 
 /**
  * @generated from message jcodeweb.v1.GetVapidKeyRequest
@@ -1206,7 +1416,7 @@ export type GetVapidKeyRequest = Message<"jcodeweb.v1.GetVapidKeyRequest"> & {
  * Use `create(GetVapidKeyRequestSchema)` to create a new message.
  */
 export const GetVapidKeyRequestSchema: GenMessage<GetVapidKeyRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 44);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 51);
 
 /**
  * @generated from message jcodeweb.v1.GetVapidKeyResponse
@@ -1223,7 +1433,7 @@ export type GetVapidKeyResponse = Message<"jcodeweb.v1.GetVapidKeyResponse"> & {
  * Use `create(GetVapidKeyResponseSchema)` to create a new message.
  */
 export const GetVapidKeyResponseSchema: GenMessage<GetVapidKeyResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 45);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 52);
 
 /**
  * @generated from message jcodeweb.v1.SubscribeRequest
@@ -1255,7 +1465,7 @@ export type SubscribeRequest = Message<"jcodeweb.v1.SubscribeRequest"> & {
  * Use `create(SubscribeRequestSchema)` to create a new message.
  */
 export const SubscribeRequestSchema: GenMessage<SubscribeRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 46);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 53);
 
 /**
  * @generated from message jcodeweb.v1.SubscribeResponse
@@ -1268,7 +1478,7 @@ export type SubscribeResponse = Message<"jcodeweb.v1.SubscribeResponse"> & {
  * Use `create(SubscribeResponseSchema)` to create a new message.
  */
 export const SubscribeResponseSchema: GenMessage<SubscribeResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 47);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 54);
 
 /**
  * @generated from message jcodeweb.v1.UnsubscribeRequest
@@ -1285,7 +1495,7 @@ export type UnsubscribeRequest = Message<"jcodeweb.v1.UnsubscribeRequest"> & {
  * Use `create(UnsubscribeRequestSchema)` to create a new message.
  */
 export const UnsubscribeRequestSchema: GenMessage<UnsubscribeRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 48);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 55);
 
 /**
  * @generated from message jcodeweb.v1.UnsubscribeResponse
@@ -1298,7 +1508,7 @@ export type UnsubscribeResponse = Message<"jcodeweb.v1.UnsubscribeResponse"> & {
  * Use `create(UnsubscribeResponseSchema)` to create a new message.
  */
 export const UnsubscribeResponseSchema: GenMessage<UnsubscribeResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 49);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 56);
 
 /**
  * @generated from message jcodeweb.v1.TestRequest
@@ -1311,7 +1521,7 @@ export type TestRequest = Message<"jcodeweb.v1.TestRequest"> & {
  * Use `create(TestRequestSchema)` to create a new message.
  */
 export const TestRequestSchema: GenMessage<TestRequest> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 50);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 57);
 
 /**
  * @generated from message jcodeweb.v1.TestResponse
@@ -1328,7 +1538,7 @@ export type TestResponse = Message<"jcodeweb.v1.TestResponse"> & {
  * Use `create(TestResponseSchema)` to create a new message.
  */
 export const TestResponseSchema: GenMessage<TestResponse> = /*@__PURE__*/
-  messageDesc(file_jcodeweb_v1_jcodeweb, 51);
+  messageDesc(file_jcodeweb_v1_jcodeweb, 58);
 
 /**
  * @generated from enum jcodeweb.v1.SendMode
@@ -1374,6 +1584,24 @@ export const SendModeSchema: GenEnum<SendMode> = /*@__PURE__*/
  * @generated from service jcodeweb.v1.SessionService
  */
 export const SessionService: GenService<{
+  /**
+   * Literal case-insensitive substring search of saved session content.
+   *
+   * @generated from rpc jcodeweb.v1.SessionService.SearchSessions
+   */
+  searchSessions: {
+    methodKind: "unary";
+    input: typeof SearchSessionsRequestSchema;
+    output: typeof SearchSessionsResponseSchema;
+  },
+  /**
+   * @generated from rpc jcodeweb.v1.SessionService.GetSearchIndexStatus
+   */
+  getSearchIndexStatus: {
+    methodKind: "unary";
+    input: typeof GetSearchIndexStatusRequestSchema;
+    output: typeof GetSearchIndexStatusResponseSchema;
+  },
   /**
    * @generated from rpc jcodeweb.v1.SessionService.ListScheduledTasks
    */

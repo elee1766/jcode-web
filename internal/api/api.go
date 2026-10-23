@@ -15,13 +15,15 @@ import (
 	"github.com/elee1766/jcode-web/internal/hub"
 	"github.com/elee1766/jcode-web/internal/jcode"
 	"github.com/elee1766/jcode-web/internal/push"
+	"github.com/elee1766/jcode-web/internal/search"
 	"github.com/elee1766/jcode-web/internal/store"
 )
 
 type Sessions struct {
 	jcodewebv1connect.UnimplementedSessionServiceHandler
-	Hub   *hub.Hub
-	Store *store.Store
+	Hub    *hub.Hub
+	Store  *store.Store
+	Search *search.Index
 }
 
 func (s *Sessions) CreateSession(ctx context.Context, req *v1.CreateSessionRequest) (*v1.CreateSessionResponse, error) {
@@ -118,6 +120,16 @@ func (s *Sessions) Watch(ctx context.Context, req *v1.WatchRequest, stream jcode
 func (s *Sessions) Attach(ctx context.Context, req *v1.AttachRequest, stream jcodewebv1connect.SessionServiceAttachServerStream) error {
 	if req.SessionId == "" {
 		return connect.NewError(connect.CodeInvalidArgument, "session_id required")
+	}
+	if s.Search != nil && s.Search.Status().Enabled && !s.liveSession(req.SessionId) {
+		messages, total, err := s.Search.SavedHistory(ctx, req.SessionId, req.HistoryLimit)
+		if err != nil {
+			return connect.NewError(connect.CodeUnavailable, "open saved history").WithCause(err)
+		}
+		if err := stream.Send(&v1.AttachResponse{Update: &v1.AttachResponse_History{History: &v1.History{Messages: messages, Total: total, ReadOnly: true}}}); err != nil {
+			return err
+		}
+		return stream.Send(&v1.AttachResponse{Update: &v1.AttachResponse_Detached{Detached: &v1.Detached{Reason: "Archived session: read-only saved history (up to 1000 rows / 8 MiB)."}}})
 	}
 	v, err := s.Hub.View(ctx, req.SessionId)
 	if err != nil {
