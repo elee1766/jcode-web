@@ -58,6 +58,26 @@ type request struct {
 	MaxTokens       int       `json:"max_tokens,omitempty"`
 	Temperature     float64   `json:"temperature"`
 	ReasoningEffort string    `json:"reasoning_effort,omitempty"`
+	ResponseFormat  any       `json:"response_format,omitempty"`
+}
+
+// reportFormat constrains output to the Report schema. Without it gpt-oss on
+// LM Studio often fails Harmony parsing with a 400 "peg-native format" error.
+var reportFormat = map[string]any{
+	"type": "json_schema",
+	"json_schema": map[string]any{
+		"name":   "report",
+		"strict": true,
+		"schema": map[string]any{
+			"type": "object",
+			"properties": map[string]any{
+				"title":   map[string]any{"type": "string"},
+				"summary": map[string]any{"type": "string"},
+			},
+			"required":             []string{"title", "summary"},
+			"additionalProperties": false,
+		},
+	},
 }
 
 type response struct {
@@ -73,6 +93,10 @@ type response struct {
 
 // Complete sends one system+user exchange and returns the reply text.
 func (c *Client) Complete(ctx context.Context, system, user string) (string, error) {
+	return c.complete(ctx, system, user, nil)
+}
+
+func (c *Client) complete(ctx context.Context, system, user string, format any) (string, error) {
 	if !c.Enabled() {
 		return "", errors.New("summarizer not configured")
 	}
@@ -88,6 +112,7 @@ func (c *Client) Complete(ctx context.Context, system, user string) (string, err
 		MaxTokens:       c.cfg.MaxTokens,
 		Temperature:     0.2,
 		ReasoningEffort: c.cfg.ReasoningEffort,
+		ResponseFormat:  format,
 	})
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, strings.TrimRight(c.cfg.BaseURL, "/")+"/chat/completions", bytes.NewReader(body))
 	if err != nil {
