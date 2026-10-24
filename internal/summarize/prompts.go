@@ -42,6 +42,10 @@ type Report struct {
 
 func (c *Client) report(ctx context.Context, system, input string) (Report, error) {
 	text, err := c.complete(ctx, system, input, reportFormat)
+	if err != nil && ctx.Err() == nil {
+		// Some servers reject response_format. Retry once without it.
+		text, err = c.complete(ctx, system, input, nil)
+	}
 	if err != nil {
 		return Report{}, err
 	}

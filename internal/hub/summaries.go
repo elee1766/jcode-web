@@ -111,7 +111,58 @@ func (h *Hub) SummarizeSession(ctx context.Context, id string) (store.Summary, e
 	return h.summarizeSession(ctx, id, "manual")
 }
 
+// summarizeSession never fails because of the model. On an AI error it logs and
+// returns the previous summary, or one built from recent activity.
 func (h *Hub) summarizeSession(ctx context.Context, id, reason string) (store.Summary, error) {
+	s, err := h.summarizeSessionAI(ctx, id, reason)
+	if err == nil || ctx.Err() != nil {
+		return s, err
+	}
+	h.log.Warn("summarize session, using fallback", "session", id, "error", err)
+	return h.fallbackSummary(ctx, id), nil
+}
+
+func (h *Hub) fallbackSummary(ctx context.Context, id string) store.Summary {
+	h.mu.Lock()
+	previous, ok := h.summaries[id]
+	h.mu.Unlock()
+	if ok && previous.Text != "" {
+		return previous
+	}
+	text := "No summary available."
+	if last := h.recentActivity(ctx, id, 1); len(last) > 0 {
+		text = last[0]
+	}
+	s := store.Summary{SessionID: id, Text: text, Model: "fallback", UpdatedAt: time.Now().Unix()}
+	h.mu.Lock()
+	if _, ok := h.summaries[id]; !ok {
+		h.summaries[id] = s
+	}
+	h.mu.Unlock()
+	h.broadcast(WatchUpdate{Sessions: h.Sessions()})
+	return s
+}
+
+// recentActivity returns up to n of the newest non-summary event lines, newest first.
+func (h *Hub) recentActivity(ctx context.Context, id string, n int) []string {
+	events, err := h.store.EventsBefore(ctx, id, 0, 30)
+	if err != nil {
+		return nil
+	}
+	var out []string
+	for _, ev := range events {
+		if ev.Type == "session_summary" || strings.TrimSpace(ev.Summary) == "" {
+			continue
+		}
+		out = append(out, ev.Summary)
+		if len(out) == n {
+			break
+		}
+	}
+	return out
+}
+
+func (h *Hub) summarizeSessionAI(ctx context.Context, id, reason string) (store.Summary, error) {
 	select {
 	case h.sumGate <- struct{}{}:
 		defer func() { <-h.sumGate }()
@@ -271,5 +322,24 @@ func (h *Hub) Overview(ctx context.Context, window time.Duration) (string, error
 	if len(items) > 16 {
 		items = items[:16]
 	}
-	return h.sum.Overview(ctx, items)
+	text, err := h.sum.Overview(ctx, items)
+	if err == nil && strings.TrimSpace(text) != "" {
+		return text, nil
+	}
+	if ctx.Err() != nil {
+		return "", ctx.Err()
+	}
+	h.log.Warn("overview, using fallback", "error", err)
+	var b strings.Builder
+	for _, it := range items {
+		line := it.Summary
+		if line == "" && len(it.Events) > 0 {
+			line = it.Events[len(it.Events)-1]
+		}
+		if line == "" {
+			line = it.Status
+		}
+		fmt.Fprintf(&b, "%s: %s\n", it.Name, line)
+	}
+	return b.String(), nil
 }
