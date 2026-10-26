@@ -153,6 +153,8 @@ func (cmd *ServeCmd) Run(cli *CLI) error {
 	r.Use(middleware.RealIP, middleware.Recoverer)
 	r.Use(func(next http.Handler) http.Handler { return http.NewCrossOriginProtection().Handler(next) })
 	r.Get("/healthz", func(w http.ResponseWriter, _ *http.Request) { w.Write([]byte("ok")) })
+	// pprof at /debug/pprof/. The listener is localhost-only by default.
+	r.Mount("/debug", middleware.Profiler())
 	rpc := http.NewServeMux()
 	connecthttp.Mount(rpc, server)
 	r.Handle("/"+jcodewebv1connect.SessionServiceName+"/*", rpc)

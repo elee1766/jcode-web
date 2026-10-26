@@ -215,6 +215,7 @@ func (x *Index) scan(ctx context.Context) {
 	x.mu.Unlock()
 	x.progress(ctx, scanErr)
 	changed := 0
+	var touched []string
 	for _, s := range sources {
 		if ctx.Err() != nil {
 			return
@@ -227,8 +228,10 @@ func (x *Index) scan(ctx context.Context) {
 		updated, e := x.indexSession(ctx, s)
 		if updated {
 			changed++
+			touched = append(touched, s.id)
 		}
 		if e != nil {
+			touched = append(touched, s.id)
 			scanErr = s.id + ": " + e.Error()
 			x.failures[s.id] = failedSource{key: key, message: scanErr, retryAt: time.Now().Add(time.Minute)}
 			x.recordError(ctx, s.id, scanErr)
@@ -236,7 +239,9 @@ func (x *Index) scan(ctx context.Context) {
 		} else {
 			delete(x.failures, s.id)
 		}
-		x.progress(ctx, scanErr)
+		if updated || e != nil {
+			x.progress(ctx, scanErr)
+		}
 	}
 	if ctx.Err() != nil {
 		return
@@ -269,7 +274,8 @@ func (x *Index) scan(ctx context.Context) {
 			}
 		}
 	}
-	if e = x.cleanup(ctx); e != nil {
+	// Only sessions changed or deleted in this scan can have stale rows.
+	if e = x.cleanupSessions(ctx, append(touched, deleted...)); e != nil {
 		scanErr = e.Error()
 	}
 	x.progress(ctx, scanErr)
@@ -287,6 +293,24 @@ func (x *Index) recordError(ctx context.Context, id, msg string) {
 	if err != nil {
 		x.log.Warn("record search error", "error", err)
 	}
+}
+
+// cleanupSessions retires stale rows for the given sessions using the
+// session-prefixed indexes instead of scanning whole tables.
+func (x *Index) cleanupSessions(ctx context.Context, ids []string) error {
+	for _, id := range ids {
+		for _, q := range []string{
+			`DELETE FROM chunks WHERE session_id=?1 AND NOT EXISTS (
+   SELECT 1 FROM sessions s WHERE s.id=?1 AND s.generation=chunks.generation AND chunks.ordinal<s.message_count)`,
+			`DELETE FROM messages WHERE session_id=?1 AND NOT EXISTS (
+   SELECT 1 FROM sessions s WHERE s.id=?1 AND s.generation=messages.generation AND messages.ordinal<s.message_count)`,
+		} {
+			if _, err := x.writer.ExecContext(ctx, q, id); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // Retire unpublished work in small transactions, including a crash midway
