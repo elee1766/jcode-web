@@ -7,7 +7,7 @@
   import "dockview/dist/styles/dockview.css";
   import { layout, PROGRESS_WINDOW, SESSION_DRAG_TYPE } from "../lib/layout.svelte";
   import { live } from "../lib/live.svelte";
-  import Pane from "./Pane.svelte";
+  import SessionWindow from "./SessionWindow.svelte";
   import ProgressFeed from "./ProgressFeed.svelte";
 
   let dock = $state.raw<DockviewApi>();
@@ -126,7 +126,7 @@
           init() {
             component = id === PROGRESS_WINDOW
               ? mount(ProgressFeed, { target: element })
-              : mount(Pane, { target: element, props: { id } });
+              : mount(SessionWindow, { target: element, props: { id } });
           },
           dispose() { if (component) void unmount(component); },
         };

@@ -5,7 +5,7 @@
   import { push } from "./lib/push.svelte";
   import { features } from "./lib/features.svelte";
   import SessionList from "./components/SessionList.svelte";
-  import Pane from "./components/Pane.svelte";
+  import SessionWindow from "./components/SessionWindow.svelte";
   import Feed from "./components/Feed.svelte";
   import Workspace from "./components/Workspace.svelte";
   import ProgressFeed from "./components/ProgressFeed.svelte";
@@ -92,7 +92,7 @@
       </section>
     {:else}
       {#each visible as id (id)}
-        {#if id === PROGRESS_WINDOW}<ProgressFeed />{:else}<Pane {id} />{/if}
+        {#if id === PROGRESS_WINDOW}<ProgressFeed />{:else}<SessionWindow {id} />{/if}
       {/each}
     {/if}
   </main>
